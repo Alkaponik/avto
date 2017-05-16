@@ -1,0 +1,26 @@
+<layout version="0.1.0">
+    <customer_account>
+        <reference name="customer_account_navigation">
+            <action method="addLink" translate="label" module="bookkeeping"><name>bookkeeping_journal</name><path>bookkeeping/journal/index/</path><label>My Journal</label></action>
+            <action method="addLink" translate="label" module="bookkeeping"><name>bookkeeping_journal_reconciliation</name><path>bookkeeping/journal/reconciliation/</path><label>My Settlements</label></action>
+        </reference>
+    </customer_account>
+
+    <bookkeeping_journal_index translate="label">
+        <label>My Journal Records</label>
+        <update handle="customer_account"/>
+        <reference name="content">
+            <block type="bookkeeping/customer_journal_records" name="bookkeeping.journal.records"/>
+            <block type="customer/account_dashboard" name="customer.account.link.back" template="customer/account/link/back.phtml"/>
+        </reference>
+    </bookkeeping_journal_index>
+
+    <bookkeeping_journal_reconciliation translate="label">
+        <label>My Journal Reconciliation</label>
+        <update handle="customer_account"/>
+        <reference name="content">
+            <block type="bookkeeping/customer_journal_reconciliation" name="bookkeeping.journal.records"/>
+            <block type="customer/account_dashboard" name="customer.account.link.back" template="customer/account/link/back.phtml"/>
+        </reference>
+    </bookkeeping_journal_reconciliation>
+</layout>

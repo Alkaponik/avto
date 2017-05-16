@@ -1,0 +1,193 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Open Software License (OSL 3.0)
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/osl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * @category    Phoenix
+ * @package     Phoenix_LayeredNav
+ * @copyright   Copyright (c) 2010 Phoenix Medien GmbH & Co. KG (http://www.phoenix-medien.de)
+ * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ */
+-->
+<config>
+    <modules>
+        <Phoenix_LayeredNav>
+            <version>0.1.15</version>
+        </Phoenix_LayeredNav>
+    </modules>
+    <global>
+        <models>
+            <phoenix_layerednav>
+                <class>Phoenix_LayeredNav_Model</class>
+                <resourceModel>phoenix_layerednav_mysql4</resourceModel>
+            </phoenix_layerednav>
+            <phoenix_layerednav_mysql4>
+                <class>Phoenix_LayeredNav_Model_Mysql4</class>
+            </phoenix_layerednav_mysql4>
+            <catalog>
+                <rewrite>
+                    <layer_filter_attribute>Phoenix_LayeredNav_Model_Catalog_Layer_Filter_Attribute</layer_filter_attribute>
+                    <layer_filter_item>Phoenix_LayeredNav_Model_Catalog_Layer_Filter_Item</layer_filter_item>
+                </rewrite>
+            </catalog>
+            <catalogsearch>
+                <rewrite>
+                    <layer_filter_attribute>Phoenix_LayeredNav_Model_CatalogSearch_Layer_Filter_Attribute</layer_filter_attribute>
+                </rewrite>
+            </catalogsearch>
+        </models>
+        <helpers>
+            <phoenix_layerednav>
+                <class>Phoenix_LayeredNav_Helper</class>
+            </phoenix_layerednav>
+        </helpers>
+        <resources>
+            <phoenix_layerednav_setup>
+                <setup>
+                    <module>Phoenix_LayeredNav</module>
+                </setup>
+                <connection>
+                    <use>core_setup</use>
+                </connection>
+            </phoenix_layerednav_setup>
+            <phoenix_layerednav_write>
+                <connection>
+                    <use>core_write</use>
+                </connection>
+            </phoenix_layerednav_write>
+            <phoenix_layerednav_read>
+                <connection>
+                    <use>core_read</use>
+                </connection>
+            </phoenix_layerednav_read>
+        </resources>
+        <blocks>
+            <phoenix_layerednav><class>Phoenix_LayeredNav_Block</class></phoenix_layerednav>
+            <catalog>
+                <rewrite>
+                    <layer_state>Phoenix_LayeredNav_Block_Catalog_Layer_State</layer_state>
+                    <product_list_toolbar>Phoenix_LayeredNav_Block_Catalog_Product_List_Toolbar</product_list_toolbar>
+                </rewrite>
+            </catalog>
+            <page>
+                <rewrite>
+                    <html_pager>Phoenix_LayeredNav_Block_Html_Pager</html_pager>
+                </rewrite>
+            </page>
+        </blocks>
+        <events>
+            <controller_front_init_routers>
+                <observers>
+                    <phoenix_layerednav>
+                        <class>Phoenix_LayeredNav_Controller_Router</class>
+                        <method>initControllerRouters</method>
+                    </phoenix_layerednav>
+                </observers>
+            </controller_front_init_routers>
+        </events>
+    </global>
+    <frontend>
+        <events>
+			
+        </events>
+        <translate>
+            <modules>
+                <Phoenix_LayeredNav>
+                    <files>
+                        <default>Phoenix_LayeredNav.csv</default>
+                    </files>
+                </Phoenix_LayeredNav>
+            </modules>
+        </translate>
+        <layout>
+            <updates>
+                <phoenix_layerednav>
+                    <file>phoenix_layerednav.xml</file>
+                </phoenix_layerednav>
+            </updates>
+        </layout>
+        <routers>
+            <phoenix_layerednav>
+                <use>standard</use>
+                <args>
+                    <module>Phoenix_LayeredNav</module>
+                    <frontName>phoenix_layerednav</frontName>
+                </args>
+            </phoenix_layerednav>
+        </routers>
+        <cache>
+            <requests>
+                <phoenix_layerednav>
+                    <test>
+                        <test>enterprise_pagecache/processor_default</test>
+                    </test>
+                </phoenix_layerednav>
+            </requests>
+        </cache>
+    </frontend>    
+    <adminhtml>
+        <events>
+            <adminhtml_catalog_product_attribute_edit_prepare_form>
+                <observers>
+                    <phoenix_layerednav>
+                        <class>phoenix_layerednav/observer</class>
+                        <method>adminhtml_catalog_product_attribute_edit_prepare_form</method>
+                        <type>singleton</type>
+                    </phoenix_layerednav>
+                </observers>
+            </adminhtml_catalog_product_attribute_edit_prepare_form>
+        </events>
+        <translate>
+            <modules>
+                <Phoenix_LayeredNav>
+                    <files>
+                        <default>Phoenix_LayeredNav.csv</default>
+                    </files>
+                </Phoenix_LayeredNav>
+            </modules>
+        </translate>
+        <layout>
+            <updates>
+                <phoenix_layerednav>
+                    <file>phoenix_layerednav.xml</file>
+                </phoenix_layerednav>
+            </updates>
+        </layout>
+        <acl>
+            <resources>
+                <admin>
+                    <children>
+                        <system>
+                            <children>
+                                <config>
+                                    <children>
+                                        <phoenix_layerednav translate="title" module="phoenix_layerednav">
+                                            <title>Phoenix LayeredNav Section</title>
+                                        </phoenix_layerednav>
+                                    </children>
+                                </config>
+                            </children>
+                        </system>
+                    </children>
+                </admin>
+            </resources>
+        </acl>
+    </adminhtml>    
+    <default>        
+    </default>
+    <crontab>
+        <jobs>
+            
+        </jobs>
+    </crontab>
+</config>

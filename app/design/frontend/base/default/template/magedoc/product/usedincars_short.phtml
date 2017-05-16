@@ -1,0 +1,31 @@
+<?php $relatedTypes = $this->getRelatedTypes() ?>
+<?php $typeIds = array(); ?>
+<?php $firstPass = true; ?>
+<?php $manufacturerName=''; ?>
+<?php $helper = Mage::helper('magedoc')?>
+<?php $manufacturers = $this->getManufacturerList(); ?>
+<?php $manufacturerNameChanged = false ?>
+<?php $modelName = '' ?>
+<?php if ($relatedTypes->getStatement()->rowCount()): ?>
+<div class="used-in-vehicles-short">
+<h2><?php echo $this->getProduct()->getName().' '.$this->__('Used in cars:') ?></h2>
+<?php while ($type = $relatedTypes->fetchItem()):
+    $typeIds [] = $type->getTypId();
+     if($manufacturerName != $type->getMfaBrand()): 
+         $manufacturerName = $type->getMfaBrand();
+		 if ($manufacturerNameChanged == false):
+             echo"<br/>";
+         endif;
+		 echo "<strong>$manufacturerName</strong>";
+		 $manufacturerNameChanged = true;
+    endif;
+    if ($modelName != $type->getModCdsText()):
+        $modelName = $type->getModCdsText();
+		echo ($manufacturerNameChanged == true 
+                ? " ".$modelName : " | ".$modelName); 
+        $manufacturerNameChanged = false;
+     endif;
+endwhile; ?>
+</div>
+<?php $this->setTypeIds($typeIds); ?>
+<?php endif; ?>

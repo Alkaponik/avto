@@ -1,0 +1,40 @@
+.onestepcheckout-wrapper{overflow:hidden;}
+.onestepcheckout-wrapper .checkout-step-login{padding-bottom:20px;}
+.onestepcheckout-wrapper .tool-tip-login{background:none repeat scroll 0 0 black;height:100%;width:100%;left:0;top:0;position:fixed;z-index:999;}
+.onestepcheckout-wrapper .tool-tip-login-form{background-color:#F3F3F3;border:1px solid #CCCCCC;height:24em;left:50%;margin-left:-13em;margin-top:-12em;position:absolute;top:50%;width:26em;z-index:1000;}
+.onestepcheckout-wrapper .tool-tip-login-form .close-button a{background:url("../images/btn_window_close.gif") no-repeat scroll 100% 0 transparent;height:15px;display:block;margin:5px 5px 0 auto;width:15px;}
+.onestepcheckout-wrapper .tool-tip-login-form .login-form{padding:0 10px 10px 10px;}
+.onestepcheckout-wrapper .tool-tip-login-form .login-form button{float:right;}
+.onestepcheckout-wrapper .onestepcheckout-error-message{color:red;font-weight:bold;}
+.onestepcheckout-wrapper .onestepcheckout-header h3{font-size:1.5em;text-transform:uppercase;}
+.onestepcheckout-wrapper .onestepcheckout-header .onestepcheckout-note{font-size:14px;}
+#os-container{display:table;}
+#os-row{display:table-row;}
+#os-left{width:32%}
+#os-right{width:68%}
+#os-right #os-ship-payment ol .step{width:50%;float:left}
+#onestepcheckout-form div.col{width:32%;border-top:1px solid #D8D2C7;border-left:1px solid #D8D2C7;}
+#onestepcheckout-form div.col-first{border-left:0px solid #fff;}
+#onestepcheckout-form div.col-last{width:35%;}
+#onestepcheckout-form label{position: relative;}
+#onestepcheckout-form label em.required,#onestepcheckout-form label span.required{color:#EB340A;float:right;font-style:normal;position:absolute;right:-7px;top:0;}
+.onestepcheckout-wrapper ol{padding:10px 0 0 5px;}
+.onestepcheckout-wrapper .fields .field,.onestepcheckout-wrapper .fields .customer-name .input-box{float:left;width:130px;}
+.onestepcheckout-wrapper .fields input{width:120px !important;}
+.onestepcheckout-wrapper .wide .input-box{width:260px !important;}
+.form-list li.wide textarea{width:254px;}
+.form-list li.wide input{width:250px !important;}
+.form-list li.wide select{width:256px !important;}
+.onestepcheckout-wrapper .fields .field-postcode{width:105px !important;}
+.onestepcheckout-wrapper .fields .postcode{width:90px !important;}
+.onestepcheckout-wrapper .fields .field-region{width:155px !important;}
+.onestepcheckout-wrapper .fields .region{width:150px !important;}
+.onestepcheckout-wrapper .onestepcheckout-ajax-loader{background:url('../images/osc-ajax-loader.gif') no-repeat scroll center;width:280px;height:55px;}
+.onestepcheckout-wrapper .step-title{height:45px;width:100%;}
+.onestepcheckout-wrapper .content{padding-bottom:20px;}
+.onestepcheckout-wrapper .step-title span{float:left;width:27px;height:27px;margin-right:5px;background:transparent url(../images/osc-numbers.png) no-repeat;}
+.onestepcheckout-wrapper .step-title .step-1{background-position:0;}
+.onestepcheckout-wrapper .step-title .step-2{background-position:-27px;}
+.onestepcheckout-wrapper .step-title .step-3{background-position:-54px;}
+.onestepcheckout-wrapper .step-title .step-4{background-position:-81px;}
+.onestepcheckout-wrapper .step-title .step-review{background-position:-242px;}

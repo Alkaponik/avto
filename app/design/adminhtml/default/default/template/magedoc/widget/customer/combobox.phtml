@@ -1,0 +1,17 @@
+<tr>
+    <td class="label""><?php echo $this->getLabel() ?></td>
+    <td class="value">
+        <div class="combo-container <?php echo $this->getClass(); ?>" id="<?php echo $this->getContainerId()?>">
+            <input id="<?php echo $this->getInputId()?>" type="text" class="combo-input form-combo-input" autocomplete="off" value="<?php echo $this->getTextValue()?>" name="<?php echo $this->getInputName()?>" <?php echo $this->getDisabled() ?> />
+            <select id="<?php echo $this->getSelectId()?>"class="combo-select" size="<?php echo $this->getSelectSize()?>" name="<?php echo $this->getSelectName()?>" <?php echo $this->getDisabled() ?> tabindex="-1">
+                <?php foreach($this->getValues() as $key => $option):?>
+                    <?php if($this->getValue() == $key):?>
+                        <option value="<?php echo $key?>" selected="selected"><?php echo $option?></option>
+                    <?php else: ?>
+                        <option value="<?php echo $key?>"><?php echo $option?></option>
+                    <?php endif; ?>
+                <?php endforeach;?>
+            </select>
+        </div>
+    </td>
+</tr>

@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!--
+ * {magecore_license_notice}
+ *
+ * @category   MageCore
+ * @package    Dashboard
+ * @copyright  {magecore_copyright}
+ * @license    {magecore_license}
+-->
+<config>
+    <modules>
+        <Oro_Dashboard>
+            <active>true</active>
+            <codePool>community</codePool>
+            <depends>
+                <Mage_Core />
+                <Mage_Adminhtml />
+                <Oro_Analytics />
+            </depends>
+        </Oro_Dashboard>
+    </modules>
+</config>

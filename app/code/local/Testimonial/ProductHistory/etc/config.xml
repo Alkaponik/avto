@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+<config>
+        <modules>
+                <Testimonial_ProductHistory>
+                        <version>0.1.0</version>
+                </Testimonial_ProductHistory>
+        </modules>
+
+        <global>
+		<resources>
+			<producthistory_setup>
+        			<setup>
+					<module>Testimonial_ProductHistory</module>
+				</setup>
+				<connection>
+					<use>core_setup</use>
+				</connection>
+			</producthistory_setup>
+			<producthistory_write>
+				<connection>
+					<use>core_write</use>
+				</connection>
+			</producthistory_write>
+			<producthistory_read>
+				<connection>
+					<use>core_read</use>
+				</connection>
+			</producthistory_read>      
+		</resources>        
+		<models>
+        		<producthistory>
+        		    <class>Testimonial_ProductHistory_Model</class>
+        		    <!-- 
+        		    need to create our own resource, cant just
+        		    use core_mysql4
+        		    -->
+        		    <resourceModel>producthistory_mysql4</resourceModel>
+        		</producthistory>  
+			<producthistory_mysql4>
+				<class>Testimonial_ProductHistory_Model_Mysql4</class>   
+				<entities>
+					<history>
+						<table>catalog_product_history</table>
+					</history>
+				</entities>            
+			</producthistory_mysql4>
+		</models>
+                <events>
+         		<adminhtml_block_html_before>
+                		<observers>
+                			<testimonial_producthistory_model_observer>
+                			        <type>singleton</type>
+                			        <class>Testimonial_ProductHistory_Model_Observer</class>
+                			        <method>adminhtml_block_html_before</method>
+                			</testimonial_producthistory_model_observer>
+		                </observers>
+        		</adminhtml_block_html_before>
+			<catalog_product_save_after>
+                                <observers>
+                                        <testimonial_producthistory_model_observer>
+						<type>singleton</type>
+				                <class>Testimonial_ProductHistory_Model_Observer</class>
+				                <method>catalog_product_save_after</method>
+                                        </testimonial_producthistory_model_observer>
+                                </observers>
+                        </catalog_product_save_after>
+                </events>
+       		<helpers>
+	            <producthistory>
+        	        <class>Testimonial_ProductHistory_Helper</class>
+        	    </producthistory>
+        	</helpers>
+
+
+        </global>
+</config>

@@ -1,0 +1,24 @@
+<div id="alert_messages_block"><?php echo $this->getMessageHtml() ?></div>
+<div class="content-header">
+<table cellspacing="0">
+    <tr>
+        <td style="width:50%;"><h3 class="icon-head head-products"><?php echo Mage::helper('magedoc')->__('Manage Prices') ?></h3></td>
+        <td class="a-right">
+            <?php  echo $this->getButtonsHtml() ?>
+        </td>
+    </tr>
+</table>
+</div>
+<div>
+    <?php echo $this->getChildHtml('grid_before'); ?>
+    <?php echo $this->getGridHtml(); ?>
+    <?php echo $this->getChildHtml('grid_after'); ?>
+</div>
+<form name="import-form" id="import-form" method="post">
+    <input name="form_key" type="hidden" value="<?php echo $this->getFormKey() ?>" />
+ 
+    <input type="hidden"  id="supplier" name="supplier" class="required-entry" />
+    <input type="hidden"  id="retailer" name="retailer" class="required-entry" />
+    <input type="hidden"  id="category" name="category" class="required-entry" />
+    
+</form>

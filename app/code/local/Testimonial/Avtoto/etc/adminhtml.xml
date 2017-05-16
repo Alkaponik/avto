@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+
+<config>
+    <menu>
+        <avtoto module="avtoto">
+            <title>Avtoto</title>
+            <sort_order>59</sort_order>
+            <depends><module>Testimonial_Avtoto</module></depends>
+            <action>adminhtml/avtoto_price/status</action>
+        </avtoto>
+    </menu>
+    <acl>
+        <resources>
+            <admin>
+                <children>
+                    <avtoto module="avtoto">
+                        <title>Avtoto</title>
+                        <sort_order>59</sort_order>
+                    </avtoto>
+                    <system>
+                        <children>
+                            <config>
+                                <children>
+                                    <avtoto translate="title" module="avtoto">
+                                        <title>AvtoTO Section</title>
+                                    </avtoto>
+                                </children>
+                            </config>
+                        </children>
+                    </system>
+                </children>
+            </admin>
+        </resources>
+    </acl>
+</config>

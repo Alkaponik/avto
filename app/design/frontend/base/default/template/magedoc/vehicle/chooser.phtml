@@ -1,0 +1,33 @@
+<ul class="vehicle-changer form-list" id="<?php echo $this->getContainerId();?>">
+    <li class="fields">
+    <?php foreach($this->getComboboxes() as $comboBox): ?>
+        <div class="field">
+            <?php echo $comboBox->toHtml(); ?>
+        </div>
+    <?php endforeach;?>
+        <div class="field vin">
+            <label for="vin">VIN Code</label>
+            <div class="input-box">
+                <input type="text" name="vehicle[<?php echo $this->getContainerId();?>][vin]" title="VIN Code" maxlength="17" class="input-text validate-alphanum required-entry" value="<?php echo $this->getCustomerVehicleVin()?>">
+            </div>
+        </div>
+        <div class="field mileage">
+            <label for="mileage"><em>*</em>Mileage</label>
+            <div class="input-box">
+                <input type="text" name="vehicle[<?php echo $this->getContainerId();?>][mileage]" title="Mileage" value="<?php echo $this->getCustomerVehicleMileage()?>" maxlength="8" class="input-text validate-digits required-entry">
+            </div>
+        </div>
+        <input type="hidden" name="vehicle[<?php echo $this->getContainerId();?>][vehicle_id]" value="<?php echo $this->getCustomerVehicleId()?>">
+    </li>
+</ul>
+
+<script type='text/javascript'>
+    var <?php echo $this->getJavasctiptObjectName()?> = 
+        new VehicleChooser('<?php echo $this->getContainerId()?>', 
+                    '<?php echo $this->getEditUrl()?>',
+                    <? echo $this->getControlsJson() ?>,
+                    <? echo $this->getCurrentValuesJson()?>);
+</script>
+    
+    
+    

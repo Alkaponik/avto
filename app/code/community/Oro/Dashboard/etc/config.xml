@@ -1,0 +1,199 @@
+<?xml version="1.0"?>
+<!--
+ * {magecore_license_notice}
+ *
+ * @category   MageCore
+ * @package    Dashboard
+ * @copyright  {magecore_copyright}
+ * @license    {magecore_license}
+-->
+
+<config>
+    <modules>
+        <Oro_Dashboard>
+            <version>1.0.0</version>
+        </Oro_Dashboard>
+    </modules>
+    <global>
+        <models>
+            <oro_dashboard>
+                <class>Oro_Dashboard_Model</class>
+                <resourceModel>oro_dashboard_resource</resourceModel>
+            </oro_dashboard>
+            <oro_dashboard_resource>
+                <class>Oro_Dashboard_Model_Resource</class>
+                <entities>
+                    <dashboard>
+                        <table>oro_dashboard</table>
+                    </dashboard>
+                    <permissions_role>
+                        <table>oro_dashboard_permissions_role</table>
+                    </permissions_role>
+                    <permissions_user>
+                        <table>oro_dashboard_permissions_user</table>
+                    </permissions_user>
+                    <widget>
+                        <table>oro_dashboard_widget</table>
+                    </widget>
+                    <widget_relation>
+                        <table>oro_dashboard_widget_relation</table>
+                    </widget_relation>
+                </entities>
+            </oro_dashboard_resource>
+        </models>
+        <resources>
+            <oro_dashboard_setup>
+                <setup>
+                    <module>Oro_Dashboard</module>
+                    <class>Oro_Dashboard_Model_Resource_Setup</class>
+                </setup>
+            </oro_dashboard_setup>
+        </resources>
+        <helpers>
+            <oro_dashboard>
+                <class>Oro_Dashboard_Helper</class>
+            </oro_dashboard>
+        </helpers>
+        <blocks>
+            <oro_dashboard>
+                <class>Oro_Dashboard_Block</class>
+            </oro_dashboard>
+        </blocks>
+    </global>
+    <admin>
+        <routers>
+            <adminhtml>
+                <args>
+                    <modules>
+                        <orodashboard before="Mage_Adminhtml">Oro_Dashboard_Adminhtml</orodashboard>
+                    </modules>
+                </args>
+            </adminhtml>
+        </routers>
+    </admin>
+    <adminhtml>
+        <layout>
+            <updates>
+                <oro_dashboard>
+                    <file>oro_dashboard.xml</file>
+                </oro_dashboard>
+            </updates>
+        </layout>
+        <translate>
+            <modules>
+                <Oro_Dashboard>
+                    <files>
+                        <default>Oro_Dashboard.csv</default>
+                    </files>
+                </Oro_Dashboard>
+            </modules>
+        </translate>
+    </adminhtml>
+    <metrics>
+        <number_of_new_customers>
+            <label># of new customers</label>
+            <label_avg>Avg. new customers</label_avg>
+            <class>Oro_Dashboard_Model_Metric_NumberOfNewCustomers</class>
+        </number_of_new_customers>
+        <number_of_page_views>
+            <label># of page views</label>
+            <label_avg>Avg. page views</label_avg>
+            <class>Oro_Dashboard_Model_Metric_NumberOfPageViews</class>
+        </number_of_page_views>
+        <!--<number_of_new_visitors>
+            <label># of new visitors</label>
+            <label_avg>Avg. new visitors</label_avg>
+            <class>Oro_Dashboard_Model_Metric_NumberOfNewVisitors</class>
+        </number_of_new_visitors>-->
+        <number_of_customers>
+            <label># of registered visitors</label>
+            <label_avg>Avg. registered visitors</label_avg>
+            <class>Oro_Dashboard_Model_Metric_NumberOfCustomers</class>
+        </number_of_customers>
+        <number_of_visitors>
+            <label># of new visitors</label>
+            <label_avg>Avg. visitors</label_avg>
+            <class>Oro_Dashboard_Model_Metric_NumberOfVisitors</class>
+        </number_of_visitors>
+        <number_of_orders>
+            <label># of orders</label>
+            <label_avg>Avg. orders</label_avg>
+            <class>Oro_Dashboard_Model_Metric_NumberOfOrders</class>
+        </number_of_orders>
+        <!--<number_of_checkouts>
+            <label># of checkouts</label>
+            <label_avg>Avg. checkouts</label_avg>
+            <class>Oro_Dashboard_Model_Metric_NumberOfCheckouts</class>
+        </number_of_checkouts>-->
+        <number_of_carts>
+            <label># of carts</label>
+            <label_avg>Avg. carts</label_avg>
+            <class>Oro_Dashboard_Model_Metric_NumberOfCarts</class>
+        </number_of_carts>
+        <number_of_new_customers_orders>
+            <label># of orders by new customers</label>
+            <label_avg>Avg. orders by new customers</label_avg>
+            <class>Oro_Dashboard_Model_Metric_NumberOfNewCustomersOrders</class>
+        </number_of_new_customers_orders>
+        <!--<number_of_refers>
+            <label># of refers</label>
+            <label_avg>Avg. refers</label_avg>
+            <class>Oro_Dashboard_Model_Metric_NumberOfNewCustomersOrders</class>
+        </number_of_refers>-->
+        <number_of_products_in_cart>
+            <label># of products in cart</label>
+            <label_avg>Avg. products in cart</label_avg>
+            <class>Oro_Dashboard_Model_Metric_NumberOfProductsInCart</class>
+        </number_of_products_in_cart>
+        <number_of_logins>
+            <label># of returned customers</label>
+            <label_avg>Avg. returned customers</label_avg>
+            <class>Oro_Dashboard_Model_Metric_NumberOfLogins</class>
+        </number_of_logins>
+        <number_of_wishlist_products>
+            <label># of products in wishlist</label>
+            <label_avg>Avg. products in wishlist</label_avg>
+            <class>Oro_Dashboard_Model_Metric_NumberOfWishlistProducts</class>
+        </number_of_wishlist_products>
+        <number_of_product_views>
+            <label># of products views</label>
+            <label_avg>Avg. products views</label_avg>
+            <class>Oro_Dashboard_Model_Metric_NumberOfProductViews</class>
+        </number_of_product_views>
+        <amount_of_orders>
+            <label>Orders value</label>
+            <label_avg>Avg. orders value</label_avg>
+            <is_money>1</is_money>
+            <class>Oro_Dashboard_Model_Metric_AmountOfOrders</class>
+        </amount_of_orders>
+        <amount_of_cart_products>
+            <label>Carts value</label>
+            <label_avg>Avg. carts value</label_avg>
+            <is_money>1</is_money>
+            <class>Oro_Dashboard_Model_Metric_AmountOfCartProducts</class>
+        </amount_of_cart_products>
+        <amount_of_new_customers_orders>
+            <label>New customers orders value</label>
+            <label_avg>Avg. new customers orders value</label_avg>
+            <is_money>1</is_money>
+            <class>Oro_Dashboard_Model_Metric_AmountOfNewCustomersOrders</class>
+        </amount_of_new_customers_orders>
+        <amount_of_returned_customers_orders>
+            <label>Returned customers order value</label>
+            <label_avg>Avg. returned customers order value</label_avg>
+            <is_money>1</is_money>
+            <class>Oro_Dashboard_Model_Metric_AmountOfReturnedCustomersOrders</class>
+        </amount_of_returned_customers_orders>
+    </metrics>
+    <grouped_by_attributes>
+        <country_id/>
+        <region/>
+    </grouped_by_attributes>
+    <default>
+        <oro_dashboard>
+            <general>
+                <partitioning>1</partitioning>
+            </general>
+        </oro_dashboard>
+    </default>
+</config>

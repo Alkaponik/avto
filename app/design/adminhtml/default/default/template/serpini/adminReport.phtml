@@ -1,0 +1,2310 @@
+<?php
+	$installManager = Mage::helper('sqlreport/InstallManager');
+	$installManager->checkInstall();
+
+	$comboAdmin = Mage::getModel('sqlreport/combo');
+	$reportAdmin = Mage::getModel('sqlreport/report');
+	$systemAdmin = Mage::getModel('sqlreport/setup');
+	$groupmg = Mage::helper('sqlreport/GroupManager');
+	$combomg = Mage::helper('sqlreport/ComboManager');
+	$reportsmg = Mage::helper('sqlreport/ReportManager');
+	$linkmg = Mage::helper('sqlreport/LinkManager');
+	
+	$groupList = $groupmg->getGroupList();
+	$comboList = $combomg->getComboList();
+	$reportList = $reportsmg->getReportsList('edit');
+	$linkListTR = $linkmg->getLinkList('TR');
+	$linkListTD = $linkmg->getLinkList('TD');
+	
+	$params = $this->getRequest()->getParams();
+	
+	if(array_key_exists('action', $params) && $params['action']!=""){ 
+		switch ($params['action']) {
+			case "loadCombo": if($params['id']!=""){
+								$comboAdmin->loadCombo($params['id']);
+							  }
+			break;
+			case "loadReport": if($params['id']!=""){
+								$reportAdmin->loadReport($params['id']);
+								}
+			break;
+		}
+	}
+
+?>
+<style>
+	.CodeMirror {
+		    border-top: 1px solid #d6d6d6;
+		    border-bottom: 1px solid #d6d6d6;
+		    height: 400px;
+	}
+	table .selected {
+	  background-color:#d1dedf;
+	}
+	table .over {
+	  background-color:#E7EFEF;  color: #000;cursor:pointer
+	}
+	
+	
+	#comboList tr:hover td {
+	  background-color: #E7EFEF; color: #000; cursor:pointer
+	}
+	
+	#groupList tr:hover td {
+	  background-color: #E7EFEF; color: #000;
+	}
+	
+	.tdSelectable:hover{
+	  background-color: #E7EFEF; color: #000; cursor:pointer
+	}
+	
+	.tdSelectable:hover{
+	  background-color: #E7EFEF; color: #000; cursor:pointer
+	}
+	
+	img.selected {
+		border:1px solid #021a40;
+	}
+	
+	button.export span {
+		background-image: url("<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/export_btn_icon.png");
+		padding-left: 20px;
+	}
+	
+	button.import span {
+		background-image: url("<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/import_btn_icon.png");
+		padding-left: 20px;
+	}
+	
+	button.market span {
+		background-image: url("<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/market_btn_icon.png");
+		padding-left: 20px;
+	}
+	
+	.x-tree-lines .x-tree-elbow-minus {
+		background: transparent url("<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_JS)?>/extjs/resources/images/magento/tree/elbow-minus.gif") no-repeat;
+	}
+	
+	.x-tree-lines .x-tree-elbow-plus {
+		background: transparent url("<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_JS)?>/extjs/resources/images/magento/tree/elbow-plus.gif") no-repeat;
+	}
+	
+	.x-tree-node-expanded .x-tree-node-icon {
+		background: transparent url("<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_JS)?>/extjs/resources/images/magento/tree/folder-open.gif") no-repeat 0 50%;
+	}
+	
+	.x-tree-lines .x-tree-elbow-line {
+		background: transparent url("<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_JS)?>/extjs/resources/images/magento/tree/elbow-line.gif");
+	}
+	
+	.x-tree-lines .x-tree-elbow-end {
+		background: transparent url("<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_JS)?>/extjs/resources/images/magento/tree/elbow-end.gif") no-repeat;
+	}
+
+	.x-tree-icon, .x-tree-ec-icon, .x-tree-elbow-line, .x-tree-elbow, .x-tree-elbow-end, .x-tree-elbow-plus, .x-tree-elbow-minus, .x-tree-elbow-end-plus, .x-tree-elbow-end-minus {
+		border: 0 none;
+		height: 18px;
+		margin: 0;
+		padding: 0;
+		vertical-align: middle;
+		width: 16px;
+		background-repeat: no-repeat;
+		cursor: pointer;
+	}
+	
+	.x-tree-node a, .x-dd-drag-ghost a {
+		text-decoration: none;
+		color: black;
+		-khtml-user-select: none;
+		-moz-user-select: none;
+		-kthml-user-focus: normal;
+		-moz-user-focus: normal;
+		-moz-outline: 0 none;
+		outline: 0 none;
+	}
+	
+	.desactive {
+		-moz-filter: grayscale(100%);
+		-o-filter:grayscale(100%);
+		-ms-filter:grayscale(100%);
+		filter: grayscale(100%);
+		-webkit-filter: grayscale(100%); /* For Webkit browsers */
+		filter: gray; /* For IE 6 - 9 */
+		-webkit-transition: all .6s ease; /* Fade to color for Chrome and Safari */
+		filter: url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter id=\'grayscale\'><feColorMatrix type=\'matrix\' values=\'0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0 0 0 1 0\'/></filter></svg>#grayscale"); /* Firefox 10+, Firefox on Android */
+	}	
+	
+	a.check{
+		border: 1px solid rgb(131, 131, 131);
+		background-color: rgb(218, 218, 218);
+	}
+	button.grey { border-color:#ccc #aaa #aaa #ccc; background-color:#fff; background-image:url(<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/btn_back_bg.gif); color:#555; }
+	
+	button.grey:active { background:#FFFFFF url(<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/btn_back_on_bg2.gif) repeat-x 0 0; }
+	button.grey.active { background:#FFFFFF url(<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/btn_back_on_bg2.gif) repeat-x 0 0; }
+
+	.slider-handler {
+			width:10px; 
+			height:15px; 
+			background:#FFFFFF url(<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/btn_back_bg.gif) repeat-x 0 0;; 
+			cursor:move;
+			top: -3px;
+			border: 1px solid #d3d3d3;
+	}
+	.slider-bar {
+		background-color: #FFF;
+		height: 10px;
+		border: 1px solid #aaaaaa;
+		border-top-left-radius: 4px;
+		border-top-right-radius: 4px;
+		border-bottom-left-radius: 4px;
+		border-bottom-right-radius: 4px; 
+	}
+	.rowNew {
+		background:#FFFFFF url(<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/new_sticker_yellow.png) no-repeat 0 0;
+	}
+	.ok {
+	  color: #3d6611 !important;
+ 	  font-weight: bold !important;
+	}
+</style>
+
+<SCRIPT LANGUAGE="JavaScript"> 
+
+	var auxDebug;
+	var croneditor;
+	
+	var reportManager = new ReportManager('<?php echo $this->getUrl('*/*/admin', array('_current'=>true));?>','<?php echo $this->getUrl('*/*/ws') ?>',croneditor);
+	
+		
+	var URL_TYPE_MEDIA = "<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>";
+	var URL_TYPE_SKIN  = "<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_SKIN);?>";
+	var urlImport = "<?php echo $this->getUrl('*/*/import', array('_current'=>true));?>";
+	var urlExport = "<?php echo $this->getUrl('*/*/export', array('_current'=>true));?>";
+	var DATE_FORMAT = "<?php echo $systemAdmin->getValue('date_mask'); ?>";
+<?php if($comboAdmin->isLoaded()){?>
+	reportManager.action="saveCombo";
+<?php }?>
+	var urlViewReport = "<?php echo $this->getUrl('*/*/viewReport', array('_current'=>true));?>";
+	var cmText;
+	var elementoImg;
+	var filtersList = new Array();
+<?php 	$i=0;
+	    foreach ($comboList as $combo){ ?>
+	filtersList[<?php echo $i; ?>]=new Combo('<?php echo $combo[0]; ?>','<?php echo $combo[1]; ?>','<?php echo $combo[3]; ?>','<?php echo $combo[2]; ?>');		
+<?php  		$i++;
+		} ?>
+	
+	var reportList = new Array();
+<?php	
+		foreach ($reportList as $groupDes=>$reportListGroup){ ?>
+	reportList['<?php echo $groupDes; ?>']=new Array(<?php
+			$first=true;
+			foreach ($reportListGroup as $code=>$description){ 
+				if($first){
+					$first=false;
+				}else{
+					echo ",";
+				}	?>
+new Report('<?php echo $code; ?>','<?php echo $description; ?>','<?php echo $groupDes; ?>')
+<?php       	
+			}
+	echo ");";
+		} ?>
+	var groupList = new Array();
+<?php 
+	foreach ($groupList as $group){   ?>
+	groupList['<?php echo $group[2];?>']= new Group('<?php echo $group[0];?>','<?php echo $group[1];?>','<?php echo $group[2];?>');
+<?php
+	}?>
+
+	var linkListTR = new Array();
+	var linkListTD = new Array();
+<?php $i=0;
+	  foreach ($linkListTR as $link){ ?>
+	  	linkListTR[<?php echo $i; ?>]=new Link('<?php echo $link[0]; ?>','<?php echo htmlspecialchars($link[1]); ?>','<?php echo htmlspecialchars($link[2]); ?>','<?php echo $link[3]; ?>');		
+<?php  	$i++;
+	  } 
+	  $i=0;
+	  foreach ($linkListTD as $link){ ?>
+	  	linkListTD[<?php echo $i; ?>]=new Link('<?php echo $link[0]; ?>','<?php echo htmlspecialchars($link[1]); ?>','<?php echo htmlspecialchars($link[2]); ?>','<?php echo $link[3]; ?>');		
+<?php  	$i++;
+	  }?>
+		
+	Event.observe(window, "load", function() {
+        $$('#comboList4Report tr').each(function (element){
+			if(!element.hasClassName('headings')){
+				element.observe("mousedown",function (event) { 
+					if(this.hasClassName('selected')){
+						this.removeClassName('selected');
+						this.addClassName('over');
+					}else{
+						this.addClassName('selected');
+						this.removeClassName('over');
+					}
+				});
+
+				element.observe("mouseover",function (event) { 
+					if(!this.hasClassName('selected')){
+						this.addClassName('over');
+					}
+				});
+
+				element.observe("mouseout",function (event) { 
+					if(!this.hasClassName('selected')){
+						this.removeClassName('over');
+					}
+				});
+			}
+		});
+
+		$$('#comboListReport tr').each(function (element){
+			if(!element.hasClassName('headings')){
+				element.observe("mousedown",function (event) { 
+					if(this.hasClassName('selected')){
+						this.removeClassName('selected');
+						this.addClassName('over');
+					}else{
+						this.addClassName('selected');
+						this.removeClassName('over');
+					}
+				});
+
+				element.observe("mouseover",function (event) { 
+					if(!this.hasClassName('selected')){
+						this.addClassName('over');
+					}
+				});
+
+				element.observe("mouseout",function (event) { 
+					if(!this.hasClassName('selected')){
+						this.removeClassName('over');
+					}
+				});
+			}
+		});
+		reportManager.refreshReportList(reportList);
+		reportManager.refreshComboList();
+		reportManager.refreshGroupList();
+		reportManager.refreshLinksList('TR',true);
+		reportManager.refreshLinksList('TD',true);
+
+<?php if($reportAdmin->isLoaded()){?>
+		reportManager.manageReport('<?php echo $reportAdmin->getId();?>');
+<?php } ?>
+
+<?php if($comboAdmin->isLoaded()){?>
+		reportManager.manageCombo('<?php echo $comboAdmin->getId();?>');
+<?php } ?>
+
+		Validation.add('validate-codeMm','Please use only letters (a-z or A-Z), numbers (0-9) or underscore(_) in this field, first character should be a letter.',function (v) {
+		    return Validation.get('IsEmpty').test(v) ||  /^[a-zA-Z]+[a-zA-Z0-9_]+$/.test(v)
+		},{});
+
+		croneditor = new CronManager('report_cron_div');
+
+	});
+
+</SCRIPT>
+
+<!-- MESSAGES -->
+<ul class="messages" style="display:none"><li id="messagesLog"><ul><li id="messagesLogText"></li></ul></li></ul>
+
+<!-- PAGE -->
+<div id="page:main-container">
+	<div class="columns" >
+	<!-- MENU -->	
+		<div class="side-col" id="page:left">
+			<h3><?php echo $this->__('Sql2Report admin');?></h3>
+			<ul class="tabs config-tabs">
+				<li>
+					<dl>
+						<dt class="label" style=""><?php echo $this->__('REPORTS');?></dt>
+						<dd><a href="#" id="container-ReportList-menu" class="active" onclick="reportManager.showMenu('container-ReportList')"><span class="active"><span class="changed" title="The information in this tab has been changed."></span><?php echo $this->__('Reports manager');?></span></a></dd>
+						<dd><a href="#" id="container-ReportEdit-menu" class=" " onclick="reportManager.addReport()"><span class="active"><span class="changed" title="The information in this tab has been changed."></span><?php echo $this->__('Add report');?></span></a></dd>
+						<dt class="label" style=""><?php echo $this->__('FILTERS');?></dt>
+						<dd><a href="#" id="container-Combo-menu" onclick="reportManager.showMenu('container-Combo')"><span class="active"><span class="changed" title="The information in this tab has been changed."></span><?php echo $this->__('Filters manager');?></span></a></dd>
+						<dd><a href="#" id="container-ComboAdd-menu" class=" " onclick="reportManager.addCombo()"><span class="active"><span class="changed" title="The information in this tab has been changed."></span><?php echo $this->__('Add filter');?></span></a></dd>
+						<dt class="label" style=""><?php echo $this->__('GROUPS');?></dt>
+						<dd><a href="#" id="container-Group-menu" class=" " onclick="reportManager.showMenu('container-Group')"><span class="active"><span class="changed" title="The information in this tab has been changed."></span><?php echo $this->__('Group manager');?></span></a></dd>
+						<dt class="label" style=""><?php echo $this->__('LINKS');?></dt>
+						<dd><a href="#" id="container-link-menu" class=" " onclick="reportManager.showMenu('container-link')"><span class="active"><span class="changed" title="The information in this tab has been changed."></span><?php echo $this->__('Link manager');?></span></a></dd>
+						<dt class="label" style=""><?php echo $this->__('SYSTEM');?></dt>
+						<dd><a href="#" id="container-System-menu" class=" " onclick="reportManager.showMenu('container-System')"><span class="active"><span class="changed" title="The information in this tab has been changed."></span><?php echo $this->__('Admin');?></span></a></dd>
+						<dd><a href="#" id="container-Permissions-menu" class=" " onclick="reportManager.showMenu('container-Permissions')"><span class="active"><span class="changed" title="The information in this tab has been changed."></span><?php echo $this->__('Permissions');?></span></a></dd>
+						<dt class="label" style=""><?php echo $this->__('EXPORT/IMPORT');?></dt>
+						<dd><a href="#" id="container-Export-menu" class=" " onclick="reportManager.showMenu('container-Export')"><span class="active"><?php echo $this->__('Export');?></span></a></dd>
+						<dd><a href="#" id="container-Import-menu" class=" " onclick="reportManager.showMenu('container-Import')"><span class="active"><?php echo $this->__('Import');?></span></a></dd>
+						<dd><a href="#" id="container-Market-menu" class=" " onclick="reportManager.showMenu('container-Market')"><span class="active"><?php echo $this->__('Market');?></span></a></dd>
+						
+					</dl>
+				</li>
+			</ul>
+		</div>
+		
+	<!-- CONTENT -->
+		<div class="main-col" id="content">
+			<div class="main-col-inner">
+			
+			<!-- CONTENT REPORT LIST -->
+				<div class="entry-edit" id="container-ReportList" >
+					 <div class="content-header">
+						<table cellspacing="0">
+							<tr>
+								<td ><h3><?php echo $this->__('Manage Report');?></h3></td>
+					        </tr>
+					    </table>
+					</div>
+						<div class="entry-edit-head collapseable"><a id="report_list_field-head" href="#" class="open" onClick="return reportManager.collapse('report_list_field')"><?php echo $this->__('Report list');?></a></div>
+						<fieldset class="config collapseable" id="report_list_field">
+							<div class="grid"  style="margin:10px; OVERFLOW: auto; TOP: 48px;border: 1px solid #d6d6d6;">
+								<table cellspacing="0" class="data" id="reportList" >
+										<col width="200" />
+										<col />
+										<thead>
+											<tr class="headings">
+												<th class=" no-link"><span class="no-br"><?php echo $this->__('GROUP');?></span></th>
+												<th class=" no-link"><span class="no-br"><?php echo $this->__('REPORT');?></span></th>
+											</tr>
+										</thead>
+										<tbody>
+										
+										</tbody>
+									</table>
+								</div>
+						</fieldset>
+				</div>
+				
+			<!-- CONTENT REPORT EDIT -->
+				<div class="entry-edit" id="container-ReportEdit" style="display:none">
+				<!--  TITULO -->
+					 <div class="content-header">
+						<table cellspacing="0">
+							<tr>
+								<td><h3 id="titlePageReport"><?php echo $this->__('Add report');?></h3></td>
+					        
+						        <td class="form-buttons">
+						        	<button id="butReturnReportList" type="button" class="scalable back" onclick="reportManager.showMenu('container-ReportList')" style=""><span><?php echo $this->__('Back');?></span></button>
+					            	<button id="butViewReport" type="button" class="scalable show-hide" onclick="reportManager.loadReport()" style="display:none"><span><?php echo $this->__('View');?></span></button>
+					            	<button id="butDelReport" type="button" class="scalable delete" onclick="reportManager.delReport('reportList')" style="display:none"><span><?php echo $this->__('Delete');?></span></button>
+					            	<button id="duplicateReport" type="button" class="scalable add" onclick="reportManager.duplicateReport()" style="display:none"><span><?php echo $this->__('Duplicate');?></span></button>
+					            	<button id="butExportReport" type="button" class="scalable export" onclick="reportManager.exportActiveReport()" style="display:none"><span><?php echo $this->__('Export');?></span></button>
+					            	<button id="butSendReportMarket" type="button" class="scalable market" onclick="reportManager.sendReportMarket()" style="display:none"><span><?php echo $this->__('Send to Market');?></span></button>
+					            	<button id="butSaveReport" type="button" class="scalable save" onclick="reportManager.saveReport()" style="display:none"><span><?php echo $this->__('Save');?></span></button>
+					            	<button id="butAddReport" type="button" class="scalable add" onclick="reportManager.saveReport()" style=""><span><?php echo $this->__('Add report');?></span></button> 
+					            </td>
+				            </tr>
+					    </table>
+					</div>
+						
+						<!-- GENERAL -->
+						<div class="entry-edit-head collapseable"><a id="report_editGeneral_field-head" href="#" class="open" onClick="return reportManager.collapse('report_editGeneral_field')"><?php echo $this->__('General information');?></a></div>
+						<fieldset class="config collapseable" id="report_editGeneral_field">
+							<form id="reportEditGeneral_form">
+							<table cellspacing="0" class="form-list">
+								<colgroup class="label"></colgroup>
+								<colgroup class="value"></colgroup>
+								<colgroup class="scope-label"></colgroup>
+								<colgroup class=""></colgroup>
+								<tbody>
+									<tr id="row_dev_restrict_allow_ips" style="display:none">
+										<td class="label"><label for="general_code"><?php echo $this->__('Code');?> </span></label></td>
+										<td class="value"><input id="general_code" name="general_code" value="" class=" input-text" type="text" disabled>
+										</td>
+										<td class="scope-label">[STORE VIEW]</td>
+										<td class=""></td>
+									</tr>
+									<tr id="row_dev_restrict_allow_ips">
+										<td class="label"><label for="general_title"><?php echo $this->__('Title');?> <span class="required">*</span></label></td>
+										<td class="value"><input id="general_title" name="general_title" value="" class=" input-text required-entry" type="text">
+										</td>
+										<td class="scope-label">[STORE VIEW]</td>
+										<td class=""></td>
+									</tr>
+									<tr id="row_dev_restrict_allow_ips">
+										<td class="label"><label for="general_group"><?php echo $this->__('Group');?> <span class="required">*</span></label></td>
+										<td class="value">
+											<select name="general_group"  id="general_group" class="required-entry">
+											</select>
+										</td>
+										<td class="scope-label">[STORE VIEW]</td>
+										<td class=""></td>
+									</tr>
+									<tr id="row_dev_restrict_allow_ips">
+										<td class="label"><label for="reportDescription"><?php echo $this->__('Description');?></span></label></td>
+										<td class="value" colspan="2">
+											<textarea name="text" title="Content" id="reportDescription" class="textarea" style="height:5em;width: 100%;" rows="2" cols="15"></textarea>
+										</td>
+										<td class=""></td>
+									</tr>
+								</tbody>
+							</table>
+							</form>
+						</fieldset>
+						
+						<div class="entry-edit-head collapseable"><a id="report_editSQL_field-head" href="#" class="" onClick="reportManager.collapse('report_editSQL_field');reportManager.codeMirrorSql('sqlReport',false); return false;">SQL</a></div>
+						<fieldset class="config collapseable" id="report_editSQL_field" style="display:none">
+							<textarea id="sqlReport" name="sqlReport"></textarea>
+						</fieldset>
+						
+						<!-- FILTERS -->
+						<div class="entry-edit-head collapseable"><a id="report_editFilters_field-head" href="#" class="" onClick="return reportManager.collapse('report_editFilters_field')"><?php echo $this->__('Filters');?></a></div>
+						<fieldset class="config collapseable" id="report_editFilters_field" style="display:none">
+							<div class="grid"  style="margin:10px; OVERFLOW: auto; TOP: 48px;border: 1px solid #d6d6d6;">
+									<table cellspacing="0" class="data" id="comboList4Report" >
+										<col width="100" />
+										<col width="100" />
+										<col />
+										<col width="100" />
+										<thead>
+											<tr class="headings">
+												<th class=" no-link" style="display:none"><span class="no-br"><?php echo $this->__('CODE');?></span></th>
+												<th class=" no-link"><span class="no-br"><?php echo $this->__('PARAMETER');?></span></th>
+												<th class=" no-link"><span class="no-br"><?php echo $this->__('TITLE');?></span></th>
+												<th class=" no-link"><span class="no-br"><?php echo $this->__('TYPE');?></span></th>
+											</tr>
+										</thead>
+										<tbody>
+										
+										</tbody>
+									</table>
+								</div>
+								
+							<a href="#"  onclick="reportManager.addComboSelected()"><span><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/arrow_down.png" class="v-middle" title="<?php echo $this->__('Add filter');?>" alt="A<?php echo $this->__('Add filter');?>" /><?php echo $this->__('Add filter');?></span></a>
+							<a href="#"  onclick="reportManager.removeComboSelected()"><span><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/arrow_up.png" class="v-middle" title="<?php echo $this->__('Remove filter');?>" alt="<?php echo $this->__('Remove filter');?>"/><?php echo $this->__('Remove filter');?></span></a>
+							<div class="grid"  style="margin:10px; OVERFLOW: auto; TOP: 48px; HEIGHT: 200px;border: 1px solid #d6d6d6;">
+								<table cellspacing="0" class="data" id="comboListReport" >
+									<col width="100" />
+									<col width="100" />
+									<col />
+									<col width="100" />
+									<col width="25" />
+									<thead>
+										<tr class="headings">
+											<th class=" no-link" style="display:none"><span class="no-br"><?php echo $this->__('CODE');?></span></th>
+											<th class=" no-link"><span class="no-br"><?php echo $this->__('PARAMETER');?></span></th>
+											<th class=" no-link"><span class="no-br"><?php echo $this->__('TITLE');?></span></th>
+											<th class=" no-link"><span class="no-br"><?php echo $this->__('TYPE');?></span></th>
+											<th class=" no-link"><span class="no-br"><?php echo $this->__('ACTIONS');?></span></th>
+										</tr>
+									</thead>
+									<tbody>
+									
+									</tbody>
+								</table>
+							</div>
+						</fieldset>
+						
+						<!-- CHART CONFIG-->
+						<div class="entry-edit-head collapseable"><a id="report_editChart_field-head" href="#" class="" onClick="return reportManager.collapse('report_editChart_field')"><?php echo $this->__('Chart');?></a></div>
+						<fieldset class="config collapseable" id="report_editChart_field" style="display:none">
+							<img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/lineChartgrey.png" class="v-middle img-onoff" title="lineChart" alt="Line" onclick="reportManager.showChartConfig(this.title);"/>
+							<img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/stackedAreaChartgrey.png" class="v-middle img-onoff" title="stackedAreaChart" alt="Stacked area" onclick="reportManager.showChartConfig(this.title);"/>
+							<img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/discreteBarChartgrey.png" class="v-middle img-onoff" title="discreteBarChart" alt="Discrete bar" onclick="reportManager.showChartConfig(this.title);"/>
+							<img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/stackedBarChartgrey.png" class="v-middle img-onoff" title="multiBarChart" alt="Multi bar vertical" onclick="reportManager.showChartConfig(this.title);"/>
+							<img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/horizontalBarChartgrey.png" class="v-middle img-onoff" title="multiBarHorizontalChart" alt="Multi bar horizontal" onclick="reportManager.showChartConfig(this.title);"/>
+							
+							<img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/pieChartgrey.png" class="v-middle img-onoff" title="pieChart" alt="Pie" onclick="reportManager.showChartConfig(this.title);"/>
+							<img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/pieDonutChartgrey.png" class="v-middle img-onoff" title="pieDonutChart" alt="Donut" onclick="reportManager.showChartConfig(this.title);"/>
+							<form id="report_editChartValueList_form">
+							<table cellspacing="0" class="form-list" id="chartValueList">
+								<colgroup class="label"></colgroup>
+								<colgroup class="value"></colgroup>
+								<colgroup class="scope-label"></colgroup>
+								<colgroup class=""></colgroup>
+								<tbody>
+									<tr>
+										<td class="label"><label for="report_chart_charxvalue"><?php echo $this->__('X value');?> <span class="required">*</span></label></td>
+										<td class="value"><input id="report_chart_charxvalue" name="report_chart_charxvalue" value="" class=" input-text" type="text"></td>
+										<td class="scope-label"><?php echo $this->__('Column number');?></td>
+									</tr>
+									<tr>
+										<td class="label"><label for="report_chart_charyvalue1"><?php echo $this->__('Y value');?>  <span class="required">*</span></label></td>
+										<td class="value"><input id="report_chart_charyvalue1" name="report_chart_charyvalue1" value="" class=" input-text" type="text"></td>
+										<td class="scope-label">
+											<img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_SKIN)?>adminhtml/default/default/images/accordion_open.png" class="v-middle" title="addYValue" alt="add Y Value" onclick="reportManager.addChartYValue();"/>
+											<?php echo $this->__('Column number');?>
+										</td>
+									</tr>
+									
+								</tbody>
+							</table>
+							</form>
+						</fieldset>
+						
+						<!-- LINKS CONFIG-->
+						<div class="entry-edit-head collapseable"><a id="report_editLink_field-head" href="#" class="" onClick="return reportManager.collapse('report_editLink_field')"><?php echo $this->__('Links');?></a></div>
+						<fieldset class="config collapseable" id="report_editLink_field" style="display:none">
+							<h3><?php echo $this->__('Row link');?></h3>
+							
+							<div id="reportEditRowlinkList" class="grid"  style="margin:10px; OVERFLOW: auto; TOP: 48px;border: 1px solid #d6d6d6;">		
+								<table cellspacing="0" class="data" id="reportEditlinkListTR" >
+										<col width="200" />
+										<col width="500"/>
+										<col />
+										<thead>
+											<tr class="headings">
+												<th class=" no-link"><span class="no-br"><?php echo $this->__('DESCRIPTION');?></span></th>
+												<th class=" no-link"><span class="no-br"><?php echo $this->__('URL');?></span></th>
+											</tr>
+										</thead>
+										<tbody>
+										
+										</tbody>
+								</table>
+							</div>
+							
+							<div id="reportEditRowlinkSelected" style="display:none">
+								<form id="reportEditRowlinkSelected_form">
+								<button id="butDeselectLinkTD" type="button" class="scalable delete" onclick="reportManager.reportEditRowLinkUnSelected()" style=""><span><?php echo $this->__('Unselect');?></span></button>
+								<table cellspacing="0" class="form-list" id="reportEditRowlinkSelectedVAR">
+									<colgroup class="label"></colgroup>
+									<colgroup class="value"></colgroup>
+									<tbody>
+										<tr class="headings" style="display: none">
+											<td class="label"><?php echo $this->__('Id');?></td>
+											<td class="value"><input id="reportEditRowlinkSelectedID" value="" class=" input-text" type="text" disabled="true"></td>
+										</tr>
+										<tr class="headings">
+											<td class="label"><?php echo $this->__('Description');?></td>
+											<td class="value"><input id="reportEditRowlinkSelectedDESCRIPTION" value="" class=" input-text" type="text" disabled="true"></td>
+										</tr>
+										<tr class="headings">
+											<td class="label"><?php echo $this->__('Url');?> </td>
+											<td class="value"><input id="reportEditRowlinkSelectedURL" value="" class=" input-text" type="text" disabled="true"></td>
+										</tr>
+									</tbody>
+								</table>
+								</form>
+							</div>
+							
+							<h3><?php echo $this->__('Column links');?></h3>
+							<div id="reportEditColumnlinkList" class="grid"  style="margin:10px; OVERFLOW: auto; TOP: 48px;border: 1px solid #d6d6d6;">
+								<form id="reportEditlinkListTD_form">		
+								<table cellspacing="0" class="data" id="reportEditlinkListTD" >
+										<col width="50" />
+										<col width="200" />
+										<col width="500"/>
+										<col />
+										<thead>
+											<tr class="headings">
+												<th class=" no-link"><span class="no-br"><?php echo $this->__('COLUMN');?></span></th>
+												<th class=" no-link"><span class="no-br"><?php echo $this->__('DESCRIPTION');?></span></th>
+												<th class=" no-link"><span class="no-br"><?php echo $this->__('URL');?></span></th>
+											</tr>
+										</thead>
+										<tbody>
+										
+										</tbody>
+								</table>
+								</form>
+							</div>
+						</fieldset>
+						
+						<!-- GROUP CONFIG-->
+						<div class="entry-edit-head collapseable"><a id="report_group_field-head" href="#" class="" onClick="return reportManager.collapse('report_group_field')"><?php echo $this->__('Group columns');?></a></div>
+						<fieldset class="config collapseable" id="report_group_field" style="display:none">
+							<button id="addGroupReportButton" type="button" class="scalable add" onclick="reportManager.addGroupReport()"><span><?php echo $this->__('Add group');?></span></button>
+							<div class="grid"  style="margin:10px; OVERFLOW: auto; TOP: 48px;border: 1px solid #d6d6d6;">
+							<form id="reportEditGroup_form">
+								<table cellspacing="0" class="data" id="reportGroupTable" >
+									<col width="75" />
+									<col />
+									<thead>
+										<tr class="headings">
+											<th class=" no-link"><span class="no-br"><?php echo $this->__('COLUMNS');?></span></th>
+											<th class=" no-link"><span class="no-br"><?php echo $this->__('NAME');?></span></th>
+										</tr>	
+									</thead>
+									<tbody></tbody>
+								</table>
+							</form>
+							</div>
+						</fieldset>
+						
+						
+						<!-- EXCEL FORMAT CONFIG-->
+						<div class="entry-edit-head collapseable"><a id="report_xls_field-head" href="#" class="" onClick="return reportManager.collapse('report_xls_field')"><?php echo $this->__('Export format');?></a></div>
+						<fieldset class="config collapseable" id="report_xls_field" style="display:none">
+							<form id="reportEditXls_form">
+							<h3>Excel</h3>
+								<input type="radio" name="xlsDefault" value="true" onchange="reportManager.xlsActiveCustomize(true)" checked> <?php echo $this->__('By default');?><br>
+								<input type="radio" name="xlsDefault" value="false" onchange="reportManager.xlsActiveCustomize(false)"> <?php echo $this->__('Customized');?>
+							<table cellspacing="0" class="form-list">
+								<colgroup class="label"></colgroup>
+								<colgroup class="value" style="width: 600px;"></colgroup>
+								<tbody>
+									<tr>
+										<td class="label"><label for="svn_text_qualifier"><?php echo $this->__('Excel header');?></span></label></td>
+										<td>
+											<select name="font" id="xlsHeaderFont" disabled style="width: 100px;" onchange='this.addClassName("changed")'>
+											  <option value="Arial">Arial</option>
+											  <option value="Calibri">Calibri</option>
+											</select>
+											<select id="xlsHeaderSize" disabled style="width: 50px;" onchange='this.addClassName("changed")'>
+												<option value="8">8</option>
+												<option value="9">9</option>
+												<option value="10">10</option>
+												<option value="11">11</option>
+												<option value="12">12</option>
+												<option value="14">14</option>
+												<option value="16">16</option>
+												<option value="18">18</option>
+												<option value="20">20</option>
+												<option value="22">22</option>
+												<option value="24">24</option>
+												<option value="26">26</option>
+												<option value="26">28</option>
+												<option value="36">36</option>
+												<option value="48">48</option>
+												<option value="72">72</option>
+											</select>
+											<a id="xlsHeaderAlignLeft" href="#" onClick="return reportManager.xlsFormat('xlsHeader','AlignLeft',false)" class="form uncheck"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_align_left.png"" class="v-middle" alt=""></a>
+											<a id="xlsHeaderAlignCenter"  href="#" onClick="return reportManager.xlsFormat('xlsHeader','AlignCenter',false)" class="form uncheck"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_align_center.png"" class="v-middle" alt=""></a>
+											<a id="xlsHeaderAlignRight" href="#" onClick="return reportManager.xlsFormat('xlsHeader','AlignRight',false)" class="form uncheck"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_align_right.png"" class="v-middle" alt=""></a>
+											<a id="xlsHeaderBold" href="#" onClick="return reportManager.xlsFormat('xlsHeader','Bold',false)" class="form uncheck"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_bold.png"" class="v-middle" alt=""></a>
+											<a id="xlsHeaderItalic" href="#" onClick="return reportManager.xlsFormat('xlsHeader','Italic',false)" class="form uncheck"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_italic.png"" class="v-middle" alt=""></a>
+											<a id="xlsHeaderBackgroundColorIcon" href="#" onClick="return reportManager.xlsFormat('xlsHeader','BackgroundColor',false)" class="form"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_backgroundcolor.png"" class="v-middle" alt=""></a>
+											<input class="color {pickerOnfocus:false,pickerClosable:true}" id="xlsHeaderBackgroundColor" style="width: 0px; border: 0px" onchange="reportManager.xlsChangeColor('xlsHeaderBackgroundColorIcon',this)">
+											<a id="xlsHeaderColorIcon" href="#" onClick="return reportManager.xlsFormat('xlsHeader','Color',false)" class="form"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_color.png"" class="v-middle" alt=""></a>
+											<input class="color {pickerOnfocus:false,pickerClosable:true}" id="xlsHeaderColor" style="width: 0px; border: 0px" onchange="reportManager.xlsChangeColor('xlsHeaderColorIcon',this)">
+											<a id="xlsHeaderBorderAll" href="#" onClick="return reportManager.xlsFormat('xlsHeader','BorderAll',false)" class="form uncheck"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/border_all.png"" class="v-middle" alt=""></a>
+											<a id="xlsHeaderBorderTop" href="#" onClick="return reportManager.xlsFormat('xlsHeader','BorderTop',false)" class="form uncheck"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/border_top.png"" class="v-middle" alt=""></a>
+											<a id="xlsHeaderBorderRight" href="#" onClick="return reportManager.xlsFormat('xlsHeader','BorderRight',false)" class="form uncheck"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/border_right.png"" class="v-middle" alt=""></a>
+											<a id="xlsHeaderBorderBottom" href="#" onClick="return reportManager.xlsFormat('xlsHeader','BorderBottom',false)" class="form uncheck"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/border_bottom.png"" class="v-middle" alt=""></a>
+											<a id="xlsHeaderBorderLeft" href="#" onClick="return reportManager.xlsFormat('xlsHeader','BorderLeft',false)" class="form uncheck"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/border_left.png"" class="v-middle" alt=""></a>
+										</td>
+									</tr>
+									<tr>
+										<td class="label"><label for="svn_text_qualifier"><?php echo $this->__('Ingles');?><?php echo $this->__('Excel Odd Row');?> </span></label></td>
+										<td >
+											<select name="font" id="xlsOddRowFont" disabled style="width: 100px;" onchange='this.addClassName("changed")'>
+											  <option value="Arial">Arial</option>
+											  <option value="Calibri">Calibri</option>
+											</select>
+											<select id="xlsOddRowSize" disabled style="width: 50px;" onchange='this.addClassName("changed")'>
+												<option value="8">8</option>
+												<option value="9">9</option>
+												<option value="10">10</option>
+												<option value="11">11</option>
+												<option value="12">12</option>
+												<option value="14">14</option>
+												<option value="16">16</option>
+												<option value="18">18</option>
+												<option value="20">20</option>
+												<option value="22">22</option>
+												<option value="24">24</option>
+												<option value="26">26</option>
+												<option value="26">28</option>
+												<option value="36">36</option>
+												<option value="48">48</option>
+												<option value="72">72</option>
+											</select>
+											<a id="xlsOddRowAlignLeft" href="#" onClick="return reportManager.xlsFormat('xlsOddRow','AlignLeft',false)" class="form uncheck"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_align_left.png"" class="v-middle" alt=""></a>
+											<a id="xlsOddRowAlignCenter"  href="#" onClick="return reportManager.xlsFormat('xlsOddRow','AlignCenter',false)" class="form uncheck"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_align_center.png"" class="v-middle" alt=""></a>
+											<a id="xlsOddRowAlignRight" href="#" onClick="return reportManager.xlsFormat('xlsOddRow','AlignRight',false)" class="form uncheck"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_align_right.png"" class="v-middle" alt=""></a>
+											<a id="xlsOddRowBold" href="#" onClick="return reportManager.xlsFormat('xlsOddRow','Bold',false)" class="form uncheck"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_bold.png"" class="v-middle" alt=""></a>
+											<a id="xlsOddRowItalic" href="#" onClick="return reportManager.xlsFormat('xlsOddRow','Italic',false)" class="form uncheck"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_italic.png"" class="v-middle" alt=""></a>
+											<a id="xlsOddRowBackgroundColorIcon" href="#" onClick="return reportManager.xlsFormat('xlsOddRow','BackgroundColor',false)" class="form"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_backgroundcolor.png"" class="v-middle" alt=""></a>
+											<input class="color {pickerOnfocus:false,pickerClosable:true}" id="xlsOddRowBackgroundColor" style="width: 0px; border: 0px" onchange="reportManager.xlsChangeColor('xlsOddRowBackgroundColorIcon',this)">
+											<a id="xlsOddRowColorIcon" href="#" onClick="return reportManager.xlsFormat('xlsOddRow','Color',false)" class="form"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_color.png"" class="v-middle" alt=""></a>
+											<input class="color {pickerOnfocus:false,pickerClosable:true}" id="xlsOddRowColor" style="width: 0px; border: 0px" onchange="reportManager.xlsChangeColor('xlsOddRowColorIcon',this)">
+											<a id="xlsOddRowBorderAll" href="#" onClick="return reportManager.xlsFormat('xlsOddRow','BorderAll',false)" class="form uncheck"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/border_all.png"" class="v-middle" alt=""></a>
+											<a id="xlsOddRowBorderTop" href="#" onClick="return reportManager.xlsFormat('xlsOddRow','BorderTop',false)" class="form uncheck"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/border_top.png"" class="v-middle" alt=""></a>
+											<a id="xlsOddRowBorderRight" href="#" onClick="return reportManager.xlsFormat('xlsOddRow','BorderRight',false)" class="form uncheck"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/border_right.png"" class="v-middle" alt=""></a>
+											<a id="xlsOddRowBorderBottom" href="#" onClick="return reportManager.xlsFormat('xlsOddRow','BorderBottom',false)" class="form uncheck"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/border_bottom.png"" class="v-middle" alt=""></a>
+											<a id="xlsOddRowBorderLeft" href="#" onClick="return reportManager.xlsFormat('xlsOddRow','BorderLeft',false)" class="form uncheck"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/border_left.png"" class="v-middle" alt=""></a>
+										</td>
+									</tr>
+									<tr>
+										<td class="label"><label for="svn_text_qualifier"><?php echo $this->__('Excel Even Row');?> </span></label></td>
+										<td>
+											<select name="font" id="xlsEvenRowFont" disabled style="width: 100px;" onchange='this.addClassName("changed")'> 
+											  <option value="Arial">Arial</option>
+											  <option value="Calibri">Calibri</option>
+											</select>
+											<select id="xlsEvenRowSize" disabled style="width: 50px;" onchange='this.addClassName("changed")'>
+												<option value="8">8</option>
+												<option value="9">9</option>
+												<option value="10">10</option>
+												<option value="11">11</option>
+												<option value="12">12</option>
+												<option value="14">14</option>
+												<option value="16">16</option>
+												<option value="18">18</option>
+												<option value="20">20</option>
+												<option value="22">22</option>
+												<option value="24">24</option>
+												<option value="26">26</option>
+												<option value="28">28</option>
+												<option value="36">36</option>
+												<option value="48">48</option>
+												<option value="72">72</option>
+											</select>
+											<a id="xlsEvenRowAlignLeft" href="#" onClick="return reportManager.xlsFormat('xlsEvenRow','AlignLeft',false)" class="form uncheck"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_align_left.png"" class="v-middle" alt=""></a>
+											<a id="xlsEvenRowAlignCenter"  href="#" onClick="return reportManager.xlsFormat('xlsEvenRow','AlignCenter',false)" class="form uncheck"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_align_center.png"" class="v-middle" alt=""></a>
+											<a id="xlsEvenRowAlignRight" href="#" onClick="return reportManager.xlsFormat('xlsEvenRow','AlignRight',false)" class="form uncheck"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_align_right.png"" class="v-middle" alt=""></a>
+											<a id="xlsEvenRowBold" href="#" onClick="return reportManager.xlsFormat('xlsEvenRow','Bold',false)" class="form uncheck"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_bold.png"" class="v-middle" alt=""></a>
+											<a id="xlsEvenRowItalic" href="#" onClick="return reportManager.xlsFormat('xlsEvenRow','Italic',false)" class="form uncheck"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_italic.png"" class="v-middle" alt=""></a>
+											<a id="xlsEvenRowBackgroundColorIcon" href="#" onClick="return reportManager.xlsFormat('xlsEvenRow','BackgroundColor','false')" class="form"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_backgroundcolor.png"" class="v-middle" alt=""></a>
+											<input class="color {pickerOnfocus:false,pickerClosable:true}" id="xlsEvenRowBackgroundColor" style="width: 0px; border: 0px" onchange="reportManager.xlsChangeColor('xlsEvenRowBackgroundColorIcon',this)">
+											<a id="xlsEvenRowColorIcon" href="#" onClick="return reportManager.xlsFormat('xlsEvenRow','Color',false)" class="form"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_color.png"" class="v-middle" alt=""></a>
+											<input class="color {pickerOnfocus:false,pickerClosable:true}" id="xlsEvenRowColor" style="width: 0px; border: 0px" onchange="reportManager.xlsChangeColor('xlsEvenRowColorIcon',this)">
+											<a id="xlsEvenRowBorderAll" href="#" onClick="return reportManager.xlsFormat('xlsEvenRow','BorderAll',false)" class="form uncheck"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/border_all.png"" class="v-middle" alt=""></a>
+											<a id="xlsEvenRowBorderTop" href="#" onClick="return reportManager.xlsFormat('xlsEvenRow','BorderTop',false)" class="form uncheck"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/border_top.png"" class="v-middle" alt=""></a>
+											<a id="xlsEvenRowBorderRight" href="#" onClick="return reportManager.xlsFormat('xlsEvenRow','BorderRight',false)" class="form uncheck"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/border_right.png"" class="v-middle" alt=""></a>
+											<a id="xlsEvenRowBorderBottom" href="#" onClick="return reportManager.xlsFormat('xlsEvenRow','BorderBottom',false)" class="form uncheck"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/border_bottom.png"" class="v-middle" alt=""></a>
+											<a id="xlsEvenRowBorderLeft" href="#" onClick="return reportManager.xlsFormat('xlsEvenRow','BorderLeft',false)" class="form uncheck"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/border_left.png"" class="v-middle" alt=""></a>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+							</form>
+							<form id="reportEditPDF_form">
+							<h3>PDF</h3>
+								<input type="radio" name="pdfDefault" value="true" onchange="reportManager.pdfActiveCustomize(true)" checked> <?php echo $this->__('By default');?><br>
+								<input type="radio" name="pdfDefault" value="false" onchange="reportManager.pdfActiveCustomize(false)"> <?php echo $this->__('Customized');?>
+								<table cellspacing="0" class="form-list">
+									<colgroup class="label"></colgroup>
+									<colgroup class="value" style="width: 600px;"></colgroup>
+									<tbody>
+									<tr>
+										<td class="label"><label for="svn_text_qualifier"><?php echo $this->__('PDF Logo');?></span></label></td>
+										<td >
+											<?php echo $this->__('Width');?> <input id="pdfLogoWidth" name="pdfLogoWidth" " class=" input-text required-entry" type="text" style="width: 50px;" onchange='this.addClassName("changed")'>
+											<?php echo $this->__('Height');?> <input id="pdfLogoHeight" name="pdfLogoHeight"  class=" input-text required-entry" type="text" style="width: 50px;"onchange='this.addClassName("changed")'>
+											<?php echo $this->__('Url');?> <input id="pdfLogoUrl" name="pdfLogoUrl" class=" input-text" type="text" onchange='this.addClassName("changed")'>
+										</td>
+									</tr>
+									<tr>
+										<td class="label"><label for="svn_text_qualifier"><?php echo $this->__('PDF Title');?></span></label></td>
+										<td >
+										
+											<select name="font" id="pdfTitleFontName" style="width: 100px;" onchange='this.addClassName("changed")'>
+											  <option value="Courier" >Courier</option>
+											  <option value="Helvetica" >Helvetica</option>
+											  <option value="Times" >Times</option>
+											</select>
+											<select id="pdfTitleFontSize" style="width: auto;" onchange='this.addClassName("changed")'>
+												<option value="6" >6</option>
+												<option value="8" >8</option>
+												<option value="9" >9</option>
+												<option value="10" >10</option>
+												<option value="11" >11</option>
+												<option value="12" >12</option>
+												<option value="14" >14</option>
+												<option value="16" >16</option>
+												<option value="18" >18</option>
+												<option value="20" >20</option>
+												<option value="22" >22</option>
+												<option value="24" >24</option>
+												<option value="26" >26</option>
+												<option value="28" >28</option>
+												<option value="36" >36</option>
+												<option value="48" >48</option>
+												<option value="72" >72</option>
+											</select>
+											<a id="pdfTitleFontBold" href="#" onClick="return reportManager.xlsFormat('pdfTitleFont','Bold',false)" class="form"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_bold.png"" class="v-middle" alt=""></a>
+											<a id="pdfTitleFontItalic" href="#" onClick="return reportManager.xlsFormat('pdfTitleFont','Italic',false)" class="form"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_italic.png"" class="v-middle" alt=""></a>
+											<a id="pdfTitleFontColorIcon" href="#" onClick="return reportManager.xlsFormat('pdfTitleFont','Color',false)" class="form" ><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_color.png"" class="v-middle" alt=""></a>
+											<input class="color {pickerOnfocus:false,pickerClosable:true}" id="pdfTitleFontColor" style="width: 0px; border: 0px" onchange="reportManager.xlsChangeColor('pdfTitleFontColorIcon',this)">
+										</td>
+									</tr>
+									<tr>
+										<td class="label"><label for="svn_text_qualifier"><?php echo $this->__('PDF Description');?></span></label></td>
+										<td >
+											<select name="font" id="pdfDescriptionFontName" style="width: 100px;" onchange='this.addClassName("changed")'>
+											  <option value="Courier">Courier</option>
+											  <option value="Helvetica">Helvetica</option>
+											  <option value="Times">Times</option>
+											</select>
+											<select id="pdfDescriptionFontSize" style="width: 50px;" onchange='this.addClassName("changed")'>
+												<option value="6" >6</option>
+												<option value="8" >8</option>
+												<option value="9" >9</option>
+												<option value="10" >10</option>
+												<option value="11" >11</option>
+												<option value="12" >12</option>
+												<option value="14" >14</option>
+												<option value="16" >16</option>
+												<option value="18" >18</option>
+												<option value="20" >20</option>
+												<option value="22" >22</option>
+												<option value="24" >24</option>
+												<option value="26" >26</option>
+												<option value="28" >28</option>
+												<option value="36" >36</option>
+												<option value="48" >48</option>
+												<option value="72" >72</option>
+											</select>
+											<a id="pdfDescriptionAlignLeft" href="#" onClick="return reportManager.xlsFormat('pdfDescription','AlignLeft',false)" class="form"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_align_left.png"" class="v-middle" alt=""></a>
+											<a id="pdfDescriptionAlignCenter"  href="#" onClick="return reportManager.xlsFormat('pdfDescription','AlignCenter',false)" class="form "><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_align_center.png"" class="v-middle" alt=""></a>
+											<a id="pdfDescriptionAlignRight" href="#" onClick="return reportManager.xlsFormat('pdfDescription','AlignRight',false)" class="form"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_align_right.png"" class="v-middle" alt=""></a>
+											<a id="pdfDescriptionFontBold" href="#" onClick="return reportManager.xlsFormat('pdfDescriptionFont','Bold',false)" class="form"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_bold.png"" class="v-middle" alt=""></a>
+											<a id="pdfDescriptionFontItalic" href="#" onClick="return reportManager.xlsFormat('pdfDescriptionFont','Italic',false)" class="form"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_italic.png"" class="v-middle" alt=""></a>
+											<a id="pdfDescriptionFontColorIcon" href="#" onClick="return reportManager.xlsFormat('pdfDescriptionFont','Color',false)" class="form" ><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_color.png"" class="v-middle" alt=""></a>
+											<input class="color {pickerOnfocus:false,pickerClosable:true}" id="pdfDescriptionFontColor" style="width: 0px; border: 0px" onchange="reportManager.xlsChangeColor('pdfDescriptionFontColorIcon',this)">
+											<?php echo $this->__('Left space');?> <input id="pdfDescriptionSpace" name="pdfDescriptionSpace" class=" input-text required-entry" type="text" style="width: 50px;" onchange='this.addClassName("changed")'>
+										</td>
+									</tr>
+									<tr>
+										<td class="label"><label for="svn_text_qualifier"><?php echo $this->__('PDF Filters');?></span></label></td>
+										<td >
+											<?php echo $this->__('Show Filters');?> <select name="font" id="pdfFiltersShow" style="width: 50px;">
+											  <option value="true"><?php echo $this->__('Yes');?></option>
+											  <option value="false"><?php echo $this->__('No');?></option>
+											</select>
+											<select name="font" id="pdfFiltersFontName" style="width: 100px;" onchange='this.addClassName("changed")'>
+											  <option value="Courier">Courier</option>
+											  <option value="Helvetica">Helvetica</option>
+											  <option value="Times">Times</option>
+											</select>
+											<select id="pdfFiltersFontSize" style="width: 50px;" onchange='this.addClassName("changed")'>
+												<option value="6" >6</option>
+												<option value="8" >8</option>
+												<option value="9" >9</option>
+												<option value="10" >10</option>
+												<option value="11" >11</option>
+												<option value="12" >12</option>
+												<option value="14" >14</option>
+												<option value="16" >16</option>
+												<option value="18" >18</option>
+												<option value="20" >20</option>
+												<option value="22" >22</option>
+												<option value="24" >24</option>
+												<option value="26" >26</option>
+												<option value="28" >28</option>
+												<option value="36" >36</option>
+												<option value="48" >48</option>
+												<option value="72" >72</option>
+											</select>
+											<a id="pdfFilterFontBold" href="#" onClick="return reportManager.xlsFormat('pdfFilterFont','Bold',false)" class="form"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_bold.png"" class="v-middle" alt=""></a>
+											<a id="pdfFilterFontItalic" href="#" onClick="return reportManager.xlsFormat('pdfFilterFont','Italic',false)" class="form"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_italic.png"" class="v-middle" alt=""></a>
+											<a id="pdfFilterFontColorIcon" href="#" onClick="return reportManager.xlsFormat('pdfFilterFont','Color',false)" class="form" ><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_color.png"" class="v-middle" alt=""></a>
+											<input class="color {pickerOnfocus:false,pickerClosable:true}" id="pdfFilterFontColor" style="width: 0px; border: 0px" onchange="reportManager.xlsChangeColor('pdfFilterFontColorIcon',this)">
+										</td>
+									</tr>
+									<tr>
+										<td class="label"><label for="svn_text_qualifier"><?php echo $this->__('PDF Table Header');?></span></label></td>
+										<td >
+											<select name="font" id="pdfTableHFontName" style="width: 100px;" onchange='this.addClassName("changed")'>
+											  <option value="Courier">Courier</option>
+											  <option value="Helvetica">Helvetica</option>
+											  <option value="Times">Times</option>
+											</select>
+											<select id="pdfTableHFontSize" style="width: auto;" onchange='this.addClassName("changed")'>
+												<option value="6" >6</option>
+												<option value="8" >8</option>
+												<option value="9" >9</option>
+												<option value="10" >10</option>
+												<option value="11" >11</option>
+												<option value="12" >12</option>
+												<option value="14" >14</option>
+												<option value="16" >16</option>
+												<option value="18" >18</option>
+												<option value="20" >20</option>
+												<option value="22" >22</option>
+												<option value="24" >24</option>
+												<option value="26" >26</option>
+												<option value="28" >28</option>
+												<option value="36" >36</option>
+												<option value="48" >48</option>
+												<option value="72" >72</option>
+											</select>
+											<a id="pdfTableHAlignLeft" href="#" onClick="return reportManager.xlsFormat('pdfTableH','AlignLeft',false)" class="form"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_align_left.png"" class="v-middle" alt=""></a>
+											<a id="pdfTableHAlignCenter"  href="#" onClick="return reportManager.xlsFormat('pdfTableH','AlignCenter',false)" class="form"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_align_center.png"" class="v-middle" alt=""></a>
+											<a id="pdfTableHAlignRight" href="#" onClick="return reportManager.xlsFormat('pdfTableH','AlignRight',false)" class="form"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_align_right.png"" class="v-middle" alt=""></a>
+											<a id="pdfTableHFontBold" href="#" onClick="return reportManager.xlsFormat('pdfTableHFont','Bold',false)" class="form"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_bold.png"" class="v-middle" alt=""></a>
+											<a id="pdfTableHFontItalic" href="#" onClick="return reportManager.xlsFormat('pdfTableHFont','Italic',false)" class="form"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_italic.png"" class="v-middle" alt=""></a>
+											<a id="pdfTableHBackgroundColorIcon" href="#" onClick="return reportManager.xlsFormat('pdfTableH','BackgroundColor',false)" class="form"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_backgroundcolor.png"" class="v-middle" alt=""></a>
+											<input class="color {pickerOnfocus:false,pickerClosable:true}" id="pdfTableHBackgroundColor"  style="width: 0px; border: 0px" onchange="reportManager.xlsChangeColor('pdfTableHBackgroundColorIcon',this)">
+											<a id="pdfTableHFontColorIcon" href="#" onClick="return reportManager.xlsFormat('pdfTableHFont','Color',false)" class="form"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_color.png"" class="v-middle" alt=""></a>
+											<input class="color {pickerOnfocus:false,pickerClosable:true}" id="pdfTableHFontColor" style="width: 0px; border: 0px" onchange="reportManager.xlsChangeColor('pdfTableHFontColorIcon',this)">
+											<a id="pdfTableHBorderAll" href="#" onClick="return reportManager.xlsFormat('pdfTableH','BorderAll',false)" class="form"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/border_all.png"" class="v-middle" alt=""></a>
+											<a id="pdfTableHBorderTop" href="#" onClick="return reportManager.xlsFormat('pdfTableH','BorderTop',false)" class="form"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/border_top.png"" class="v-middle" alt=""></a>
+											<a id="pdfTableHBorderRight" href="#" onClick="return reportManager.xlsFormat('pdfTableH','BorderRight',false)" class="form"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/border_right.png"" class="v-middle" alt=""></a>
+											<a id="pdfTableHBorderBottom" href="#" onClick="return reportManager.xlsFormat('pdfTableH','BorderBottom',false)" class="form"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/border_bottom.png"" class="v-middle" alt=""></a>
+											<a id="pdfTableHBorderLeft" href="#" onClick="return reportManager.xlsFormat('pdfTableH','BorderLeft',false)" class="form"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/border_left.png"" class="v-middle" alt=""></a>
+											<a id="pdfTableHBorderInH" href="#" onClick="return reportManager.xlsFormat('pdfTableH','BorderInH',false)" class="form"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/border_in_hor.png"" class="v-middle" alt=""></a>
+											<a id="pdfTableHBorderInV" href="#" onClick="return reportManager.xlsFormat('pdfTableH','BorderInV',false)" class="form"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/border_in_ver.png"" class="v-middle" alt=""></a>
+										
+										</td>
+									</tr>
+									<tr>
+										<td class="label"><label for="svn_text_qualifier"><?php echo $this->__('PDF Table Data');?></span></label></td>
+										<td >
+											<select name="font" id="pdfTableDFontName" style="width: 100px;" onchange='this.addClassName("changed")'>
+											  <option value="Courier">Courier</option>
+											  <option value="Helvetica">Helvetica</option>
+											  <option value="Times">Times</option>
+											</select>
+											<select id="pdfTableDFontsize" style="width: auto;" onchange='this.addClassName("changed")'>
+												<option value="6" >6</option>
+												<option value="8" >8</option>
+												<option value="9" >9</option>
+												<option value="10" >10</option>
+												<option value="11" >11</option>
+												<option value="12" >12</option>
+												<option value="14" >14</option>
+												<option value="16" >16</option>
+												<option value="18" >18</option>
+												<option value="20" >20</option>
+												<option value="22" >22</option>
+												<option value="24" >24</option>
+												<option value="26" >26</option>
+												<option value="28" >28</option>
+												<option value="36" >36</option>
+												<option value="48" >48</option>
+												<option value="72" >72</option>
+											</select>
+											<a id="pdfTableDAlignLeft" href="#" onClick="return reportManager.xlsFormat('pdfTableD','AlignLeft',false)" class="form"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_align_left.png"" class="v-middle" alt=""></a>
+											<a id="pdfTableDAlignCenter"  href="#" onClick="return reportManager.xlsFormat('pdfTableD','AlignCenter',false)" class="form"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_align_center.png"" class="v-middle" alt=""></a>
+											<a id="pdfTableDAlignRight" href="#" onClick="return reportManager.xlsFormat('pdfTableD','AlignRight',false)" class="form"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_align_right.png"" class="v-middle" alt=""></a>
+											<a id="pdfTableDFontBold" href="#" onClick="return reportManager.xlsFormat('pdfTableDFont','Bold',false)" class="form"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_bold.png"" class="v-middle" alt=""></a>
+											<a id="pdfTableDFontItalic" href="#" onClick="return reportManager.xlsFormat('pdfTableDFont','Italic',false)" class="form"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_italic.png"" class="v-middle" alt=""></a>
+											<?php echo $this->__('Odd');?> <a id="pdfTableDOBackgroundColorIcon" href="#" onClick="return reportManager.xlsFormat('pdfTableDO','BackgroundColor',false)" class="form"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_backgroundcolor.png"" class="v-middle" alt=""></a>
+											<input class="color {pickerOnfocus:false,pickerClosable:true}" id="pdfTableDOBackgroundColor"  style="width: 0px; border: 0px" onchange="reportManager.xlsChangeColor('pdfTableDOBackgroundColorIcon',this)">
+											<?php echo $this->__('Even');?> <a id="pdfTableDEBackgroundColorIcon" href="#" onClick="return reportManager.xlsFormat('pdfTableDE','BackgroundColor',false)" class="form" ><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_backgroundcolor.png"" class="v-middle" alt=""></a>
+											<input class="color {pickerOnfocus:false,pickerClosable:true}" id="pdfTableDEBackgroundColor"  style="width: 0px; border: 0px" onchange="reportManager.xlsChangeColor('pdfTableDEBackgroundColorIcon',this)">
+											<a id="pdfTableDFontColorIcon" href="#" onClick="return reportManager.xlsFormat('pdfTableDFont','Color',false)" class="form" ><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_color.png"" class="v-middle" alt=""></a>
+											<input class="color {pickerOnfocus:false,pickerClosable:true}" id="pdfTableDFontColor" style="width: 0px; border: 0px" onchange="reportManager.xlsChangeColor('pdfTableDFontColorIcon',this)">
+											<a id="pdfTableDBorderAll" href="#" onClick="return reportManager.xlsFormat('pdfTableD','BorderAll',false)" class="form"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/border_all.png"" class="v-middle" alt=""></a>
+											<a id="pdfTableDBorderTop" href="#" onClick="return reportManager.xlsFormat('pdfTableD','BorderTop',false)" class="form"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/border_top.png"" class="v-middle" alt=""></a>
+											<a id="pdfTableDBorderRight" href="#" onClick="return reportManager.xlsFormat('pdfTableD','BorderRight',false)" class="form>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/border_right.png"" class="v-middle" alt=""></a>
+											<a id="pdfTableDBorderBottom" href="#" onClick="return reportManager.xlsFormat('pdfTableD','BorderBottom',false)" class="form"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/border_bottom.png"" class="v-middle" alt=""></a>
+											<a id="pdfTableDBorderLeft" href="#" onClick="return reportManager.xlsFormat('pdfTableD','BorderLeft',false)" class="form"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/border_left.png"" class="v-middle" alt=""></a>
+											<a id="pdfTableDBorderInH" href="#" onClick="return reportManager.xlsFormat('pdfTableD','BorderInH',false)" class="form"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/border_in_hor.png"" class="v-middle" alt=""></a>
+											<a id="pdfTableDBorderInV" href="#" onClick="return reportManager.xlsFormat('pdfTableD','BorderInV',false)" class="form"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/border_in_ver.png"" class="v-middle" alt=""></a>
+										</td>
+									</tr>
+									<tr>
+										<td class="label"><label for="svn_text_qualifier"><?php echo $this->__('PDF Table Footer');?></span></label></td>
+										<td >
+											<?php echo $this->__('Show Footer');?> <select name="font" id="pdfTableFShow" style="width: 50px;" onchange='this.addClassName("changed")'>
+											  <option value="true"><?php echo $this->__('Yes');?></option>
+											  <option value="false"><?php echo $this->__('No');?></option>
+											</select>
+											<select name="font" id="pdfTableFFontName" style="width: 100px;" onchange='this.addClassName("changed")'>
+											  <option value="Courier" >Courier</option>
+											  <option value="Helvetica" >Helvetica</option>
+											  <option value="Times">Times</option>
+											</select>
+											<select id="pdfTableFFontSize" style="width: auto;" onchange='this.addClassName("changed")'>
+												<option value="6" >6</option>
+												<option value="8" >8</option>
+												<option value="9" >9</option>
+												<option value="10" >10</option>
+												<option value="11" >11</option>
+												<option value="12" >12</option>
+												<option value="14" >14</option>
+												<option value="16" >16</option>
+												<option value="18" >18</option>
+												<option value="20" >20</option>
+												<option value="22" >22</option>
+												<option value="24" >24</option>
+												<option value="26" >26</option>
+												<option value="28" >28</option>
+												<option value="36" >36</option>
+												<option value="48" >48</option>
+												<option value="72" >72</option>
+											</select>
+											<a id="pdfTableFAlignLeft" href="#" onClick="return reportManager.xlsFormat('pdfTableF','AlignLeft',false)" class="form"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_align_left.png"" class="v-middle" alt=""></a>
+											<a id="pdfTableFAlignCenter"  href="#" onClick="return reportManager.xlsFormat('pdfTableF','AlignCenter',false)" class="form"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_align_center.png"" class="v-middle" alt=""></a>
+											<a id="pdfTableFAlignRight" href="#" onClick="return reportManager.xlsFormat('pdfTableF','AlignRight',false)" class="form"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_align_right.png"" class="v-middle" alt=""></a>
+											<a id="pdfTableFFontBold" href="#" onClick="return reportManager.xlsFormat('pdfTableFFont','Bold',false)" class="form"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_bold.png"" class="v-middle" alt=""></a>
+											<a id="pdfTableFFontItalic" href="#" onClick="return reportManager.xlsFormat('pdfTableFFont','Italic',false)" class="form"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_italic.png"" class="v-middle" alt=""></a>
+											<a id="pdfTableFBackgroundColorIcon" href="#" onClick="return reportManager.xlsFormat('pdfTableF','BackgroundColor',false)" class="form"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_backgroundcolor.png"" class="v-middle" alt=""></a>
+											<input class="color {pickerOnfocus:false,pickerClosable:true}" id="pdfTableFBackgroundColor" style="width: 0px; border: 0px" onchange="reportManager.xlsChangeColor('pdfTableFBackgroundColorIcon',this)">
+											<a id="pdfTableFFontColorIcon" href="#" onClick="return reportManager.xlsFormat('pdfTableFFont','Color',false)" class="form"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_color.png"" class="v-middle" alt=""></a>
+											<input class="color {pickerOnfocus:false,pickerClosable:true}" id="pdfTableFFontColor" style="width: 0px; border: 0px" onchange="reportManager.xlsChangeColor('pdfTableFFontColorIcon',this)">
+											<a id="pdfTableFBorderAll" href="#" onClick="return reportManager.xlsFormat('pdfTableF','BorderAll',false)" class="form"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/border_all.png"" class="v-middle" alt=""></a>
+											<a id="pdfTableFBorderTop" href="#" onClick="return reportManager.xlsFormat('pdfTableF','BorderTop',false)" class="form"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/border_top.png"" class="v-middle" alt=""></a>
+											<a id="pdfTableFBorderRight" href="#" onClick="return reportManager.xlsFormat('pdfTableF','BorderRight',false)" class="form"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/border_right.png"" class="v-middle" alt=""></a>
+											<a id="pdfTableFBorderBottom" href="#" onClick="return reportManager.xlsFormat('pdfTableF','BorderBottom',false)" class="form"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/border_bottom.png"" class="v-middle" alt=""></a>
+											<a id="pdfTableFBorderLeft" href="#" onClick="return reportManager.xlsFormat('pdfTableF','BorderLeft',false)" class="form"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/border_left.png"" class="v-middle" alt=""></a>
+											<a id="pdfTableFBorderInV" href="#" onClick="return reportManager.xlsFormat('pdfTableF','BorderInV',false)" class="form"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/border_in_ver.png"" class="v-middle" alt=""></a>
+										</td>
+									</tr>
+									<tr>
+										<td class="label"><label for="svn_text_qualifier"><?php echo $this->__('PDF Footer');?></span></label></td>
+										<td >
+											<select name="font" id="pdfFooterFontName" style="width: 100px;" onchange='this.addClassName("changed")'>
+											  <option value="Courier">Courier</option>
+											  <option value="Helvetica">Helvetica</option>
+											  <option value="Times">Times</option>
+											</select>
+											<select id="pdfFooterFontSize" style="width: 50px;" onchange='this.addClassName("changed")'>
+												<option value="6" >6</option>
+												<option value="8" >8</option>
+												<option value="9" >9</option>
+												<option value="10" >10</option>
+												<option value="11" >11</option>
+												<option value="12" >12</option>
+												<option value="14" >14</option>
+												<option value="16" >16</option>
+												<option value="18" >18</option>
+												<option value="20" >20</option>
+												<option value="22" >22</option>
+												<option value="24" >24</option>
+												<option value="26" >26</option>
+												<option value="28" >28</option>
+												<option value="36" >36</option>
+												<option value="48" >48</option>
+												<option value="72" >72</option>
+											</select>
+											<a id="pdfFooterAlignLeft" href="#" onClick="return reportManager.xlsFormat('pdfFooter','AlignLeft',false)" class="form"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_align_left.png"" class="v-middle" alt=""></a>
+											<a id="pdfFooterAlignCenter"  href="#" onClick="return reportManager.xlsFormat('pdfFooter','AlignCenter',false)" class="form "><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_align_center.png"" class="v-middle" alt=""></a>
+											<a id="pdfFooterAlignRight" href="#" onClick="return reportManager.xlsFormat('pdfFooter','AlignRight',false)" class="form"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_align_right.png"" class="v-middle" alt=""></a>
+											<a id="pdfFooterFontBold" href="#" onClick="return reportManager.xlsFormat('pdfFooterFont','Bold',false)" class="form"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_bold.png"" class="v-middle" alt=""></a>
+											<a id="pdfFooterFontItalic" href="#" onClick="return reportManager.xlsFormat('pdfFooterFont','Italic',false)" class="form"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_italic.png"" class="v-middle" alt=""></a>
+											<a id="pdfFooterFontColorIcon" href="#" onClick="return reportManager.xlsFormat('pdfFooterFont','Color',false)" class="form" ><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_color.png"" class="v-middle" alt=""></a>
+											<input class="color {pickerOnfocus:false,pickerClosable:true}" id="pdfFooterFontColor" style="width: 0px; border: 0px" onchange="reportManager.xlsChangeColor('pdfFooterFontColorIcon',this)">
+											<textarea name="text" title="Content" id="pdfFooterString" class="textarea" style="height:5em;width: 100%;" rows="2" cols="15" value="" onchange='this.addClassName("changed")' disabled></textarea>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+							</form>
+						</fieldset>
+						
+						<!-- CRON CONFIG-->
+						<div class="entry-edit-head collapseable"><a id="report_cron_field-head" href="#" class="" onClick="return reportManager.collapse('report_cron_field')"><?php echo $this->__('Scheduled Email Reports');?></a></div>
+						<fieldset class="config collapseable" id="report_cron_field" style="display:none">
+							<form id="reportEditCron_form">
+							  <div id="report_cron_div">
+							  	<input id="cronActive" type="checkbox" name="cronActive" value="cronActive" > <?php echo $this->__('Active');?> <br/>
+							  	<h3><?php echo $this->__('When');?></h3>
+								<input type="text" id="cronString" value="* * * * *" disabled class="required-entry"/>
+								<input type="button" value="Reset" id="report_cron_clear"/>
+								<br/>
+								
+								<div id="tabs" class="tabs">
+								  <ul id="cron-menu" class="tabs-horiz" style="margin: 0px;">
+								    <li id="menu-tab-minute"><a href="#" class="active"><?php echo $this->__('Minute');?></a></li>
+								    <li id="menu-tab-hour"><a href="#"><?php echo $this->__('Hour');?></a></li>
+								    <li id="menu-tab-day"><a href="#"><?php echo $this->__('Day of Month');?></a></li>
+								    <li id="menu-tab-month"><a href="#"><?php echo $this->__('Month');?></a></li>
+								    <li id="menu-tab-week"><a href="#"><?php echo $this->__('Day of Week');?></a></li>
+								  </ul>
+								  <div id="tabs-minute" class="fieldset">
+								    <div class="tabs">
+								      <ul class="tabs-horiz">
+								        <li id="button-minute-every"><a href="#"  class="active"><?php echo $this->__('Every Minute');?></a></li>
+								        <li id="button-minute-n"><a href="#"><?php echo $this->__('Every n minutes');?></a></li>
+								        <li id="button-minute-each"><a href="#"><?php echo $this->__('Each Selected Minute');?></a></li>
+								      </ul>
+								      <div id="tabs-minute-every" class="preview"  style="margin-left: 10px;">
+								        <div>*</div>
+								        <div><?php echo $this->__('Every Minute');?></div>
+								      </div>
+								      <div id="tabs-minute-n"  style="margin-left: 10px;">
+								        <div id="tabs-minute-slider-value" class="preview"> <?php echo $this->__('Every 1 minutes');?></div>
+								        <div class="slider">
+									        <div id="tabs-minute-slider" class="slider-bar" style="width:200px">
+												<div id="tabs-minute-slider-handle" class="slider-handler" style="width:10px"></div>
+											</div>
+										</div>
+								      </div>
+								      <div id="tabs-minute-each" class="preview"  style="margin-left: 10px;">
+								        <div><?php echo $this->__('Each Selected Minute');?></div><br/>
+								        <div class="tabs-minute-format"></div>
+								      </div>
+								    </div>
+								  </div>
+								  <div id="tabs-hour" class="fieldset">
+								    <div class="tabs">
+								      <ul class="tabs-horiz">
+								        <li id="button-hour-every"><a href="#"><?php echo $this->__('Every Hour');?></a></li>
+								        <li id="button-hour-n"><a href="#"><?php echo $this->__('Every n Hours');?></a></li>
+								        <li id="button-hour-each"><a href="#"><?php echo $this->__('Each Selected Hour');?></a></li>
+								      </ul>
+								      <div id="tabs-hour-every" class="preview"  style="margin-left: 10px;">
+								        <div>*</div>
+								        <div><?php echo $this->__('Every Hour');?></div>
+								      </div>
+								      <div id="tabs-hour-n"  style="margin-left: 10px;">
+								        <div id="tabs-hour-slider-value" class="preview"> <?php echo $this->__('Every 1 hours');?></div>
+								        <div class="slider">
+									        <div id="tabs-hour-slider" class="slider-bar" style="width:200px">
+												<div id="tabs-hour-slider-handle" class="slider-handler" style="width:10px"></div>
+											</div>
+										</div>
+								      </div>
+								      <div id="tabs-hour-each" class="preview"  style="margin-left: 10px;">
+								        <div><?php echo $this->__('Each Selected Hour');?></div><br/>
+								        <div class="tabs-hour-format"></div>
+								      </div>
+								    </div>
+								  </div>
+								  <div id="tabs-day" class="fieldset">
+								    <div class="tabs">
+								      <ul class="tabs-horiz">
+								        <li id="button-day-every"><a href="#"><?php echo $this->__('Every Day');?></a></li>
+								        <li id="button-day-each"><a href="#"><?php echo $this->__('Each Day');?></a></li>
+								      </ul>
+								      <div id="tabs-day-every" class="preview"  style="margin-left: 10px;">
+								        <div>*</div>
+								        <div><?php echo $this->__('Each Day');?></div>
+								      </div>
+								      <div id="tabs-day-each" class="preview"  style="margin-left: 10px;">
+								        <div><?php echo $this->__('Each selected Day');?></div><br/>
+								        <div class="tabs-day-format"></div>
+								      </div>
+								    </div>
+								  </div>
+								  <div id="tabs-month" class="fieldset">
+								    <div class="tabs">
+								      <ul class="tabs-horiz">
+								        <li id="button-month-every"><a href="#"><?php echo $this->__('Every Month');?></a></li>
+								        <li id="button-month-each"><a href="#"><?php echo $this->__('Each Month');?></a></li>
+								      </ul>
+								      <div id="tabs-month-every" class="preview"  style="margin-left: 10px;">
+								        <div>*</div>
+								        <div><?php echo $this->__('Every Month');?></div>
+								      </div>
+								      <div id="tabs-month-each" class="preview"  style="margin-left: 10px;">
+								        <div><?php echo $this->__('Each selected month');?></div><br/>
+								        <div class="tabs-month-format"></div>
+								      </div>
+								    </div>
+								  </div>
+								  <div id="tabs-week" class="fieldset">
+								    <div class="tabs">
+								      <ul class="tabs-horiz">
+								        <li id="button-week-every"><a href="#"><?php echo $this->__('Every Week');?></a></li>
+								        <li id="button-week-each"><a href="#"><?php echo $this->__('Each Week');?></a></li>
+								      </ul>
+								      <div id="tabs-week-every" class="preview"  style="margin-left: 10px;">
+								        <div>*</div>
+								        <div><?php echo $this->__('Every Week');?></div>
+								      </div>
+								      <div id="tabs-week-each"  style="margin-left: 10px;">
+								        <div class="preview"><?php echo $this->__('Each selected Day');?></div><br/>
+								        <div class="tabs-week-format"></div>
+								      </div>
+								    </div>
+								  </div>
+								</div>
+							</div>
+							<h3><?php echo $this->__("Filter's value");?></h3>
+							<div id="report_cron_filters">
+								<table cellspacing="0" class="form-list" id="report_cron_filters_list">
+								
+								</table>
+							</div>
+							<h3><?php echo $this->__('Email');?></h3>
+							<div id="report_cron_email">
+								<table cellspacing="0" class="form-list" id="report_cron_email">
+									<tr>
+										<td class="label"><?php echo $this->__('Subject');?> <span class="required">*</span></td>
+										<td class="value"><input id="cronEmailSubject" name="subject" value="" title="<?php echo $this->__('Subject');?>" type="text" class=" input-text required-entry"></td>
+									</tr>
+									<tr>
+								        <td class="label"><label for="sender_email"><?php echo $this->__('To');?> <span class="required">*</span></label></td>
+								    	<td class="value">
+								        	<input id="cronEmailToEmail" name="to_email" value="" title="<?php echo $this->__('To Email');?>" class="input-text required-entry" type="text"></td>
+								    </tr>
+								    <tr>
+								        <td class="label"><label for="cc_email"><?php echo $this->__('CC');?></span></label></td>
+								    	<td class="value">
+								        	<input id="cronEmailCCEmail" name="cc_email" value="" title="<?php echo $this->__('CC');?>" class="input-text" type="text"></td>
+								    </tr>
+								    <tr>
+								        <td class="label"><label for="cc_email"><?php echo $this->__('BCC');?></span></label></td>
+								    	<td class="value">
+								        	<input id="cronEmailBCCEmail" name="bcc_email" value="" title="<?php echo $this->__('BCC');?>" class="input-text" type="text"></td>
+								    </tr>
+								    <tr>
+								        <td class="label"><label for="sender_attach"><?php echo $this->__('Attach file');?> <span class="required">*</span></label></td>
+								    	<td class="value">
+									    	<select name="cronEmailAttach" id="cronEmailAttach" style="width:8em;" onchange="reportManager.showExpPDFOptions()">
+					                            <option value="NO"><?php echo $this->__('No attach');?></option>
+					                            <option value="CSV">CSV</option>
+					                            <option value="XML">Excel XML</option>
+					                            <option value="PDF">PDF</option>
+					                        </select>
+					                        <?php echo $this->__('Offset');?> <input id="cronOffset" name="cronOffset" value="" title="<?php echo $this->__('Offset');?>" class="input-text validate-number" type="text" style="width: 50px;">
+										</td>
+								    </tr>
+								    <tr id="TRpdfTitleString" style="display: none;">
+								        <td class="label"><label for="cronPdfTitle">&nbsp;&nbsp;<?php echo $this->__('PDF Title');?></span></label></td>
+								    	<td class="value"><textarea name="text" title="PDF Title" id="cronPdfTitle" class="textarea" style="height:5em;width: 100%;" rows="2" cols="15"></textarea></td>
+								    </tr>
+								    <tr id="TRpdfDescriptionString" style="display: none;">
+								        <td class="label"><label for="cronPdfDescription">&nbsp;&nbsp;<?php echo $this->__('PDF Description');?></span></label></td>
+								        <td class="value"><textarea name="text" title="PDF Description" id="cronPdfDescription" class="textarea" style="height:5em;width: 100%;" rows="2" cols="15"></textarea></td>
+								    </tr>
+								    <tr id="TRpdfFooterString" style="display: none;">
+								        <td class="label"><label for="cronPdfFooter">&nbsp;&nbsp;<?php echo $this->__('PDF Footer');?></span></label></td>
+								        <td class="value"><textarea name="text" title="PDF Footer" id="cronPdfFooter" class="textarea" style="height:5em;width: 100%;" rows="2" cols="15"></textarea></td>
+								    </tr>
+								    <tr>
+								        <td class="label"><label for="cronNoRow"><?php echo $this->__('No rows send');?></span></label></td>
+								    	<td class="value">
+									    	<input id="cronNoRow" type="checkbox" name="cronNoRow" value="cronNoRow" > <?php echo $this->__("Ative if you don't want the email to be send if report don't return rows");?>
+										</td>
+								    </tr>
+								    <tr>
+								        <td class="label"><label for="cronEmailPerRow"><?php echo $this->__('Email per row');?></span></label></td>
+								    	<td class="value">
+									    	<input id="cronEmailPerRow" type="checkbox" name="cronEmailPerRow" value="cronEmailPerRow" > <?php echo $this->__('Ative if you want send an email for each result row, you can use the parameters :CXC where X is the number of the column.');?>
+										</td>
+								    </tr>
+								    <tr>
+								    	<td class="label"><label for="text"><?php echo $this->__('Content');?> <span class="required">*</span></label></td>
+								    	<td class="value" style="width: 100%;">
+								    		<button id="butCronViewEditor" type="button" class="scalable show-hide" onclick="return reportManager.showEditor('cronEmailText')" ><span><?php echo $this->__('Show / Hide Editor');?></span></button>
+								    		<button id="butAddParamResultCron" type="button" class="scalable import" onclick="reportManager.cronAddParamContent('TABLE_RESULT_DATA')" style="display: inline;"><span><?php echo $this->__('Add results table');?></span></button>
+								    		<textarea name="text" title="Content" id="cronEmailText" class="textarea  required-entry editorme" style="height:36em;width: 100%;" rows="2" cols="15"></textarea>
+								    	</td>
+								    </tr>
+								</table>
+							
+							
+							<h3><?php echo $this->__('File generated');?></h3>
+							<div id="report_cron_file">
+								<table cellspacing="0" class="form-list" id="report_cron_fileTable">
+									<tr>
+										<td class="label"><?php echo $this->__('Path');?> <span class="required">*</span></td>
+										<td class="value"><input id="cronFilePath" name="subject" value="" title="Subject" type="text" class=" input-text required-entry"></td>
+									</tr>
+									<tr>
+								        <td class="label"><?php echo $this->__('Save');?> <span class="required">*</span></td>
+								    	<td class="value">
+								        	<input id="cronFileSave" type="radio" name="cronFileSave" value="false" checked > <?php echo $this->__('No Save');?> <br/>
+								        	<input id="cronFileSave" type="radio" name="cronFileSave" value="true" > <?php echo $this->__('Save');?> <br/>	
+								        </td>
+								    </tr>
+								</table>
+							</div>
+							</div>
+							</form>
+							<div class="entry-edit-head collapseable"><a id="report_cronLog_field-head" href="#" class="" onClick="return reportManager.collapse('report_cronLog_field')"><?php echo $this->__('Log');?></a></div>
+
+							
+							<fieldset class="config collapseable" id="report_cronLog_field" style="display:none">
+								<div class="grid">
+									<form id="form_cronLogAction">
+									<table cellspacing="0" class="data" id="report_cronLog_table">
+										<colgroup>
+												<col width="20" class="a-center">
+												<col width="140">
+								                <col width="140">
+								                <col width="140">
+								                <col width="140">
+								                <col>
+								                <col width="50">
+								                <col width="50">
+								        </colgroup>
+										<thead>
+											<tr class="massaction">
+												<td colspan="4">
+													<a href="#" onclick="return reportManager.tableSelectAll('report_cronLog_table')"><?php echo $this->__('Select All');?></a>
+													<span class="separator">|</span>
+													<a href="#" onclick="return reportManager.tableUnselectAll('report_cronLog_table')"><?php echo $this->__('Unselect All');?></a>
+													</td>
+												<td colspan="4" class="a-right">
+														<?php echo $this->__('Actions');?>
+														<select id="cronLogActionSelect" class="required-entry select">
+                                							<option value=""></option>
+                                                            <option value="remove"><?php echo $this->__('Remove');?></option>
+                                                        </select>
+                                                        <button type="button" class="scalable task" onclick="reportManager.doCronLog()" style=""><span><?php echo $this->__('Submit');?></span></button>
+												</td>
+											</tr>
+											<tr class="headings">
+												<th><span class="nobr">&nbsp;</span></th>
+												<th ><span class="no-br"><?php echo $this->__('Date');?></span></th>
+												<th ><span class="no-br"><?php echo $this->__('To');?></span></th>
+												<th ><span class="no-br"><?php echo $this->__('CC');?></span></th>
+												<th ><span class="no-br"><?php echo $this->__('BCC');?></span></th>
+												<th ><span class="no-br"><?php echo $this->__('Subject');?></span></th>
+												<th ><span class="no-br"><?php echo $this->__('Content');?></span></th>
+												<th ><span class="no-br"><?php echo $this->__('Status');?></span></th>
+											</tr>
+										</thead>
+										<tbody>
+										
+										</tbody>
+									</table>
+									</form>
+								</div>
+							</fieldset>
+						</fieldset>
+						
+						
+				</div>
+			<!-- CONTENT FILTERS LIST -->
+				<div class="entry-edit" id="container-Combo" style="display:none">
+					<div class="content-header">
+						<table cellspacing="0">
+							<tr>
+								<td ><h3><?php echo $this->__('Manage Filters');?></h3></td>
+					        </tr>
+					    </table>
+					</div>
+					<div class="entry-edit-head collapseable"><a id="combo_list_field-head" href="#" class="open" onClick="return reportManager.collapse('combo_list_field')"><?php echo $this->__('Filters list');?></a></div>
+					<fieldset class="config collapseable" id="combo_list_field">
+						<div class="grid"  style="margin:10px; OVERFLOW: auto; TOP: 48px; HEIGHT: 400px;border: 1px solid #d6d6d6;">
+						<table cellspacing="0" class="data" id="comboList" >
+							<col width="100" />
+							<col />
+							<col width="100" />
+							<thead>
+								<tr class="headings">
+									<th class=" no-link"><span class="no-br"><?php echo $this->__('PARAMETER');?></span></th>
+									<th class=" no-link"><span class="no-br"><?php echo $this->__('TITLE');?></span></th>
+									<th class=" no-link"><span class="no-br"><?php echo $this->__('TYPE');?></span></th>
+								</tr>
+							</thead>
+							<tbody>
+							
+							</tbody>
+						</table>
+					</div>
+					</fieldset>
+				</div>
+				
+				<!-- CONTENT FILTERS MODIFY -->
+				<div class="entry-edit" id="container-ComboAdd"  style="display:none" >
+					<div class="content-header">
+							<table cellspacing="0">
+								<tr>
+									<td ><h3 id="titlePageComboEdit"><?php echo $this->__('Add Filter');?></h3></td>
+									<td class="form-buttons">
+										<button id="butReturnComboList" type="button" class="scalable back" onclick="reportManager.showMenu('container-Combo')" style=""><span><?php echo $this->__('Back');?></span></button>
+										<button id="butSaveCombo" type="button" class="scalable " onclick="reportManager.saveCombo()" style=""><span><?php echo $this->__('Save');?></span></button>
+										<button id="butDelCombo" type="button" class="scalable delete" onclick="reportManager.delCombo()"><span><?php echo $this->__('Delete');?></span></button>
+									</td>
+						        </tr>
+						    </table>
+						</div>
+					<div class="entry-edit-head collapseable"><a  href="#" class="open" id="combo_edit_field-head"  onClick="return reportManager.collapse('combo_edit_field')"><?php echo $this->__('Add filter');?></a></div>
+					<form id="comboEdit_form">
+					<fieldset class="config collapseable" id="combo_edit_field">
+						
+						<table cellspacing="0" class="form-list">
+							<colgroup class="label"></colgroup>
+							<colgroup class="value"></colgroup>
+							<colgroup class="scope-label"></colgroup>
+							<colgroup class=""></colgroup>
+							<tbody>
+								<tr style="display:none">
+									<td class="label"><label for="combo_code"><?php echo $this->__('Code');?> </span></label></td>
+									<td class="value"><input id="combo_code" name="combo_code" value="" class=" input-text validate-codeMm" type="text">
+									</td>
+									<td class="scope-label">[STORE VIEW]</td>
+									<td class=""></td>
+								</tr>
+								<tr>
+									<td class="label"><label for="combo-parameter"><?php echo $this->__('Parameter');?> <span class="required">*</span></label></td>
+									<td class="value"><input id="combo-parameter" name="combo-parameter" value="" class=" input-text required-entry validate-codeMm" type="text"></td>
+									<td class="scope-label">[STORE VIEW]</td>
+									<td class=""></td>
+								</tr>
+								<tr>
+									<td class="label"><label for="combo-title"><?php echo $this->__('Title');?> <span class="required">*</span></label></td>
+									<td class="value"><input id="combo-title" name="combo-title" value="" class=" input-text required-entry" type="text"></td>
+									<td class="scope-label">[STORE VIEW]</td>
+									<td class=""></td>
+								</tr>
+								<tr>
+									<td class="label"><label for="combo-type"><?php echo $this->__('Type');?> <span class="required">*</span></label></td>
+									<td class="value">
+										<select name="combo-type"  id="combo-type" onchange="reportManager.showComboType()" class="required-entry">
+											<option value="" > </option>
+											<option value="date"  ><?php echo $this->__('Date');?></option>
+											<option value="select" ><?php echo $this->__('Sql');?></option>
+											<option value="text" ><?php echo $this->__('Text');?></option>
+											<option value="set" ><?php echo $this->__('Set');?></option>
+											<option value="evaluated" ><?php echo $this->__('Evaluated');?></option>
+										</select>
+									</td>
+									<td class="scope-label">[STORE VIEW]</td>
+									<td class=""></td>
+								</tr>
+								<tr id="combo_edit_field_listType">
+									<td class="label"><label for="combo-select-type"><?php echo $this->__('List type');?> <span class="required">*</span></label></td>
+									<td class="value">
+										<input type="radio" name="combo-select-type" id="select-unique" value="select-unique" checked><label for="select-unique"><?php echo $this->__('Select list unique value');?></label><br>
+										<input type="radio" name="combo-select-type" id="select-unique-chosen" value="select-unique-chosen" checked><label for="select-unique-chosen"><?php echo $this->__('Select list unique value with search');?></label><br>
+										<input type="radio" name="combo-select-type" id="checkbox-unique" value="checkbox-unique"><label for="checkbox-unique"><?php echo $this->__('Radio unique value');?></label><br/>
+										<input type="radio" name="combo-select-type" id="checkbox-multiple" value="checkbox-multiple"><label for="checkbox-multiple"><?php echo $this->__('Checkbox multiple value');?></label>
+									</td>
+									<td class="scope-label"><?php echo $this->__('Show result like checkbox or select box');?></td>
+									<td class=""></td>
+								</tr>
+								<tr id="combo_edit_field_evaluatedType">
+									<td class="label"><label for="evaluated-expresion"><?php echo $this->__('Expression');?> <span class="required">*</span></label></td>
+									<td class="value">
+										<input type="text" class=" input-text required-entry" name="evaluated-expresion" id="evaluated-expresion" value="" >
+									</td>
+									<td class="scope-label"><?php echo $this->__('php statement to evaluate');?></td>
+									<td class=""></td>
+								</tr>
+							</tbody>
+						</table>
+						
+						<textarea style="display:none;" id="sqlCombo" name="sqlCombo"> </textarea>
+						
+						<div class="grid" id="setCombo"  style="margin:10px; display:none;OVERFLOW: auto;">
+							
+							<table cellspacing="0" class="data" id="setComboList" style="width:450px;margin-left:150px; margin-top:10px" >
+								<col width="150" />
+								<col width="300" />
+								<thead>
+									<tr class="headings">
+										<th class=" no-link"><span class="no-br"><?php echo $this->__('VALUE');?></span></th>
+										<th class=" no-link"><span class="no-br"><?php echo $this->__('DESCRIPTION');?></span></th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td class=" no-link"><div  class="field-100"><input value="" class=" input-text" type="text" ></div></td>
+										<td class=" no-link"><input value="" class=" input-text" type="text" onchange="reportManager.addSet()"></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</fieldset>
+					</form>
+				</div>
+				
+				<!-- CONTENT GROUP -->
+				<div class="entry-edit" id="container-Group" style="display:none">
+					<div class="content-header">
+							<table cellspacing="0">
+								<tr>
+									<td ><h3><?php echo $this->__('Manage Groups');?></h3></td>
+									<td class="form-buttons">
+										<button id="butAddGroup" type="button" class="scalable add" onclick="reportManager.addGroupTable()" style=""><span><?php echo $this->__('Add Group');?></span></button>
+									</td>
+						        </tr>
+						    </table>
+						</div>
+					<div class="entry-edit-head collapseable"><a href="#" class="open" id="group_edit_field-head"  onClick="return reportManager.collapse('group_edit_field')"><?php echo $this->__('Group');?></a></div>
+					<fieldset class="config collapseable" id="group_edit_field">
+						<div class="grid"  style="margin:10px; OVERFLOW: auto; TOP: 48px;border: 1px solid #d6d6d6;">
+							
+							<table cellspacing="0" class="data" id="groupList" >
+								<col />
+								<col width="100" />
+								<thead>
+									<tr class="headings">
+										<th class=" no-link"><span class="no-br"><?php echo $this->__('DESCRIPTION');?></span></th>
+										<th class=" no-link"><span class="no-br"><?php echo $this->__('ACTIONS');?></span></th>
+									</tr>
+								</thead>
+								<tbody></tbody>
+							</table>
+							
+					</div>
+					</fieldset>
+				</div>
+				
+				<!-- CONTENT SYSTEM ADMIN -->
+				<div class="entry-edit" id="container-System" style="display:none">
+					 <div class="content-header">
+						<table cellspacing="0">
+							<tr>
+								<td ><h3><?php echo $this->__('System admin');?> (<?php echo $installManager->getActualVersion();?>)</h3></td>
+								<td class="form-buttons">
+					            	<button id="butSaveSystem" type="button" class="scalable save" onclick="reportManager.saveAdmin()" ><span><?php echo $this->__('Save');?></span></button>
+					            </td>
+					        </tr>
+					    </table>
+					</div>
+					
+						<form id="setupEdit_form">
+						<div class="entry-edit-head collapseable"><a id="system_field-head" href="#" class="open" onClick="return reportManager.collapse('system_field')"><?php echo $this->__('General Parameters');?></a></div>
+						<fieldset class="config collapseable" id="system_field">
+							<table cellspacing="0" class="form-list">
+								<colgroup class="label"></colgroup>
+								<colgroup class="value"></colgroup>
+								<colgroup class="scope-label"></colgroup>
+								<colgroup class=""></colgroup>
+								<tbody>
+									<tr>
+										<td class="label"><label for="prefix_parameter"><?php echo $this->__('Prefix Parameter');?> <span class="required">*</span></label></td>
+										<td class="value"><input id="prefix_parameter" name="prefix_parameter" value="<?php echo $systemAdmin->getValue("prefix_parameter");?>" class=" input-text required-entry" type="text"></td>
+										<td class="scope-label"><?php echo $this->__('Prefix that identifies a parameter in an sql statement');?></td>
+										<td class=""></td>
+									</tr>
+									<tr>
+										<td class="label"><label for="prefix_table"><?php echo $this->__('Prefix Table');?> <span class="required">*</span></label></td>
+										<td class="value"><input id="prefix_table" name="combo-parameter" value="<?php echo $systemAdmin->getValue("prefix_table");?>" class=" input-text required-entry" type="text"></td>
+										<td class="scope-label"><?php echo $this->__("Prefix that identifies a table in an sql statement, required when magento's tables have prefix.");?></td>
+										<td class=""></td>
+									</tr>
+									<tr>
+										<td class="label"><label for="date_mask"><?php echo $this->__('Date mask');?> <span class="required">*</span></label></td>
+										<td class="value"><input id="date_mask" name="combo-parameter" value="<?php echo $systemAdmin->getValue("date_mask");?>" class=" input-text required-entry" type="text"></td>
+										<td class="scope-label"><?php echo $this->__('Mask used to replace a date');?></td>
+										<td class=""></td>
+									</tr>
+									<tr>
+										<td class="label"><label for="cronFilePath"><?php echo $this->__('Path Cron file');?><span class="required">*</span></label></td>
+										<td class="value"><input id="cronFilePath" name="combo-parameter" value="<?php echo $systemAdmin->getValue("cronFilePath");?>" class=" input-text required-entry" type="text"></td>
+										<td class="scope-label"><?php echo $this->__('Default path where the generated files by cron will be stored');?> </td>
+										<td class=""></td>
+									</tr>
+									<tr>
+										<td class="label"><label for="rowPerPage"><?php echo $this->__('Default rows per page');?><span class="required">*</span></label></td>
+										<td class="value">
+											<select name="rowPerPage" id="rowPerPage" onchange="reportManager.doFilter()">
+								                <option value="20" <?php if($systemAdmin->getValue("rowPerPage")==20) echo 'selected="selected"';?>>20</option>
+								                <option value="30" <?php if($systemAdmin->getValue("rowPerPage")==30) echo 'selected="selected"';?>>30</option>
+								                <option value="50" <?php if($systemAdmin->getValue("rowPerPage")==50) echo 'selected="selected"';?>>50</option>
+								                <option value="100" <?php if($systemAdmin->getValue("rowPerPage")==100) echo 'selected="selected"';?>>100</option>
+								                <option value="200" <?php if($systemAdmin->getValue("rowPerPage")==200) echo 'selected="selected"';?>>200</option>
+								                <option value="all" <?php if($systemAdmin->getValue("rowPerPage")=='all') echo 'selected="selected"';?>><?php echo $this->__('All');?></option>
+								            </select></td>
+										<td class="scope-label"><?php echo $this->__('Default rows displayed when viewing a report');?></td>
+										<td class=""></td>
+									</tr>
+								</tbody>
+							</table>
+						</fieldset>
+						
+						<div class="entry-edit-head collapseable"><a id="system_field_export-head" href="#" class="open" onClick="return reportManager.collapse('system_field_export')"><?php echo $this->__('Export Parameters');?></a></div>
+						<fieldset class="config collapseable" id="system_field_export">
+							<table cellspacing="0" class="form-list">
+								<colgroup class="label"></colgroup>
+								<colgroup class="value"></colgroup>
+								<colgroup class="scope-label"></colgroup>
+								<colgroup class=""></colgroup>
+								<tbody>
+									<tr>
+										<td class="label"><label for="exp_dec_separator"><?php echo $this->__('Decimal separator');?> <span class="required">*</span></label></td>
+										<td class="value"><input id="exp_dec_separator" name="exp_dec_separator" value="<?php echo $systemAdmin->getValue("exp_dec_separator");?>" class=" input-text required-entry" type="text"></td>
+										<td class="scope-label"><?php echo $this->__('Decimal separator');?></td>
+										<td class=""></td>
+									</tr>
+									<tr>
+										<td class="label"><label for="exp_col_delimiter"><?php echo $this->__('CSV Column delimiter');?> <span class="required">*</span></label></td>
+										<td class="value"><input id="exp_col_delimiter" name="prefix_parameter" value="<?php echo $systemAdmin->getValue("exp_col_delimiter");?>" class=" input-text required-entry" type="text"></td>
+										<td class="scope-label"><?php echo $this->__('When you export to CSV, separator character data');?></td>
+										<td class=""></td>
+									</tr>
+									<tr>
+										<td class="label"><label for="svn_print_header"><?php echo $this->__('CSV export header');?> <span class="required">*</span></label></td>
+										<td class="value"><select id="svn_print_header" name="svn_print_header" class="required-entry">
+														  	 <option value="true" <?php if($systemAdmin->getValue("svn_print_header")=="true"){ echo "selected"; }?>><?php echo $this->__('Yes');?></option>
+														  	 <option value="false" <?php if($systemAdmin->getValue("svn_print_header")=="false"){ echo "selected"; }?>><?php echo $this->__('No');?></option>
+														  </select></td>
+										<td class="scope-label"><?php echo $this->__('When you export to CSV, identifies if in the first line the column names are exported');?></td>
+										<td class=""></td>
+									</tr>
+									<tr>
+										<td class="label"><label for="svn_text_qualifier"><?php echo $this->__('CSV text qualifier');?> </span></label></td>
+										<td class="value"><input id="svn_text_qualifier" name="svn_text_qualifier" value='<?php echo $systemAdmin->getValue("svn_text_qualifier");?>' class=" input-text" type="text"></td>
+										<td class="scope-label"><?php echo $this->__('When you export to CSV, identifies the character that includes a text data');?></td>
+										<td class=""></td>
+									</tr>
+									<tr>
+										<td class="label"><label for="svn_text_qualifier"><?php echo $this->__('Excel header');?> </span></label></td>
+										<td colspan="3" class="value">
+											<select name="font" id="xlsHeaderFont" style="width: auto;">
+											  <option value="Arial" <?php if($systemAdmin->getValue("xlsHeaderFont")=="Arial"){ echo "selected"; }?>>Arial</option>
+											  <option value="Calibri" <?php if($systemAdmin->getValue("xlsHeaderFont")=="Calibri"){ echo "selected"; }?>>Calibri</option>
+											</select>
+											<select id="xlsHeaderSize" style="width: auto;">
+												<option value="8" <?php if($systemAdmin->getValue("xlsHeaderSize")=="8"){ echo "selected"; }?>>8</option>
+												<option value="9" <?php if($systemAdmin->getValue("xlsHeaderSize")=="9"){ echo "selected"; }?>>9</option>
+												<option value="10" <?php if($systemAdmin->getValue("xlsHeaderSize")=="10"){ echo "selected"; }?>>10</option>
+												<option value="11" <?php if($systemAdmin->getValue("xlsHeaderSize")=="11"){ echo "selected"; }?>>11</option>
+												<option value="12" <?php if($systemAdmin->getValue("xlsHeaderSize")=="12"){ echo "selected"; }?>>12</option>
+												<option value="14" <?php if($systemAdmin->getValue("xlsHeaderSize")=="14"){ echo "selected"; }?>>14</option>
+												<option value="16" <?php if($systemAdmin->getValue("xlsHeaderSize")=="16"){ echo "selected"; }?>>16</option>
+												<option value="18" <?php if($systemAdmin->getValue("xlsHeaderSize")=="18"){ echo "selected"; }?>>18</option>
+												<option value="20" <?php if($systemAdmin->getValue("xlsHeaderSize")=="20"){ echo "selected"; }?>>20</option>
+												<option value="22" <?php if($systemAdmin->getValue("xlsHeaderSize")=="22"){ echo "selected"; }?>>22</option>
+												<option value="24" <?php if($systemAdmin->getValue("xlsHeaderSize")=="24"){ echo "selected"; }?>>24</option>
+												<option value="26" <?php if($systemAdmin->getValue("xlsHeaderSize")=="26"){ echo "selected"; }?>>26</option>
+												<option value="28" <?php if($systemAdmin->getValue("xlsHeaderSize")=="28"){ echo "selected"; }?>>28</option>
+												<option value="36" <?php if($systemAdmin->getValue("xlsHeaderSize")=="36"){ echo "selected"; }?>>36</option>
+												<option value="48" <?php if($systemAdmin->getValue("xlsHeaderSize")=="48"){ echo "selected"; }?>>48</option>
+												<option value="72" <?php if($systemAdmin->getValue("xlsHeaderSize")=="72"){ echo "selected"; }?>>72</option>
+											</select>
+											<a id="xlsHeaderAlignLeft" href="#" onClick="return reportManager.xlsFormat('xlsHeader','AlignLeft',true)" class="form <?php if($systemAdmin->getValue("xlsHeaderAlignLeft")=="true"){ echo "check"; }else{ echo "uhcheck"; }?> "><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_align_left.png"" class="v-middle" alt=""></a>
+											<a id="xlsHeaderAlignCenter"  href="#" onClick="return reportManager.xlsFormat('xlsHeader','AlignCenter',true)" class="form <?php if($systemAdmin->getValue("xlsHeaderAlignCenter")=="true"){ echo "check"; }else{ echo "uhcheck"; }?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_align_center.png"" class="v-middle" alt=""></a>
+											<a id="xlsHeaderAlignRight" href="#" onClick="return reportManager.xlsFormat('xlsHeader','AlignRight',true)" class="form <?php if($systemAdmin->getValue("xlsHeaderAlignRight")=="true"){ echo "check"; }else{ echo "uhcheck"; }?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_align_right.png"" class="v-middle" alt=""></a>
+											<a id="xlsHeaderBold" href="#" onClick="return reportManager.xlsFormat('xlsHeader','Bold',true)" class="form <?php if($systemAdmin->getValue("xlsHeaderBold")=="true"){ echo "check"; }else{ echo "uhcheck"; }?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_bold.png"" class="v-middle" alt=""></a>
+											<a id="xlsHeaderItalic" href="#" onClick="return reportManager.xlsFormat('xlsHeader','Italic',true)" class="form <?php if($systemAdmin->getValue("xlsHeaderItalic")=="true"){ echo "check"; }else{ echo "uhcheck"; }?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_italic.png"" class="v-middle" alt=""></a>
+											<a id="xlsHeaderBackgroundColorIcon" href="#" onClick="return reportManager.xlsFormat('xlsHeader','BackgroundColor',true)" class="form" style="background-color:#<?php echo $systemAdmin->getValue("xlsHeaderBackgroundColor");?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_backgroundcolor.png"" class="v-middle" alt=""></a>
+											<input class="color {pickerOnfocus:false,pickerClosable:true}" id="xlsHeaderBackgroundColor" value="<?php echo $systemAdmin->getValue("xlsHeaderBackgroundColor");?>" style="width: 0px; border: 0px" onchange="$$('#container-System #xlsHeaderBackgroundColorIcon')[0].style.backgroundColor = '#'+this.color">
+											<a id="xlsHeaderColorIcon" href="#" onClick="return reportManager.xlsFormat('xlsHeader','Color',true)" class="form"  style="background-color:#<?php echo $systemAdmin->getValue("xlsHeaderColor");?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_color.png"" class="v-middle" alt=""></a>
+											<input class="color {pickerOnfocus:false,pickerClosable:true}" id="xlsHeaderColor" value="<?php echo $systemAdmin->getValue("xlsHeaderColor");?>"  style="width: 0px; border: 0px" onchange="$$('#container-System #xlsHeaderColorIcon')[0].style.backgroundColor = '#'+this.color">
+											<a id="xlsHeaderBorderAll" href="#" onClick="return reportManager.xlsFormat('xlsHeader','BorderAll',true)" class="form <?php if($systemAdmin->getValue("xlsHeaderBorderAll")=="true"){ echo "check"; }else{ echo "uhcheck"; }?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/border_all.png"" class="v-middle" alt=""></a>
+											<a id="xlsHeaderBorderTop" href="#" onClick="return reportManager.xlsFormat('xlsHeader','BorderTop',true)" class="form <?php if($systemAdmin->getValue("xlsHeaderBorderTop")=="true"){ echo "check"; }else{ echo "uhcheck"; }?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/border_top.png"" class="v-middle" alt=""></a>
+											<a id="xlsHeaderBorderRight" href="#" onClick="return reportManager.xlsFormat('xlsHeader','BorderRight',true)" class="form <?php if($systemAdmin->getValue("xlsHeaderBorderRight")=="true"){ echo "check"; }else{ echo "uhcheck"; }?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/border_right.png"" class="v-middle" alt=""></a>
+											<a id="xlsHeaderBorderBottom" href="#" onClick="return reportManager.xlsFormat('xlsHeader','BorderBottom',true)" class="form <?php if($systemAdmin->getValue("xlsHeaderBorderBottom")=="true"){ echo "check"; }else{ echo "uhcheck"; }?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/border_bottom.png"" class="v-middle" alt=""></a>
+											<a id="xlsHeaderBorderLeft" href="#" onClick="return reportManager.xlsFormat('xlsHeader','BorderLeft',true)" class="form <?php if($systemAdmin->getValue("xlsHeaderBorderLeft")=="true"){ echo "check"; }else{ echo "uhcheck"; }?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/border_left.png"" class="v-middle" alt=""></a>
+										</td>
+									</tr>
+									<tr>
+										<td class="label"><label for="svn_text_qualifier"><?php echo $this->__('Excel Odd Row');?> </span></label></td>
+										<td colspan="3" class="value">
+											<select name="font" id="xlsOddRowFont" style="width: auto;">
+											  <option value="Arial" <?php if($systemAdmin->getValue("xlsOddRowFont")=="Arial"){ echo "selected"; }?>>Arial</option>
+											  <option value="Calibri" <?php if($systemAdmin->getValue("xlsOddRowFont")=="Calibri"){ echo "selected"; }?>>Calibri</option>
+											</select>
+											<select id="xlsOddRowSize" style="width: auto;">
+												<option value="8" <?php if($systemAdmin->getValue("xlsOddRowSize")=="8"){ echo "selected"; }?>>8</option>
+												<option value="9" <?php if($systemAdmin->getValue("xlsOddRowSize")=="9"){ echo "selected"; }?>>9</option>
+												<option value="10" <?php if($systemAdmin->getValue("xlsOddRowSize")=="10"){ echo "selected"; }?>>10</option>
+												<option value="11" <?php if($systemAdmin->getValue("xlsOddRowSize")=="11"){ echo "selected"; }?>>11</option>
+												<option value="12" <?php if($systemAdmin->getValue("xlsOddRowSize")=="12"){ echo "selected"; }?>>12</option>
+												<option value="14" <?php if($systemAdmin->getValue("xlsOddRowSize")=="14"){ echo "selected"; }?>>14</option>
+												<option value="16" <?php if($systemAdmin->getValue("xlsOddRowSize")=="16"){ echo "selected"; }?>>16</option>
+												<option value="18" <?php if($systemAdmin->getValue("xlsOddRowSize")=="18"){ echo "selected"; }?>>18</option>
+												<option value="20" <?php if($systemAdmin->getValue("xlsOddRowSize")=="20"){ echo "selected"; }?>>20</option>
+												<option value="22" <?php if($systemAdmin->getValue("xlsOddRowSize")=="22"){ echo "selected"; }?>>22</option>
+												<option value="24" <?php if($systemAdmin->getValue("xlsOddRowSize")=="24"){ echo "selected"; }?>>24</option>
+												<option value="26" <?php if($systemAdmin->getValue("xlsOddRowSize")=="26"){ echo "selected"; }?>>26</option>
+												<option value="28" <?php if($systemAdmin->getValue("xlsOddRowSize")=="28"){ echo "selected"; }?>>28</option>
+												<option value="36" <?php if($systemAdmin->getValue("xlsOddRowSize")=="36"){ echo "selected"; }?>>36</option>
+												<option value="48" <?php if($systemAdmin->getValue("xlsOddRowSize")=="48"){ echo "selected"; }?>>48</option>
+												<option value="72" <?php if($systemAdmin->getValue("xlsOddRowSize")=="72"){ echo "selected"; }?>>72</option>
+											</select>
+											<a id="xlsOddRowAlignLeft" href="#" onClick="return reportManager.xlsFormat('xlsOddRow','AlignLeft',true)" class="form <?php if($systemAdmin->getValue("xlsOddRowAlignLeft")=="true"){ echo "check"; }else{ echo "uhcheck"; }?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_align_left.png"" class="v-middle" alt=""></a>
+											<a id="xlsOddRowAlignCenter"  href="#" onClick="return reportManager.xlsFormat('xlsOddRow','AlignCenter',true)" class="form <?php if($systemAdmin->getValue("xlsOddRowAlignCenter")=="true"){ echo "check"; }else{ echo "uhcheck"; }?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_align_center.png"" class="v-middle" alt=""></a>
+											<a id="xlsOddRowAlignRight" href="#" onClick="return reportManager.xlsFormat('xlsOddRow','AlignRight',true)" class="form <?php if($systemAdmin->getValue("xlsOddRowAlignRight")=="true"){ echo "check"; }else{ echo "uhcheck"; }?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_align_right.png"" class="v-middle" alt=""></a>
+											<a id="xlsOddRowBold" href="#" onClick="return reportManager.xlsFormat('xlsOddRow','Bold',true)" class="form <?php if($systemAdmin->getValue("xlsOddRowBold")=="true"){ echo "check"; }else{ echo "uhcheck"; }?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_bold.png"" class="v-middle" alt=""></a>
+											<a id="xlsOddRowItalic" href="#" onClick="return reportManager.xlsFormat('xlsOddRow','Italic',true)" class="form <?php if($systemAdmin->getValue("xlsOddRowItalic")=="true"){ echo "check"; }else{ echo "uhcheck"; }?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_italic.png"" class="v-middle" alt=""></a>
+											<a id="xlsOddRowBackgroundColorIcon" href="#" onClick="return reportManager.xlsFormat('xlsOddRow','BackgroundColor',true)" class="form" style="background-color:#<?php echo $systemAdmin->getValue("xlsOddRowBackgroundColor");?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_backgroundcolor.png"" class="v-middle" alt=""></a>
+											<input class="color {pickerOnfocus:false,pickerClosable:true}" id="xlsOddRowBackgroundColor" value="<?php echo $systemAdmin->getValue("xlsOddRowBackgroundColor");?>" style="width: 0px; border: 0px" onchange="$$('#container-System #xlsOddRowBackgroundColorIcon')[0].style.backgroundColor = '#'+this.color">
+											<a id="xlsOddRowColorIcon" href="#" onClick="return reportManager.xlsFormat('xlsOddRow','Color',true)" class="form" style="background-color:#<?php echo $systemAdmin->getValue("xlsOddRowColor");?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_color.png"" class="v-middle" alt=""></a>
+											<input class="color {pickerOnfocus:false,pickerClosable:true}" id="xlsOddRowColor" value="<?php echo $systemAdmin->getValue("xlsOddRowColor");?>" style="width: 0px; border: 0px" onchange="$$('#container-System #xlsOddRowColorIcon')[0].style.backgroundColor = '#'+this.color">
+											<a id="xlsOddRowBorderAll" href="#" onClick="return reportManager.xlsFormat('xlsOddRow','BorderAll',true)" class="form <?php if($systemAdmin->getValue("xlsOddRowBorderAll")=="true"){ echo "check"; }else{ echo "uhcheck"; }?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/border_all.png"" class="v-middle" alt=""></a>
+											<a id="xlsOddRowBorderTop" href="#" onClick="return reportManager.xlsFormat('xlsOddRow','BorderTop',true)" class="form <?php if($systemAdmin->getValue("xlsOddRowBorderTop")=="true"){ echo "check"; }else{ echo "uhcheck"; }?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/border_top.png"" class="v-middle" alt=""></a>
+											<a id="xlsOddRowBorderRight" href="#" onClick="return reportManager.xlsFormat('xlsOddRow','BorderRight',true)" class="form <?php if($systemAdmin->getValue("xlsOddRowBorderRight")=="true"){ echo "check"; }else{ echo "uhcheck"; }?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/border_right.png"" class="v-middle" alt=""></a>
+											<a id="xlsOddRowBorderBottom" href="#" onClick="return reportManager.xlsFormat('xlsOddRow','BorderBottom',true)" class="form <?php if($systemAdmin->getValue("xlsOddRowBorderBottom")=="true"){ echo "check"; }else{ echo "uhcheck"; }?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/border_bottom.png"" class="v-middle" alt=""></a>
+											<a id="xlsOddRowBorderLeft" href="#" onClick="return reportManager.xlsFormat('xlsOddRow','BorderLeft',true)" class="form <?php if($systemAdmin->getValue("xlsOddRowBorderLeft")=="true"){ echo "check"; }else{ echo "uhcheck"; }?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/border_left.png"" class="v-middle" alt=""></a>
+										</td>
+									</tr>
+									<tr>
+										<td class="label"><label for="svn_text_qualifier"><?php echo $this->__('Excel Even Row');?> </span></label></td>
+										<td colspan="3" class="value">
+											<select name="font" id="xlsEvenRowFont" style="width: auto;">
+											  <option value="Arial" <?php if($systemAdmin->getValue("xlsEvenRowFont")=="Arial"){ echo "selected"; }?>>Arial</option>
+											  <option value="Calibri" <?php if($systemAdmin->getValue("xlsEvenRowFont")=="Calibri"){ echo "selected"; }?>>Calibri</option>
+											</select>
+											<select id="xlsEvenRowSize" style="width: auto;">
+												<option value="8" <?php if($systemAdmin->getValue("xlsEvenRowSize")=="8"){ echo "selected"; }?>>8</option>
+												<option value="9" <?php if($systemAdmin->getValue("xlsEvenRowSize")=="9"){ echo "selected"; }?>>9</option>
+												<option value="10" <?php if($systemAdmin->getValue("xlsEvenRowSize")=="10"){ echo "selected"; }?>>10</option>
+												<option value="11" <?php if($systemAdmin->getValue("xlsEvenRowSize")=="11"){ echo "selected"; }?>>11</option>
+												<option value="12" <?php if($systemAdmin->getValue("xlsEvenRowSize")=="12"){ echo "selected"; }?>>12</option>
+												<option value="14" <?php if($systemAdmin->getValue("xlsEvenRowSize")=="14"){ echo "selected"; }?>>14</option>
+												<option value="16" <?php if($systemAdmin->getValue("xlsEvenRowSize")=="16"){ echo "selected"; }?>>16</option>
+												<option value="18" <?php if($systemAdmin->getValue("xlsEvenRowSize")=="18"){ echo "selected"; }?>>18</option>
+												<option value="20" <?php if($systemAdmin->getValue("xlsEvenRowSize")=="20"){ echo "selected"; }?>>20</option>
+												<option value="22" <?php if($systemAdmin->getValue("xlsEvenRowSize")=="22"){ echo "selected"; }?>>22</option>
+												<option value="24" <?php if($systemAdmin->getValue("xlsEvenRowSize")=="24"){ echo "selected"; }?>>24</option>
+												<option value="26" <?php if($systemAdmin->getValue("xlsEvenRowSize")=="26"){ echo "selected"; }?>>26</option>
+												<option value="28" <?php if($systemAdmin->getValue("xlsEvenRowSize")=="28"){ echo "selected"; }?>>28</option>
+												<option value="36" <?php if($systemAdmin->getValue("xlsEvenRowSize")=="36"){ echo "selected"; }?>>36</option>
+												<option value="48" <?php if($systemAdmin->getValue("xlsEvenRowSize")=="48"){ echo "selected"; }?>>48</option>
+												<option value="72" <?php if($systemAdmin->getValue("xlsEvenRowSize")=="72"){ echo "selected"; }?>>72</option>
+											</select>
+											<a id="xlsEvenRowAlignLeft" href="#" onClick="return reportManager.xlsFormat('xlsEvenRow','AlignLeft',true)" class="form <?php if($systemAdmin->getValue("xlsEvenRowAlignLeft")=="true"){ echo "check"; }else{ echo "uhcheck"; }?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_align_left.png"" class="v-middle" alt=""></a>
+											<a id="xlsEvenRowAlignCenter"  href="#" onClick="return reportManager.xlsFormat('xlsEvenRow','AlignCenter',true)" class="form <?php if($systemAdmin->getValue("xlsEvenRowAlignCenter")=="true"){ echo "check"; }else{ echo "uhcheck"; }?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_align_center.png"" class="v-middle" alt=""></a>
+											<a id="xlsEvenRowAlignRight" href="#" onClick="return reportManager.xlsFormat('xlsEvenRow','AlignRight',true)" class="form <?php if($systemAdmin->getValue("xlsEvenRowAlignRight")=="true"){ echo "check"; }else{ echo "uhcheck"; }?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_align_right.png"" class="v-middle" alt=""></a>
+											<a id="xlsEvenRowBold" href="#" onClick="return reportManager.xlsFormat('xlsEvenRow','Bold',true)" class="form <?php if($systemAdmin->getValue("xlsEvenRowBold")=="true"){ echo "check"; }else{ echo "uhcheck"; }?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_bold.png"" class="v-middle" alt=""></a>
+											<a id="xlsEvenRowItalic" href="#" onClick="return reportManager.xlsFormat('xlsEvenRow','Italic',true)" class="form <?php if($systemAdmin->getValue("xlsEvenRowItalic")=="true"){ echo "check"; }else{ echo "uhcheck"; }?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_italic.png"" class="v-middle" alt=""></a>
+											<a id="xlsEvenRowBackgroundColorIcon" href="#" onClick="return reportManager.xlsFormat('xlsEvenRow','BackgroundColor',true)" class="form" style="background-color:#<?php echo $systemAdmin->getValue("xlsEvenRowBackgroundColor");?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_backgroundcolor.png"" class="v-middle" alt=""></a>
+											<input class="color {pickerOnfocus:false,pickerClosable:true}" id="xlsEvenRowBackgroundColor" value="<?php echo $systemAdmin->getValue("xlsEvenRowBackgroundColor");?>" style="width: 0px; border: 0px" onchange="$$('#container-System #xlsEvenRowBackgroundColorIcon')[0].style.backgroundColor = '#'+this.color">
+											<a id="xlsEvenRowColorIcon" href="#" onClick="return reportManager.xlsFormat('xlsEvenRow','Color',true)" class="form" style="background-color:#<?php echo $systemAdmin->getValue("xlsEvenRowColor");?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_color.png"" class="v-middle" alt=""></a>
+											<input class="color {pickerOnfocus:false,pickerClosable:true}" id="xlsEvenRowColor" value="<?php echo $systemAdmin->getValue("xlsEvenRowColor");?>" style="width: 0px; border: 0px" onchange="$$('#container-System #xlsEvenRowColorIcon')[0].style.backgroundColor = '#'+this.color">
+											<a id="xlsEvenRowBorderAll" href="#" onClick="return reportManager.xlsFormat('xlsEvenRow','BorderAll',true)" class="form <?php if($systemAdmin->getValue("xlsEvenRowBorderAll")=="true"){ echo "check"; }else{ echo "uhcheck"; }?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/border_all.png"" class="v-middle" alt=""></a>
+											<a id="xlsEvenRowBorderTop" href="#" onClick="return reportManager.xlsFormat('xlsEvenRow','BorderTop',true)" class="form <?php if($systemAdmin->getValue("xlsEvenRowBorderTop")=="true"){ echo "check"; }else{ echo "uhcheck"; }?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/border_top.png"" class="v-middle" alt=""></a>
+											<a id="xlsEvenRowBorderRight" href="#" onClick="return reportManager.xlsFormat('xlsEvenRow','BorderRight',true)" class="form <?php if($systemAdmin->getValue("xlsEvenRowBorderRight")=="true"){ echo "check"; }else{ echo "uhcheck"; }?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/border_right.png"" class="v-middle" alt=""></a>
+											<a id="xlsEvenRowBorderBottom" href="#" onClick="return reportManager.xlsFormat('xlsEvenRow','BorderBottom',true)" class="form <?php if($systemAdmin->getValue("xlsEvenRowBorderBottom")=="true"){ echo "check"; }else{ echo "uhcheck"; }?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/border_bottom.png"" class="v-middle" alt=""></a>
+											<a id="xlsEvenRowBorderLeft" href="#" onClick="return reportManager.xlsFormat('xlsEvenRow','BorderLeft',true)" class="form <?php if($systemAdmin->getValue("xlsEvenRowAlignLeft")=="true"){ echo "check"; }else{ echo "uhcheck"; }?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/border_left.png"" class="v-middle" alt=""></a>
+										</td>
+									</tr>
+									<tr>
+										<td class="label"><label for="svn_text_qualifier"><?php echo $this->__('PDF Logo');?></span></label></td>
+										<td colspan="3" class="value">
+											<?php echo $this->__('Width');?> <input id="pdfLogoWidth" name="pdfLogoWidth" value="<?php echo $systemAdmin->getValue("pdfLogoWidth");?>" class=" input-text required-entry" type="text" style="width: 50px;">
+											<?php echo $this->__('Height');?> <input id="pdfLogoHeight" name="pdfLogoHeight" value="<?php echo $systemAdmin->getValue("pdfLogoHeight");?>" class=" input-text required-entry" type="text" style="width: 50px;">
+											<?php echo $this->__('Url');?> <input id="pdfLogoUrl" name="pdfLogoUrl" value="<?php echo $systemAdmin->getValue("pdfLogoUrl");?>" class=" input-text" type="text">
+										</td>
+									</tr>
+									<tr>
+										<td class="label"><label for="svn_text_qualifier"><?php echo $this->__('PDF Title');?></span></label></td>
+										<td colspan="3" class="value">
+										
+											<select name="font" id="pdfTitleFontName" style="width: 100px;">
+											  <option value="Courier" <?php if($systemAdmin->getValue("pdfTitleFontName")=="Courier"){ echo "selected"; }?>>Courier</option>
+											  <option value="Helvetica" <?php if($systemAdmin->getValue("pdfTitleFontName")=="Helvetica"){ echo "selected"; }?>>Helvetica</option>
+											  <option value="Times" <?php if($systemAdmin->getValue("pdfTitleFontName")=="Times"){ echo "selected"; }?>>Times</option>
+											</select>
+											<select id="pdfTitleFontSize" style="width: auto;">
+												<option value="6" <?php if($systemAdmin->getValue("pdfTitleFontSize")=="6"){ echo "selected"; }?>>6</option>
+												<option value="8" <?php if($systemAdmin->getValue("pdfTitleFontSize")=="8"){ echo "selected"; }?>>8</option>
+												<option value="9" <?php if($systemAdmin->getValue("pdfTitleFontSize")=="9"){ echo "selected"; }?>>9</option>
+												<option value="10" <?php if($systemAdmin->getValue("pdfTitleFontSize")=="10"){ echo "selected"; }?>>10</option>
+												<option value="11" <?php if($systemAdmin->getValue("pdfTitleFontSize")=="11"){ echo "selected"; }?>>11</option>
+												<option value="12" <?php if($systemAdmin->getValue("pdfTitleFontSize")=="12"){ echo "selected"; }?>>12</option>
+												<option value="14" <?php if($systemAdmin->getValue("pdfTitleFontSize")=="14"){ echo "selected"; }?>>14</option>
+												<option value="16" <?php if($systemAdmin->getValue("pdfTitleFontSize")=="16"){ echo "selected"; }?>>16</option>
+												<option value="18" <?php if($systemAdmin->getValue("pdfTitleFontSize")=="18"){ echo "selected"; }?>>18</option>
+												<option value="20" <?php if($systemAdmin->getValue("pdfTitleFontSize")=="20"){ echo "selected"; }?>>20</option>
+												<option value="22" <?php if($systemAdmin->getValue("pdfTitleFontSize")=="22"){ echo "selected"; }?>>22</option>
+												<option value="24" <?php if($systemAdmin->getValue("pdfTitleFontSize")=="24"){ echo "selected"; }?>>24</option>
+												<option value="26" <?php if($systemAdmin->getValue("pdfTitleFontSize")=="26"){ echo "selected"; }?>>26</option>
+												<option value="28" <?php if($systemAdmin->getValue("pdfTitleFontSize")=="28"){ echo "selected"; }?>>28</option>
+												<option value="36" <?php if($systemAdmin->getValue("pdfTitleFontSize")=="36"){ echo "selected"; }?>>36</option>
+												<option value="48" <?php if($systemAdmin->getValue("pdfTitleFontSize")=="48"){ echo "selected"; }?>>48</option>
+												<option value="72" <?php if($systemAdmin->getValue("pdfTitleFontSize")=="72"){ echo "selected"; }?>>72</option>
+											</select>
+											<a id="pdfTitleFontBold" href="#" onClick="return reportManager.xlsFormat('pdfTitleFont','Bold',true)" class="form <?php if($systemAdmin->getValue("pdfTitleFontBold")=="true"){ echo "check"; }else{ echo "uhcheck"; }?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_bold.png"" class="v-middle" alt=""></a>
+											<a id="pdfTitleFontItalic" href="#" onClick="return reportManager.xlsFormat('pdfTitleFont','Italic',true)" class="form <?php if($systemAdmin->getValue("pdfTitleFontItalic")=="true"){ echo "check"; }else{ echo "uhcheck"; }?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_italic.png"" class="v-middle" alt=""></a>
+											<a id="pdfTitleFontColorIcon" href="#" onClick="return reportManager.xlsFormat('pdfTitleFont','Color',true)" class="form"  style="background-color:#<?php echo $systemAdmin->getValue("pdfTitleFontColor");?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_color.png"" class="v-middle" alt=""></a>
+											<input class="color {pickerOnfocus:false,pickerClosable:true}" id="pdfTitleFontColor" value="<?php echo $systemAdmin->getValue("pdfTitleFontColor");?>"  style="width: 0px; border: 0px" onchange="$$('#container-System #pdfTitleFontColorIcon')[0].style.backgroundColor = '#'+this.color">
+										</td>
+									</tr>
+									<tr>
+										<td class="label"><label for="svn_text_qualifier"><?php echo $this->__('PDF Description');?></span></label></td>
+										<td colspan="3" class="value">
+											<select name="font" id="pdfDescriptionFontName" style="width: 100px;">
+											  <option value="Courier" <?php if($systemAdmin->getValue("pdfDescriptionFontName")=="Courier"){ echo "selected"; }?>>Courier</option>
+											  <option value="Helvetica" <?php if($systemAdmin->getValue("pdfDescriptionFontName")=="Helvetica"){ echo "selected"; }?>>Helvetica</option>
+											  <option value="Times" <?php if($systemAdmin->getValue("pdfDescriptionFontName")=="Times"){ echo "selected"; }?>>Times</option>
+											</select>
+											<select id="pdfDescriptionFontSize" style="width: 50px;">
+												<option value="6" <?php if($systemAdmin->getValue("pdfDescriptionFontSize")=="6"){ echo "selected"; }?>>6</option>
+												<option value="8" <?php if($systemAdmin->getValue("pdfDescriptionFontSize")=="8"){ echo "selected"; }?>>8</option>
+												<option value="9" <?php if($systemAdmin->getValue("pdfDescriptionFontSize")=="9"){ echo "selected"; }?>>9</option>
+												<option value="10" <?php if($systemAdmin->getValue("pdfDescriptionFontSize")=="10"){ echo "selected"; }?>>10</option>
+												<option value="11" <?php if($systemAdmin->getValue("pdfDescriptionFontSize")=="11"){ echo "selected"; }?>>11</option>
+												<option value="12" <?php if($systemAdmin->getValue("pdfDescriptionFontSize")=="12"){ echo "selected"; }?>>12</option>
+												<option value="14" <?php if($systemAdmin->getValue("pdfDescriptionFontSize")=="14"){ echo "selected"; }?>>14</option>
+												<option value="16" <?php if($systemAdmin->getValue("pdfDescriptionFontSize")=="16"){ echo "selected"; }?>>16</option>
+												<option value="18" <?php if($systemAdmin->getValue("pdfDescriptionFontSize")=="18"){ echo "selected"; }?>>18</option>
+												<option value="20" <?php if($systemAdmin->getValue("pdfDescriptionFontSize")=="20"){ echo "selected"; }?>>20</option>
+												<option value="22" <?php if($systemAdmin->getValue("pdfDescriptionFontSize")=="22"){ echo "selected"; }?>>22</option>
+												<option value="24" <?php if($systemAdmin->getValue("pdfDescriptionFontSize")=="24"){ echo "selected"; }?>>24</option>
+												<option value="26" <?php if($systemAdmin->getValue("pdfDescriptionFontSize")=="26"){ echo "selected"; }?>>26</option>
+												<option value="28" <?php if($systemAdmin->getValue("pdfDescriptionFontSize")=="28"){ echo "selected"; }?>>28</option>
+												<option value="36" <?php if($systemAdmin->getValue("pdfDescriptionFontSize")=="36"){ echo "selected"; }?>>36</option>
+												<option value="48" <?php if($systemAdmin->getValue("pdfDescriptionFontSize")=="48"){ echo "selected"; }?>>48</option>
+												<option value="72" <?php if($systemAdmin->getValue("pdfDescriptionFontSize")=="72"){ echo "selected"; }?>>72</option>
+											</select>
+											<a id="pdfDescriptionAlignLeft" href="#" onClick="return reportManager.xlsFormat('pdfDescription','AlignLeft',true)" class="form <?php if($systemAdmin->getValue("pdfDescriptionAlignLeft")=="true"){ echo "check"; }else{ echo "uhcheck"; }?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_align_left.png"" class="v-middle" alt=""></a>
+											<a id="pdfDescriptionAlignCenter"  href="#" onClick="return reportManager.xlsFormat('pdfDescription','AlignCenter',true)" class="form <?php if($systemAdmin->getValue("pdfDescriptionAlignCenter")=="true"){ echo "check"; }else{ echo "uhcheck"; }?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_align_center.png"" class="v-middle" alt=""></a>
+											<a id="pdfDescriptionAlignRight" href="#" onClick="return reportManager.xlsFormat('pdfDescription','AlignRight',true)" class="form <?php if($systemAdmin->getValue("pdfDescriptionAlignRight")=="true"){ echo "check"; }else{ echo "uhcheck"; }?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_align_right.png"" class="v-middle" alt=""></a>
+											<a id="pdfDescriptionFontBold" href="#" onClick="return reportManager.xlsFormat('pdfDescriptionFont','Bold',true)" class="form <?php if($systemAdmin->getValue("pdfDescriptionFontBold")=="true"){ echo "check"; }else{ echo "uhcheck"; }?>""><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_bold.png"" class="v-middle" alt=""></a>
+											<a id="pdfDescriptionFontItalic" href="#" onClick="return reportManager.xlsFormat('pdfDescriptionFont','Italic',true)" class="form <?php if($systemAdmin->getValue("pdfDescriptionFontItalic")=="true"){ echo "check"; }else{ echo "uhcheck"; }?>""><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_italic.png"" class="v-middle" alt=""></a>
+											<a id="pdfDescriptionFontColorIcon" href="#" onClick="return reportManager.xlsFormat('pdfDescriptionFont','Color',true)" class="form"  style="background-color:#<?php echo $systemAdmin->getValue("pdfDescriptionFontColor");?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_color.png"" class="v-middle" alt=""></a>
+											<input class="color {pickerOnfocus:false,pickerClosable:true}" id="pdfDescriptionFontColor" value="<?php echo $systemAdmin->getValue("pdfDescriptionFontColor");?>"  style="width: 0px; border: 0px" onchange="$$('#container-System #pdfDescriptionFontColorIcon')[0].style.backgroundColor = '#'+this.color">
+											
+											
+											<?php echo $this->__('Left space');?> <input id="pdfDescriptionSpace" name="pdfDescriptionSpace" value="<?php echo $systemAdmin->getValue("pdfDescriptionSpace");?>" class=" input-text required-entry" type="text" style="width: 50px;">
+										</td>
+									</tr>
+									<tr>
+										<td class="label"><label for="svn_text_qualifier"><?php echo $this->__('PDF Filters');?></span></label></td>
+										<td colspan="3" class="value">
+											<?php echo $this->__('Show Filters');?> <select name="font" id="pdfFiltersShow" style="width: 50px;">
+											  <option value="true" <?php if($systemAdmin->getValue("pdfFiltersShow")=="true"){ echo "selected"; }?>><?php echo $this->__('Yes');?></option>
+											  <option value="false" <?php if($systemAdmin->getValue("pdfFiltersShow")=="false"){ echo "selected"; }?>><?php echo $this->__('No');?></option>
+											</select>
+											<select name="font" id="pdfFiltersFontName" style="width: 100px;">
+											  <option value="Courier" <?php if($systemAdmin->getValue("pdfFiltersFontName")=="Courier"){ echo "selected"; }?>>Courier</option>
+											  <option value="Helvetica" <?php if($systemAdmin->getValue("pdfFiltersFontName")=="Helvetica"){ echo "selected"; }?>>Helvetica</option>
+											  <option value="Times" <?php if($systemAdmin->getValue("pdfFiltersFontName")=="Times"){ echo "selected"; }?>>Times</option>
+											</select>
+											<select id="pdfFiltersFontSize" style="width: 50px;">
+												<option value="6" <?php if($systemAdmin->getValue("pdfFiltersFontSize")=="6"){ echo "selected"; }?>>6</option>
+												<option value="8" <?php if($systemAdmin->getValue("pdfFiltersFontSize")=="8"){ echo "selected"; }?>>8</option>
+												<option value="9" <?php if($systemAdmin->getValue("pdfFiltersFontSize")=="9"){ echo "selected"; }?>>9</option>
+												<option value="10" <?php if($systemAdmin->getValue("pdfFiltersFontSize")=="10"){ echo "selected"; }?>>10</option>
+												<option value="11" <?php if($systemAdmin->getValue("pdfFiltersFontSize")=="11"){ echo "selected"; }?>>11</option>
+												<option value="12" <?php if($systemAdmin->getValue("pdfFiltersFontSize")=="12"){ echo "selected"; }?>>12</option>
+												<option value="14" <?php if($systemAdmin->getValue("pdfFiltersFontSize")=="14"){ echo "selected"; }?>>14</option>
+												<option value="16" <?php if($systemAdmin->getValue("pdfFiltersFontSize")=="16"){ echo "selected"; }?>>16</option>
+												<option value="18" <?php if($systemAdmin->getValue("pdfFiltersFontSize")=="18"){ echo "selected"; }?>>18</option>
+												<option value="20" <?php if($systemAdmin->getValue("pdfFiltersFontSize")=="20"){ echo "selected"; }?>>20</option>
+												<option value="22" <?php if($systemAdmin->getValue("pdfFiltersFontSize")=="22"){ echo "selected"; }?>>22</option>
+												<option value="24" <?php if($systemAdmin->getValue("pdfFiltersFontSize")=="24"){ echo "selected"; }?>>24</option>
+												<option value="26" <?php if($systemAdmin->getValue("pdfFiltersFontSize")=="26"){ echo "selected"; }?>>26</option>
+												<option value="28" <?php if($systemAdmin->getValue("pdfFiltersFontSize")=="28"){ echo "selected"; }?>>28</option>
+												<option value="36" <?php if($systemAdmin->getValue("pdfFiltersFontSize")=="36"){ echo "selected"; }?>>36</option>
+												<option value="48" <?php if($systemAdmin->getValue("pdfFiltersFontSize")=="48"){ echo "selected"; }?>>48</option>
+												<option value="72" <?php if($systemAdmin->getValue("pdfFiltersFontSize")=="72"){ echo "selected"; }?>>72</option>
+											</select>
+											<a id="pdfFilterFontBold" href="#" onClick="return reportManager.xlsFormat('pdfFilterFont','Bold',true)" class="form <?php if($systemAdmin->getValue("pdfFilterFontBold")=="true"){ echo "check"; }else{ echo "uhcheck"; }?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_bold.png"" class="v-middle" alt=""></a>
+											<a id="pdfFilterFontItalic" href="#" onClick="return reportManager.xlsFormat('pdfFilterFont','Italic',true)" class="form <?php if($systemAdmin->getValue("pdfFilterFontItalic")=="true"){ echo "check"; }else{ echo "uhcheck"; }?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_italic.png"" class="v-middle" alt=""></a>
+											<a id="pdfFilterFontColorIcon" href="#" onClick="return reportManager.xlsFormat('pdfFilterFont','Color',true)" class="form"  style="background-color:#<?php echo $systemAdmin->getValue("pdfFilterFontColor");?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_color.png"" class="v-middle" alt=""></a>
+											<input class="color {pickerOnfocus:false,pickerClosable:true}" id="pdfFilterFontColor" value="<?php echo $systemAdmin->getValue("pdfFilterFontColor");?>"  style="width: 0px; border: 0px" onchange="$$('#container-System #pdfFilterFontColorIcon')[0].style.backgroundColor = '#'+this.color">
+											
+											
+										</td>
+									</tr>
+									<tr>
+										<td class="label"><label for="svn_text_qualifier"><?php echo $this->__('PDF Table Header');?></span></label></td>
+										<td colspan="3" class="value">
+											<select name="font" id="pdfTableHFontName" style="width: 100px;">
+											  <option value="Courier" <?php if($systemAdmin->getValue("pdfTableHFontName")=="Courier"){ echo "selected"; }?>>Courier</option>
+											  <option value="Helvetica" <?php if($systemAdmin->getValue("pdfTableHFontName")=="Helvetica"){ echo "selected"; }?>>Helvetica</option>
+											  <option value="Times" <?php if($systemAdmin->getValue("pdfTableHFontName")=="Times"){ echo "selected"; }?>>Times</option>
+											</select>
+											<select id="pdfTableHFontSize" style="width: auto;">
+												<option value="6" <?php if($systemAdmin->getValue("pdfTableHFontSize")=="6"){ echo "selected"; }?>>6</option>
+												<option value="8" <?php if($systemAdmin->getValue("pdfTableHFontSize")=="8"){ echo "selected"; }?>>8</option>
+												<option value="9" <?php if($systemAdmin->getValue("pdfTableHFontSize")=="9"){ echo "selected"; }?>>9</option>
+												<option value="10" <?php if($systemAdmin->getValue("pdfTableHFontSize")=="10"){ echo "selected"; }?>>10</option>
+												<option value="11" <?php if($systemAdmin->getValue("pdfTableHFontSize")=="11"){ echo "selected"; }?>>11</option>
+												<option value="12" <?php if($systemAdmin->getValue("pdfTableHFontSize")=="12"){ echo "selected"; }?>>12</option>
+												<option value="14" <?php if($systemAdmin->getValue("pdfTableHFontSize")=="14"){ echo "selected"; }?>>14</option>
+												<option value="16" <?php if($systemAdmin->getValue("pdfTableHFontSize")=="16"){ echo "selected"; }?>>16</option>
+												<option value="18" <?php if($systemAdmin->getValue("pdfTableHFontSize")=="18"){ echo "selected"; }?>>18</option>
+												<option value="20" <?php if($systemAdmin->getValue("pdfTableHFontSize")=="20"){ echo "selected"; }?>>20</option>
+												<option value="22" <?php if($systemAdmin->getValue("pdfTableHFontSize")=="22"){ echo "selected"; }?>>22</option>
+												<option value="24" <?php if($systemAdmin->getValue("pdfTableHFontSize")=="24"){ echo "selected"; }?>>24</option>
+												<option value="26" <?php if($systemAdmin->getValue("pdfTableHFontSize")=="26"){ echo "selected"; }?>>26</option>
+												<option value="28" <?php if($systemAdmin->getValue("pdfTableHFontSize")=="28"){ echo "selected"; }?>>28</option>
+												<option value="36" <?php if($systemAdmin->getValue("pdfTableHFontSize")=="36"){ echo "selected"; }?>>36</option>
+												<option value="48" <?php if($systemAdmin->getValue("pdfTableHFontSize")=="48"){ echo "selected"; }?>>48</option>
+												<option value="72" <?php if($systemAdmin->getValue("pdfTableHFontSize")=="72"){ echo "selected"; }?>>72</option>
+											</select>
+											<a id="pdfTableHAlignLeft" href="#" onClick="return reportManager.xlsFormat('pdfTableH','AlignLeft',true)" class="form <?php if($systemAdmin->getValue("pdfTableHAlignLeft")=="true"){ echo "check"; }else{ echo "uhcheck"; }?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_align_left.png" class="v-middle" alt=""></a>
+											<a id="pdfTableHAlignCenter"  href="#" onClick="return reportManager.xlsFormat('pdfTableH','AlignCenter',true)" class="form <?php if($systemAdmin->getValue("pdfTableHAlignCenter")=="true"){ echo "check"; }else{ echo "uhcheck"; }?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_align_center.png" class="v-middle" alt=""></a>
+											<a id="pdfTableHAlignRight" href="#" onClick="return reportManager.xlsFormat('pdfTableH','AlignRight',true)" class="form <?php if($systemAdmin->getValue("pdfTableHAlignRight")=="true"){ echo "check"; }else{ echo "uhcheck"; }?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_align_right.png" class="v-middle" alt=""></a>
+											<a id="pdfTableHFontBold" href="#" onClick="return reportManager.xlsFormat('pdfTableHFont','Bold',true)" class="form <?php if($systemAdmin->getValue("pdfTableHFontBold")=="true"){ echo "check"; }else{ echo "uhcheck"; }?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_bold.png" class="v-middle" alt=""></a>
+											<a id="pdfTableHFontItalic" href="#" onClick="return reportManager.xlsFormat('pdfTableHFont','Italic',true)" class="form <?php if($systemAdmin->getValue("pdfTableHFontItalic")=="true"){ echo "check"; }else{ echo "uhcheck"; }?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_italic.png" class="v-middle" alt=""></a>
+											<a id="pdfTableHBackgroundColorIcon" href="#" onClick="return reportManager.xlsFormat('pdfTableH','BackgroundColor',true)" class="form" style="background-color:#<?php echo $systemAdmin->getValue("pdfTableHBackgroundColor");?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_backgroundcolor.png" class="v-middle" alt=""></a>
+											<input class="color {pickerOnfocus:false,pickerClosable:true}" id="pdfTableHBackgroundColor" value="<?php echo $systemAdmin->getValue("pdfTableHBackgroundColor");?>" style="width: 0px; border: 0px" onchange="$$('#container-System #pdfTableHBackgroundColorIcon')[0].style.backgroundColor = '#'+this.color">
+											<a id="pdfTableHFontColorIcon" href="#" onClick="return reportManager.xlsFormat('pdfTableHFont','Color',true)" class="form" style="background-color:#<?php echo $systemAdmin->getValue("pdfTableHFontColor");?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_color.png" class="v-middle" alt=""></a>
+											<input class="color {pickerOnfocus:false,pickerClosable:true}" id="pdfTableHFontColor" value="<?php echo $systemAdmin->getValue("pdfTableHFontColor");?>" style="width: 0px; border: 0px" onchange="$$('#container-System #pdfTableHFontColorIcon')[0].style.backgroundColor = '#'+this.color">
+											<a id="pdfTableHBorderAll" href="#" onClick="return reportManager.xlsFormat('pdfTableH','BorderAll',true)" class="form <?php if($systemAdmin->getValue("pdfTableHBorderAll")=="true"){ echo "check"; }else{ echo "uhcheck"; }?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/border_all.png" class="v-middle" alt=""></a>
+											<a id="pdfTableHBorderTop" href="#" onClick="return reportManager.xlsFormat('pdfTableH','BorderTop',true)" class="form <?php if($systemAdmin->getValue("pdfTableHBorderTop")=="true"){ echo "check"; }else{ echo "uhcheck"; }?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/border_top.png" class="v-middle" alt=""></a>
+											<a id="pdfTableHBorderRight" href="#" onClick="return reportManager.xlsFormat('pdfTableH','BorderRight',true)" class="form <?php if($systemAdmin->getValue("pdfTableHBorderRight")=="true"){ echo "check"; }else{ echo "uhcheck"; }?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/border_right.png" class="v-middle" alt=""></a>
+											<a id="pdfTableHBorderBottom" href="#" onClick="return reportManager.xlsFormat('pdfTableH','BorderBottom',true)" class="form <?php if($systemAdmin->getValue("pdfTableHBorderBottom")=="true"){ echo "check"; }else{ echo "uhcheck"; }?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/border_bottom.png" class="v-middle" alt=""></a>
+											<a id="pdfTableHBorderLeft" href="#" onClick="return reportManager.xlsFormat('pdfTableH','BorderLeft',true)" class="form <?php if($systemAdmin->getValue("pdfTableHBorderLeft")=="true"){ echo "check"; }else{ echo "uhcheck"; }?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/border_left.png" class="v-middle" alt=""></a>
+											<a id="pdfTableHBorderInH" href="#" onClick="return reportManager.xlsFormat('pdfTableH','BorderInH',true)" class="form <?php if($systemAdmin->getValue("pdfTableHBorderInH")=="true"){ echo "check"; }else{ echo "uhcheck"; }?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/border_in_hor.png" class="v-middle" alt=""></a>
+											<a id="pdfTableHBorderInV" href="#" onClick="return reportManager.xlsFormat('pdfTableH','BorderInV',true)" class="form <?php if($systemAdmin->getValue("pdfTableHBorderInV")=="true"){ echo "check"; }else{ echo "uhcheck"; }?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/border_in_ver.png" class="v-middle" alt=""></a>
+										
+										</td>
+									</tr>
+									<tr>
+										<td class="label"><label for="svn_text_qualifier"><?php echo $this->__('PDF Table Data');?></span></label></td>
+										<td colspan="3" class="value">
+											<select name="font" id="pdfTableDFontName" style="width: 100px;">
+											  <option value="Courier" <?php if($systemAdmin->getValue("pdfTableDFontName")=="Courier"){ echo "selected"; }?>>Courier</option>
+											  <option value="Helvetica" <?php if($systemAdmin->getValue("pdfTableDFontName")=="Helvetica"){ echo "selected"; }?>>Helvetica</option>
+											  <option value="Times" <?php if($systemAdmin->getValue("pdfTableDFontName")=="Times"){ echo "selected"; }?>>Times</option>
+											</select>
+											<select id="pdfTableDFontsize" style="width: auto;">
+												<option value="6" <?php if($systemAdmin->getValue("pdfTableDFontsize")=="6"){ echo "selected"; }?>>6</option>
+												<option value="8" <?php if($systemAdmin->getValue("pdfTableDFontsize")=="8"){ echo "selected"; }?>>8</option>
+												<option value="9" <?php if($systemAdmin->getValue("pdfTableDFontsize")=="9"){ echo "selected"; }?>>9</option>
+												<option value="10" <?php if($systemAdmin->getValue("pdfTableDFontsize")=="10"){ echo "selected"; }?>>10</option>
+												<option value="11" <?php if($systemAdmin->getValue("pdfTableDFontsize")=="11"){ echo "selected"; }?>>11</option>
+												<option value="12" <?php if($systemAdmin->getValue("pdfTableDFontsize")=="12"){ echo "selected"; }?>>12</option>
+												<option value="14" <?php if($systemAdmin->getValue("pdfTableDFontsize")=="14"){ echo "selected"; }?>>14</option>
+												<option value="16" <?php if($systemAdmin->getValue("pdfTableDFontsize")=="16"){ echo "selected"; }?>>16</option>
+												<option value="18" <?php if($systemAdmin->getValue("pdfTableDFontsize")=="18"){ echo "selected"; }?>>18</option>
+												<option value="20" <?php if($systemAdmin->getValue("pdfTableDFontsize")=="20"){ echo "selected"; }?>>20</option>
+												<option value="22" <?php if($systemAdmin->getValue("pdfTableDFontsize")=="22"){ echo "selected"; }?>>22</option>
+												<option value="24" <?php if($systemAdmin->getValue("pdfTableDFontsize")=="24"){ echo "selected"; }?>>24</option>
+												<option value="26" <?php if($systemAdmin->getValue("pdfTableDFontsize")=="26"){ echo "selected"; }?>>26</option>
+												<option value="28" <?php if($systemAdmin->getValue("pdfTableDFontsize")=="28"){ echo "selected"; }?>>28</option>
+												<option value="36" <?php if($systemAdmin->getValue("pdfTableDFontsize")=="36"){ echo "selected"; }?>>36</option>
+												<option value="48" <?php if($systemAdmin->getValue("pdfTableDFontsize")=="48"){ echo "selected"; }?>>48</option>
+												<option value="72" <?php if($systemAdmin->getValue("pdfTableDFontsize")=="72"){ echo "selected"; }?>>72</option>
+											</select>
+											<a id="pdfTableDAlignLeft" href="#" onClick="return reportManager.xlsFormat('pdfTableD','AlignLeft',true)" class="form <?php if($systemAdmin->getValue("pdfTableDAlignLeft")=="true"){ echo "check"; }else{ echo "uhcheck"; }?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_align_left.png"" class="v-middle" alt=""></a>
+											<a id="pdfTableDAlignCenter"  href="#" onClick="return reportManager.xlsFormat('pdfTableD','AlignCenter',true)" class="form <?php if($systemAdmin->getValue("pdfTableDAlignCenter")=="true"){ echo "check"; }else{ echo "uhcheck"; }?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_align_center.png"" class="v-middle" alt=""></a>
+											<a id="pdfTableDAlignRight" href="#" onClick="return reportManager.xlsFormat('pdfTableD','AlignRight',true)" class="form <?php if($systemAdmin->getValue("pdfTableDAlignRight")=="true"){ echo "check"; }else{ echo "uhcheck"; }?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_align_right.png"" class="v-middle" alt=""></a>
+											<a id="pdfTableDFontBold" href="#" onClick="return reportManager.xlsFormat('pdfTableDFont','Bold',true)" class="form <?php if($systemAdmin->getValue("pdfTableDFontBold")=="true"){ echo "check"; }else{ echo "uhcheck"; }?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_bold.png"" class="v-middle" alt=""></a>
+											<a id="pdfTableDFontItalic" href="#" onClick="return reportManager.xlsFormat('pdfTableDFont','Italic',true)" class="form <?php if($systemAdmin->getValue("pdfTableDFontItalic")=="true"){ echo "check"; }else{ echo "uhcheck"; }?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_italic.png"" class="v-middle" alt=""></a>
+											<?php echo $this->__('Odd');?> <a id="pdfTableDOBackgroundColorIcon" href="#" onClick="return reportManager.xlsFormat('pdfTableDO','BackgroundColor',true)" class="form" style="background-color:#<?php echo $systemAdmin->getValue("pdfTableDOBackgroundColor");?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_backgroundcolor.png"" class="v-middle" alt=""></a>
+											<input class="color {pickerOnfocus:false,pickerClosable:true}" id="pdfTableDOBackgroundColor" value="<?php echo $systemAdmin->getValue("pdfTableDOBackgroundColor");?>" style="width: 0px; border: 0px" onchange="$$('#container-System #pdfTableDOBackgroundColorIcon')[0].style.backgroundColor = '#'+this.color">
+											<?php echo $this->__('Even');?> <a id="pdfTableDEBackgroundColorIcon" href="#" onClick="return reportManager.xlsFormat('pdfTableDE','BackgroundColor',true)" class="form" style="background-color:#<?php echo $systemAdmin->getValue("pdfTableDEBackgroundColor");?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_backgroundcolor.png"" class="v-middle" alt=""></a>
+											<input class="color {pickerOnfocus:false,pickerClosable:true}" id="pdfTableDEBackgroundColor" value="<?php echo $systemAdmin->getValue("pdfTableDEBackgroundColor");?>" style="width: 0px; border: 0px" onchange="$$('#container-System #pdfTableDEBackgroundColorIcon')[0].style.backgroundColor = '#'+this.color">
+											<a id="pdfTableDFontColorIcon" href="#" onClick="return reportManager.xlsFormat('pdfTableDFont','Color',true)" class="form" style="background-color:#<?php echo $systemAdmin->getValue("pdfTableDFontColor");?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_color.png"" class="v-middle" alt=""></a>
+											<input class="color {pickerOnfocus:false,pickerClosable:true}" id="pdfTableDFontColor" value="<?php echo $systemAdmin->getValue("pdfTableDFontColor");?>" style="width: 0px; border: 0px" onchange="$$('#container-System #pdfTableDFontColorIcon')[0].style.backgroundColor = '#'+this.color">
+											<a id="pdfTableDBorderAll" href="#" onClick="return reportManager.xlsFormat('pdfTableD','BorderAll',true)" class="form <?php if($systemAdmin->getValue("pdfTableDBorderAll")=="true"){ echo "check"; }else{ echo "uhcheck"; }?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/border_all.png"" class="v-middle" alt=""></a>
+											<a id="pdfTableDBorderTop" href="#" onClick="return reportManager.xlsFormat('pdfTableD','BorderTop',true)" class="form <?php if($systemAdmin->getValue("pdfTableDBorderTop")=="true"){ echo "check"; }else{ echo "uhcheck"; }?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/border_top.png"" class="v-middle" alt=""></a>
+											<a id="pdfTableDBorderRight" href="#" onClick="return reportManager.xlsFormat('pdfTableD','BorderRight',true)" class="form <?php if($systemAdmin->getValue("pdfTableDBorderRight")=="true"){ echo "check"; }else{ echo "uhcheck"; }?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/border_right.png"" class="v-middle" alt=""></a>
+											<a id="pdfTableDBorderBottom" href="#" onClick="return reportManager.xlsFormat('pdfTableD','BorderBottom',true)" class="form <?php if($systemAdmin->getValue("pdfTableDBorderBottom")=="true"){ echo "check"; }else{ echo "uhcheck"; }?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/border_bottom.png"" class="v-middle" alt=""></a>
+											<a id="pdfTableDBorderLeft" href="#" onClick="return reportManager.xlsFormat('pdfTableD','BorderLeft',true)" class="form <?php if($systemAdmin->getValue("pdfTableDBorderLeft")=="true"){ echo "check"; }else{ echo "uhcheck"; }?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/border_left.png"" class="v-middle" alt=""></a>
+											<a id="pdfTableDBorderInH" href="#" onClick="return reportManager.xlsFormat('pdfTableD','BorderInH',true)" class="form <?php if($systemAdmin->getValue("pdfTableDBorderInH")=="true"){ echo "check"; }else{ echo "uhcheck"; }?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/border_in_hor.png"" class="v-middle" alt=""></a>
+											<a id="pdfTableDBorderInV" href="#" onClick="return reportManager.xlsFormat('pdfTableD','BorderInV',true)" class="form <?php if($systemAdmin->getValue("pdfTableDBorderInV")=="true"){ echo "check"; }else{ echo "uhcheck"; }?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/border_in_ver.png"" class="v-middle" alt=""></a>
+										</td>
+									</tr>
+									<tr>
+										<td class="label"><label for="svn_text_qualifier"><?php echo $this->__('PDF Table Footer');?></span></label></td>
+										<td colspan="3" class="value">
+											<?php echo $this->__('Show Footer');?> <select name="font" id="pdfTableFShow" style="width: 50px;">
+											  <option value="true" <?php if($systemAdmin->getValue("pdfTableFShow")=="true"){ echo "selected"; }?>><?php echo $this->__('Yes');?></option>
+											  <option value="false" <?php if($systemAdmin->getValue("pdfTableFShow")=="false"){ echo "selected"; }?>><?php echo $this->__('No');?></option>
+											</select>
+											<select name="font" id="pdfTableFFontName" style="width: 100px;">
+											  <option value="Courier" <?php if($systemAdmin->getValue("pdfTableFFontName")=="Courier"){ echo "selected"; }?>>Courier</option>
+											  <option value="Helvetica" <?php if($systemAdmin->getValue("pdfTableFFontName")=="Helvetica"){ echo "selected"; }?>>Helvetica</option>
+											  <option value="Times" <?php if($systemAdmin->getValue("pdfTableFFontName")=="Times"){ echo "selected"; }?>>Times</option>
+											</select>
+											<select id="pdfTableFFontSize" style="width: auto;">
+												<option value="6" <?php if($systemAdmin->getValue("pdfTableFFontSize")=="6"){ echo "selected"; }?>>6</option>
+												<option value="8" <?php if($systemAdmin->getValue("pdfTableFFontSize")=="8"){ echo "selected"; }?>>8</option>
+												<option value="9" <?php if($systemAdmin->getValue("pdfTableFFontSize")=="9"){ echo "selected"; }?>>9</option>
+												<option value="10" <?php if($systemAdmin->getValue("pdfTableFFontSize")=="10"){ echo "selected"; }?>>10</option>
+												<option value="11" <?php if($systemAdmin->getValue("pdfTableFFontSize")=="11"){ echo "selected"; }?>>11</option>
+												<option value="12" <?php if($systemAdmin->getValue("pdfTableFFontSize")=="12"){ echo "selected"; }?>>12</option>
+												<option value="14" <?php if($systemAdmin->getValue("pdfTableFFontSize")=="14"){ echo "selected"; }?>>14</option>
+												<option value="16" <?php if($systemAdmin->getValue("pdfTableFFontSize")=="16"){ echo "selected"; }?>>16</option>
+												<option value="18" <?php if($systemAdmin->getValue("pdfTableFFontSize")=="18"){ echo "selected"; }?>>18</option>
+												<option value="20" <?php if($systemAdmin->getValue("pdfTableFFontSize")=="20"){ echo "selected"; }?>>20</option>
+												<option value="22" <?php if($systemAdmin->getValue("pdfTableFFontSize")=="22"){ echo "selected"; }?>>22</option>
+												<option value="24" <?php if($systemAdmin->getValue("pdfTableFFontSize")=="24"){ echo "selected"; }?>>24</option>
+												<option value="26" <?php if($systemAdmin->getValue("pdfTableFFontSize")=="26"){ echo "selected"; }?>>26</option>
+												<option value="28" <?php if($systemAdmin->getValue("pdfTableFFontSize")=="28"){ echo "selected"; }?>>28</option>
+												<option value="36" <?php if($systemAdmin->getValue("pdfTableFFontSize")=="36"){ echo "selected"; }?>>36</option>
+												<option value="48" <?php if($systemAdmin->getValue("pdfTableFFontSize")=="48"){ echo "selected"; }?>>48</option>
+												<option value="72" <?php if($systemAdmin->getValue("pdfTableFFontSize")=="72"){ echo "selected"; }?>>72</option>
+											</select>
+											<a id="pdfTableFAlignLeft" href="#" onClick="return reportManager.xlsFormat('pdfTableF','AlignLeft',true)" class="form <?php if($systemAdmin->getValue("pdfTableFAlignLeft")=="true"){ echo "check"; }else{ echo "uhcheck"; }?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_align_left.png"" class="v-middle" alt=""></a>
+											<a id="pdfTableFAlignCenter"  href="#" onClick="return reportManager.xlsFormat('pdfTableF','AlignCenter',true)" class="form <?php if($systemAdmin->getValue("pdfTableFAlignCenter")=="true"){ echo "check"; }else{ echo "uhcheck"; }?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_align_center.png"" class="v-middle" alt=""></a>
+											<a id="pdfTableFAlignRight" href="#" onClick="return reportManager.xlsFormat('pdfTableF','AlignRight',true)" class="form <?php if($systemAdmin->getValue("pdfTableFAlignRight")=="true"){ echo "check"; }else{ echo "uhcheck"; }?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_align_right.png"" class="v-middle" alt=""></a>
+											<a id="pdfTableFFontBold" href="#" onClick="return reportManager.xlsFormat('pdfTableFFont','Bold',true)" class="form <?php if($systemAdmin->getValue("pdfTableFFontBold")=="true"){ echo "check"; }else{ echo "uhcheck"; }?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_bold.png"" class="v-middle" alt=""></a>
+											<a id="pdfTableFFontItalic" href="#" onClick="return reportManager.xlsFormat('pdfTableFFont','Italic',true)" class="form <?php if($systemAdmin->getValue("pdfTableFFontItalic")=="true"){ echo "check"; }else{ echo "uhcheck"; }?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_italic.png"" class="v-middle" alt=""></a>
+											<a id="pdfTableFBackgroundColorIcon" href="#" onClick="return reportManager.xlsFormat('pdfTableF','BackgroundColor',true)" class="form" style="background-color:#<?php echo $systemAdmin->getValue("pdfTableFBackgroundColor");?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_backgroundcolor.png"" class="v-middle" alt=""></a>
+											<input class="color {pickerOnfocus:false,pickerClosable:true}" id="pdfTableFBackgroundColor" value="<?php echo $systemAdmin->getValue("pdfTableFBackgroundColor");?>" style="width: 0px; border: 0px" onchange="$$('#container-System #pdfTableFBackgroundColorIcon')[0].style.backgroundColor = '#'+this.color">
+											<a id="pdfTableFFontColorIcon" href="#" onClick="return reportManager.xlsFormat('pdfTableFFont','Color',true)" class="form" style="background-color:#<?php echo $systemAdmin->getValue("pdfTableFFontColor");?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_color.png"" class="v-middle" alt=""></a>
+											<input class="color {pickerOnfocus:false,pickerClosable:true}" id="pdfTableFFontColor" value="<?php echo $systemAdmin->getValue("pdfTableFFontColor");?>" style="width: 0px; border: 0px" onchange="$$('#container-System #pdfTableFFontColorIcon')[0].style.backgroundColor = '#'+this.color">
+											<a id="pdfTableFBorderAll" href="#" onClick="return reportManager.xlsFormat('pdfTableF','BorderAll',true)" class="form <?php if($systemAdmin->getValue("pdfTableFBorderAll")=="true"){ echo "check"; }else{ echo "uhcheck"; }?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/border_all.png"" class="v-middle" alt=""></a>
+											<a id="pdfTableFBorderTop" href="#" onClick="return reportManager.xlsFormat('pdfTableF','BorderTop',true)" class="form <?php if($systemAdmin->getValue("pdfTableFBorderTop")=="true"){ echo "check"; }else{ echo "uhcheck"; }?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/border_top.png"" class="v-middle" alt=""></a>
+											<a id="pdfTableFBorderRight" href="#" onClick="return reportManager.xlsFormat('pdfTableF','BorderRight',true)" class="form <?php if($systemAdmin->getValue("pdfTableFBorderRight")=="true"){ echo "check"; }else{ echo "uhcheck"; }?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/border_right.png"" class="v-middle" alt=""></a>
+											<a id="pdfTableFBorderBottom" href="#" onClick="return reportManager.xlsFormat('pdfTableF','BorderBottom',true)" class="form <?php if($systemAdmin->getValue("pdfTableFBorderBottom")=="true"){ echo "check"; }else{ echo "uhcheck"; }?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/border_bottom.png"" class="v-middle" alt=""></a>
+											<a id="pdfTableFBorderLeft" href="#" onClick="return reportManager.xlsFormat('pdfTableF','BorderLeft',true)" class="form <?php if($systemAdmin->getValue("pdfTableFBorderLeft")=="true"){ echo "check"; }else{ echo "uhcheck"; }?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/border_left.png"" class="v-middle" alt=""></a>
+											<a id="pdfTableFBorderInV" href="#" onClick="return reportManager.xlsFormat('pdfTableF','BorderInV',true)" class="form <?php if($systemAdmin->getValue("pdfTableFBorderInV")=="true"){ echo "check"; }else{ echo "uhcheck"; }?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/border_in_ver.png"" class="v-middle" alt=""></a>
+										
+										</td>
+									</tr>
+									<tr>
+										<td class="label"><label for="svn_text_qualifier"><?php echo $this->__('PDF Footer');?></span></label></td>
+										<td colspan="3" class="value">
+											<select name="font" id="pdfFooterFontName" style="width: 100px;">
+											  <option value="Courier" <?php if($systemAdmin->getValue("pdfFooterFontName")=="Courier"){ echo "selected"; }?>>Courier</option>
+											  <option value="Helvetica" <?php if($systemAdmin->getValue("pdfFooterFontName")=="Helvetica"){ echo "selected"; }?>>Helvetica</option>
+											  <option value="Times" <?php if($systemAdmin->getValue("pdfFooterFontName")=="Times"){ echo "selected"; }?>>Times</option>
+											</select>
+											<select id="pdfFooterFontSize" style="width: 50px;">
+												<option value="6" <?php if($systemAdmin->getValue("pdfFooterFontSize")=="6"){ echo "selected"; }?>>6</option>
+												<option value="8" <?php if($systemAdmin->getValue("pdfFooterFontSize")=="8"){ echo "selected"; }?>>8</option>
+												<option value="9" <?php if($systemAdmin->getValue("pdfFooterFontSize")=="9"){ echo "selected"; }?>>9</option>
+												<option value="10" <?php if($systemAdmin->getValue("pdfFooterFontSize")=="10"){ echo "selected"; }?>>10</option>
+												<option value="11" <?php if($systemAdmin->getValue("pdfFooterFontSize")=="11"){ echo "selected"; }?>>11</option>
+												<option value="12" <?php if($systemAdmin->getValue("pdfFooterFontSize")=="12"){ echo "selected"; }?>>12</option>
+												<option value="14" <?php if($systemAdmin->getValue("pdfFooterFontSize")=="14"){ echo "selected"; }?>>14</option>
+												<option value="16" <?php if($systemAdmin->getValue("pdfFooterFontSize")=="16"){ echo "selected"; }?>>16</option>
+												<option value="18" <?php if($systemAdmin->getValue("pdfFooterFontSize")=="18"){ echo "selected"; }?>>18</option>
+												<option value="20" <?php if($systemAdmin->getValue("pdfFooterFontSize")=="20"){ echo "selected"; }?>>20</option>
+												<option value="22" <?php if($systemAdmin->getValue("pdfFooterFontSize")=="22"){ echo "selected"; }?>>22</option>
+												<option value="24" <?php if($systemAdmin->getValue("pdfFooterFontSize")=="24"){ echo "selected"; }?>>24</option>
+												<option value="26" <?php if($systemAdmin->getValue("pdfFooterFontSize")=="26"){ echo "selected"; }?>>26</option>
+												<option value="28" <?php if($systemAdmin->getValue("pdfFooterFontSize")=="28"){ echo "selected"; }?>>28</option>
+												<option value="36" <?php if($systemAdmin->getValue("pdfFooterFontSize")=="36"){ echo "selected"; }?>>36</option>
+												<option value="48" <?php if($systemAdmin->getValue("pdfFooterFontSize")=="48"){ echo "selected"; }?>>48</option>
+												<option value="72" <?php if($systemAdmin->getValue("pdfFooterFontSize")=="72"){ echo "selected"; }?>>72</option>
+											</select>
+											<a id="pdfFooterAlignLeft" href="#" onClick="return reportManager.xlsFormat('pdfFooter','AlignLeft',true)" class="form <?php if($systemAdmin->getValue("pdfFooterAlignLeft")=="true"){ echo "check"; }else{ echo "uhcheck"; }?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_align_left.png"" class="v-middle" alt=""></a>
+											<a id="pdfFooterAlignCenter"  href="#" onClick="return reportManager.xlsFormat('pdfFooter','AlignCenter',true)" class="form <?php if($systemAdmin->getValue("pdfFooterAlignCenter")=="true"){ echo "check"; }else{ echo "uhcheck"; }?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_align_center.png"" class="v-middle" alt=""></a>
+											<a id="pdfFooterAlignRight" href="#" onClick="return reportManager.xlsFormat('pdfFooter','AlignRight',true)" class="form <?php if($systemAdmin->getValue("pdfFooterAlignRight")=="true"){ echo "check"; }else{ echo "uhcheck"; }?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_align_right.png"" class="v-middle" alt=""></a>
+											<a id="pdfFooterFontBold" href="#" onClick="return reportManager.xlsFormat('pdfFooterFont','Bold',true)" class="form <?php if($systemAdmin->getValue("pdfFooterFontBold")=="true"){ echo "check"; }else{ echo "uhcheck"; }?>""><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_bold.png"" class="v-middle" alt=""></a>
+											<a id="pdfFooterFontItalic" href="#" onClick="return reportManager.xlsFormat('pdfFooterFont','Italic',true)" class="form <?php if($systemAdmin->getValue("pdfFooterFontItalic")=="true"){ echo "check"; }else{ echo "uhcheck"; }?>""><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_italic.png"" class="v-middle" alt=""></a>
+											<a id="pdfFooterFontColorIcon" href="#" onClick="return reportManager.xlsFormat('pdfFooterFont','Color',true)" class="form"  style="background-color:#<?php echo $systemAdmin->getValue("pdfFooterFontColor");?>"><img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/text_color.png"" class="v-middle" alt=""></a>
+											<input class="color {pickerOnfocus:false,pickerClosable:true}" id="pdfFooterFontColor" value="<?php echo $systemAdmin->getValue("pdfFooterFontColor");?>"  style="width: 0px; border: 0px" onchange="$$('#container-System #pdfFooterFontColorIcon')[0].style.backgroundColor = '#'+this.color">
+											<textarea name="text" title="Content" id="pdfFooterString" class="textarea" style="height:5em;width: 100%;" rows="2" cols="15" ><?php echo $systemAdmin->getValue("pdfFooterString");?></textarea>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+							
+						</fieldset>
+						
+						<div class="entry-edit-head collapseable"><a id="system_field_chart-head" href="#" class="open" onClick="return reportManager.collapse('system_field_chart')"><?php echo $this->__('Chart Parameters');?></a></div>
+						<fieldset class="config collapseable" id="system_field_chart">
+							<table cellspacing="0" class="form-list">
+								<colgroup class="label"></colgroup>
+								<colgroup class="value"></colgroup>
+								<colgroup class="scope-label"></colgroup>
+								<colgroup class=""></colgroup>
+								<tbody>
+									<tr>
+										<td class="label"><label for="chart_height_default"><?php echo $this->__('Height');?> <span class="required">*</span></label></td>
+										<td class="value"><input id="chart_height_default" name="chart_height_default" value="<?php echo $systemAdmin->getValue("chart_height_default");?>" class=" input-text required-entry validate-number" type="text"></td>
+										<td class="scope-label"><?php echo $this->__('Height of the chart in the report');?></td>
+										<td class=""></td>
+									</tr>
+									
+								</tbody>
+							</table>
+						</fieldset>
+						
+						<div class="entry-edit-head collapseable"><a id="system_field_link-head" href="#" class="open" onClick="return reportManager.collapse('system_fieel_link')"><?php echo $this->__('Link Parameters');?></a></div>
+						<fieldset class="config collapseable" id="system_field_link">
+							<table cellspacing="0" class="form-list">
+								<colgroup class="label"></colgroup>
+								<colgroup class="value"></colgroup>
+								<colgroup class="scope-label"></colgroup>
+								<colgroup class=""></colgroup>
+								<tbody>
+									<tr>
+										<td class="label"><label for="chart_height_default"><?php echo $this->__('Target');?> <span class="required">*</span></label></td>
+										<td class="value"><select id="link_target" name="link_target" class="required-entry">
+														  	 <option value="blank" <?php if($systemAdmin->getValue("link_target")=="blank"){ echo "selected"; }?>><?php echo $this->__('Blank - Opens the linked document in a new window or tab');?></option>
+														  	 <option value="self" <?php if($systemAdmin->getValue("link_target")=="self" || $systemAdmin->getValue("link_target")==""){ echo "selected"; }?>><?php echo $this->__('Self - Opens the linked document in the same frame as it was clicked');?></option>
+														  	 <option value="parent" <?php if($systemAdmin->getValue("link_target")=="parent"){ echo "selected"; }?>><?php echo $this->__('Parent - Opens the linked document in the parent frame');?></option>
+														  	 <option value="top" <?php if($systemAdmin->getValue("link_target")=="top"){ echo "selected"; }?>><?php echo $this->__('Top - Opens the linked document in the full body of the window');?></option>
+														  </select></td>
+										<td class="scope-label"><?php echo $this->__('The target attribute specifies where to open the linked document');?></td>
+										<td class=""></td>
+									</tr>
+									
+								</tbody>
+							</table>
+						</fieldset>
+						
+						<div class="entry-edit-head collapseable"><a id="system_field_database-head" href="#" class="open" onClick="return reportManager.collapse('system_field_database')"><?php echo $this->__('Database connection');?></a></div>
+						<fieldset class="config collapseable" id="system_field_database">
+						<?php echo $this->__('If reports have to be run on a different database, insert here the connection settings');?>
+							<table cellspacing="0" class="form-list" id="system_dbConnection_table">
+								<colgroup class="label"></colgroup>
+								<colgroup class="value"></colgroup>
+								<colgroup class="scope-label"></colgroup>
+								<colgroup class=""></colgroup>
+								<tbody>
+									<tr>
+										<td class="label"><label for="db_host"><?php echo $this->__('Host');?> </label></td>
+										<td class="value"><input id="db_host" name="db_host" value="<?php echo $systemAdmin->getValue("db_host");?>" class=" input-text" type="text"></td>
+										<td class="scope-label"></td>
+										<td class=""></td>
+									</tr>
+									<tr>
+										<td class="label"><label for="db_name"><?php echo $this->__('Database Name');?> </label></td>
+										<td class="value"><input id="db_name" name="db_name" value="<?php echo $systemAdmin->getValue("db_name");?>" class=" input-text" type="text"></td>
+										<td class="scope-label"></td>
+										<td class=""></td>
+									</tr>
+									<tr>
+										<td class="label"><label for="db_username"><?php echo $this->__('Username');?> </label></td>
+										<td class="value"><input id="db_username" name="db_username" value="<?php echo $systemAdmin->getValue("db_username");?>" class=" input-text" type="text"></td>
+										<td class="scope-label"></td>
+										<td class=""></td>
+									</tr>
+									<tr>
+										<td class="label"><label for="db_password"><?php echo $this->__('Password');?></label></td>
+										<td class="value"><input id="db_password" name="db_password" value="<?php echo $systemAdmin->getValue("db_password");?>" class=" input-text" type="password"></td>
+										<td class="scope-label"></td>
+										<td class=""></td>
+									</tr>
+								</tbody>
+								
+							</table>
+							<button id="butTestConnection" type="button" class="scalable" onclick="reportManager.testConnection()"><span><?php echo $this->__('Test Connection');?></span></button>
+							<span id="resutlTestConnection"></span>
+						</fieldset>
+						</form>
+				</div>
+				
+				<!-- CONTENT PERMISSIONS ADMIN -->
+				<div class="entry-edit" id="container-Permissions" style="display:none">
+					 <div class="content-header">
+						<table cellspacing="0">
+							<tr>
+								<td ><h3><?php echo $this->__('Permissions admin');?></h3></td>
+								<td class="form-buttons">
+					            	<button id="butSavePermissions" type="button" class="scalable save" onclick="reportManager.savePemsissionRole()" ><span><?php echo $this->__('Save');?></span></button>
+					            </td>
+					        </tr>
+					    </table>
+					</div>
+					
+						<form id="setupPermissions_form">
+						<div class="entry-edit-head collapseable"><a id="permissions_field-head" href="#" class="open" onClick="return reportManager.collapse('permissions_field')"><?php echo $this->__('Roles Resources');?></a></div>
+						<fieldset class="config collapseable" id="permissions_field">
+							<span class="field-row">
+					            <label for="rolePermissions"><?php echo $this->__('Role');?></label>
+					            <select id="rolePermissions" name="rolePermissions" onchange="reportManager.getRolePermission(this.value)" class="select">
+					            	<?php $roles = Mage::getModel('admin/roles')->getCollection();
+					            		foreach ($roles as $role) {
+					            			echo '<option value="'.$role->getId().'">'.$role->getRoleName().'</option>';
+					            		}
+					            	?>
+					            </select>
+					        </span>
+							
+							<span class="field-row">
+					            <label for="rolePermissionsResource"><?php echo $this->__('Resource Access');?></label>
+					            <select id="rolePermissionsResource" name="rolePermissionsResource" onchange="reportManager.changePermissionResource()" class="select">
+					                <option value="0"><?php echo $this->__('Custom');?></option>
+					                <option value="1" selected><?php echo $this->__('All');?></option>
+					            </select>
+					        </span>
+							
+							<span class="field-row" id="setupPermissions_resources_container" style="">
+								<label><?php echo $this->__('Resources');?></label>
+						   </span>
+						</fieldset>
+						</form>
+				</div>
+				
+				
+				<!-- CONTENT EXPORT -->
+				<div class="entry-edit" id="container-Export" style="display:none">
+					 <div class="content-header">
+						<table cellspacing="0">
+							<tr>
+								<td ><h3><?php echo $this->__('Export report');?></h3></td>
+								
+					        </tr>
+					    </table>
+					</div>
+					<div class="entry-edit-head collapseable"><a id="report_list_export_field-head" href="#" class="open" onClick="return reportManager.collapse('report_list_export_field')">Report list</a></div>
+						<fieldset class="config collapseable" id="report_list_export_field">
+							<div class="grid"  style="margin:10px; OVERFLOW: auto; TOP: 48px;border: 1px solid #d6d6d6;">
+								<table cellspacing="0" class="data" id="reportListExport" >
+										<col width="200" />
+										<col />
+										<thead>
+											<tr class="headings">
+												<th class=" no-link"><span class="no-br"><?php echo $this->__('GROUP');?></span></th>
+												<th class=" no-link"><span class="no-br"><?php echo $this->__('REPORT');?></span></th>
+											</tr>
+										</thead>
+										<tbody>
+										
+										</tbody>
+									</table>
+								</div>
+						</fieldset>
+						
+				</div>
+				
+				<!-- CONTENT IMPORT -->
+				<div class="entry-edit" id="container-Import" style="display:none">
+					 <div class="content-header">
+						<table cellspacing="0">
+							<tr>
+								<td ><h3><?php echo $this->__('Import report');?></h3></td>
+								<td class="form-buttons">
+					            	<button id="import_button" type="button" class="scalable save" onclick="reportManager.postToFrame('import_form')" ><span><?php echo $this->__('Import');?></span></button>
+					            </td>
+					        </tr>
+					    </table>
+					</div>
+					<div class="content-header" style="display: none">
+						<table cellspacing="0">
+							<tr>
+								<td ><h3><?php echo $this->__('Sql2Report Manager');?></h3></td>
+					        </tr>
+					    </table>
+					</div>
+					<form id="import_form" action="" method="post" enctype="multipart/form-data">
+					
+					<div class="entry-edit-head collapseable"><a id="report_list_import_field-head" href="#" class="open" onClick="return reportManager.collapse('report_list_import_field')"><?php echo $this->__('Import Settings');?></a></div>
+						<fieldset class="config collapseable" id="report_list_import_field">
+							<table cellspacing="0" class="form-list">
+								<colgroup class="label"></colgroup>
+								<colgroup class="value"></colgroup>
+								<colgroup class="value"></colgroup>
+								<tbody>
+									<tr>
+										<td class="label"><label for="chart_height_default"><?php echo $this->__('Select File to Import');?> <span class="required">*</span></label></td>
+										<td class="value">
+										  <input id="import_file" name="import_file" value="" title="Select File to Import" type="file" class=" required-entry">
+										
+										</td>
+										<td class="value"></td>
+									</tr>
+									
+								</tbody>
+							</table>	
+						</fieldset>
+						<input name="form_key" type="hidden" value="<?php echo Mage::getSingleton('core/session')->getFormKey() ?>" />
+					</form>
+					<div class="entry-edit-head collapseable"><a id="report_list_import_result_field-head" href="#" class="open" ><?php echo $this->__('Import Results');?></a></div>
+						<fieldset class="config collapseable" id="report_list_import_result_field">
+								
+						</fieldset>
+				</div>
+				
+				<!-- CONTENT LINK MANAGER -->
+				<div class="entry-edit" id="container-link" style="display:none">
+					 <div class="content-header">
+						<table cellspacing="0">
+							<tr>
+								<td ><h3><?php echo $this->__('Links manager');?></h3></td>
+								
+					        </tr>
+					    </table>
+					</div>
+					<div class="entry-edit-head collapseable"><a id="report_list_linktr_field-head" href="#" class="open" onClick="return reportManager.collapse('report_list_linktr_field')"><?php echo $this->__('Row link');?></a></div>
+						<fieldset class="config collapseable" id="report_list_linktr_field">
+							<button id="butAddLinkTR" type="button" class="scalable add" onclick="reportManager.addLink('TR')" style=""><span><?php echo $this->__('Add row link');?></span></button>
+							<div class="grid"  style="margin:10px; OVERFLOW: auto; TOP: 48px;border: 1px solid #d6d6d6;">		
+								<table cellspacing="0" class="data" id="linkListTR" >
+										<col width="200" />
+										<col width="500"/>
+										<col />
+										<col width="100" />
+										<thead>
+											<tr class="headings">
+												<th class=" no-link"><span class="no-br"><?php echo $this->__('DESCRIPTION');?></span></th>
+												<th class=" no-link"><span class="no-br"><?php echo $this->__('URL');?></span></th>
+												<th class=" no-link"><span class="no-br"><?php echo $this->__('ACTIONS');?></span></th>
+											</tr>
+										</thead>
+										<tbody>
+										
+										</tbody>
+									</table>
+								</div>
+						</fieldset>
+						
+					<div class="entry-edit-head collapseable"><a id="report_list_linktd_field-head" href="#" class="open" onClick="return reportManager.collapse('report_list_linktd_field')"><?php echo $this->__('Column link');?></a></div>
+						<fieldset class="config collapseable" id="report_list_linktd_field">
+							<button id="butAddLinkTD" type="button" class="scalable add" onclick="reportManager.addLink('TD')" style=""><span><?php echo $this->__('Add column link');?></span></button>
+							<span style="  color: #6f8992; font-size: .9em;"> <?php echo $this->__('Insert the &lt;ID&gt; parameter in the description or the url, this parameter will be replaced by the value of the column');?></span>
+							<div class="grid"  style="margin:10px; OVERFLOW: auto; TOP: 48px;border: 1px solid #d6d6d6;">
+								<table cellspacing="0" class="data" id="linkListTD" >
+										<col width="200" />
+										<col width="500"/>
+										<col />
+										<col width="100" />
+										<thead>
+											<tr class="headings">
+												<th class=" no-link"><span class="no-br"><?php echo $this->__('DESCRIPTION');?></span></th>
+												<th class=" no-link"><span class="no-br"><?php echo $this->__('URL');?></span></th>
+												<th class=" no-link"><span class="no-br"><?php echo $this->__('ACTIONS');?></span></th>
+											</tr>
+										</thead>
+										<tbody>
+										
+										</tbody>
+									</table>
+								</div>
+						</fieldset>
+				</div>
+				
+				<!-- MARKET -->
+				<div class="entry-edit" id="container-Market" style="display:none">
+					 <div class="content-header">
+						<table cellspacing="0">
+							<tr>
+								<td ><h3><?php echo $this->__('Market');?></h3></td>
+								<td class="form-buttons"></td>
+					        </tr>
+					    </table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

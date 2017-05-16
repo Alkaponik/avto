@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<config>
+	<modules>
+		<Pw_Multipletablerates>
+			<active>true</active>
+			<codePool>community</codePool>
+		</Pw_Multipletablerates>
+		<Pw_Adminhtml>
+			<active>true</active>
+			<codePool>community</codePool>
+		</Pw_Adminhtml>
+	</modules>
+	
+	<global>
+		<blocks>
+			<adminhtml>
+				<rewrite>
+					<!--<system_config_form_field_export>Pw_Adminhtml_Block_System_Config_Form_Field_Export</system_config_form_field_export>-->
+				</rewrite>
+			</adminhtml>
+		</blocks>
+		
+		<models>
+			<adminhtml>
+				<rewrite>
+					<system_config_source_shipping_multipletablerates>Pw_Adminhtml_Model_System_Config_Source_Shipping_Multipletablerates</system_config_source_shipping_multipletablerates>
+				</rewrite>
+				
+				<rewrite>
+					<system_config_backend_shipping_multipletablerates>Pw_Adminhtml_Model_System_Config_Backend_Shipping_Multipletablerates</system_config_backend_shipping_multipletablerates>
+				</rewrite>
+		  	</adminhtml>
+		  	
+		  	<shipping>
+				<rewrite>
+					<carrier_multipletablerates>Pw_Multipletablerates_Model_Carrier_Multipletablerates</carrier_multipletablerates>
+					<mysql4_carrier_multipletablerates>Pw_Multipletablerates_Model_Mysql4_Carrier_Multipletablerates</mysql4_carrier_multipletablerates>
+				</rewrite>
+			</shipping>
+		</models>
+	</global>
+</config>

@@ -1,0 +1,93 @@
+<?php
+/**
+ * {magecore_license_notice}
+ *
+ * @category   MageCore
+ * @package    Dashboard
+ * @copyright  {magecore_copyright}
+ * @license    {magecore_license}
+ */
+?>
+<script type="text/javascript">
+    <!--
+    <?php $myBlock = $this->getLayout()->getBlock('dashboardUsersGrid'); ?>
+    <?php if( is_object($myBlock) && $myBlock->getJsObjectName() ): ?>
+    var checkBoxesView = $H(<?php echo $myBlock->_getSelectedUsers('view',true) ?>);
+    var checkBoxesEdit = $H(<?php echo $myBlock->_getSelectedUsers('edit',true) ?>);
+
+
+
+
+    $('in_dashboard_view_user').value = checkBoxesView.toQueryString();
+    $('in_dashboard_edit_user').value = checkBoxesEdit.toQueryString();
+
+    function dashboardRowClick(grid, event){
+        var trElement = Event.findElement(event, 'tr');
+        var isInput   = Event.element(event).tagName == 'INPUT';
+        if(isInput){
+            var checkbox = Element.getElementsBySelector(trElement, 'input');
+            for (var i = 0; i < checkbox.length; i++){
+                    var checked = checkbox[i].checked;
+                    <?php echo $myBlock->getJsObjectName() ?>.setCheckboxChecked(checkbox[i], checked);
+            }
+
+        }
+    }
+
+    function registerUserDashboard(grid, element, checked)
+    {
+        if (checked) {
+            if (element.name == 'view[]'){
+                checkBoxesView.set(element.value, 0);
+            }
+            if (element.name == 'edit[]'){
+                checkBoxesEdit.set(element.value, 0);
+            }
+        } else {
+            if (element.name == 'view[]'){
+                checkBoxesView.unset(element.value);
+            }
+            if (element.name == 'edit[]'){
+                checkBoxesEdit.unset(element.value);
+            }
+        }
+        $('in_dashboard_view_user').value = checkBoxesView.toQueryString();
+        $('in_dashboard_edit_user').value = checkBoxesEdit.toQueryString();
+        grid.reloadParams = {'in_dashboard_view_user[]':checkBoxesView.keys(),'in_dashboard_edit_user[]':checkBoxesEdit.keys()};
+    }
+
+
+    function dashboardUsersRowInit(grid, row)
+    {
+        var checkbox = $(row).getElementsByClassName('checkbox');
+        if (checkbox) {
+            for (var i = 0; i < checkbox.length; i++){
+                var checked = checkbox[i].checked;
+                <?php echo $myBlock->getJsObjectName() ?>.setCheckboxChecked(checkbox[i], checked);
+            }
+        }
+    }
+
+    function massSelectUsers(allCheckbox)
+    {
+        /*Define what column was checked*/
+        var column = (allCheckbox.name == 'view[]')?0:1;
+
+        <?php echo $myBlock->getJsObjectName() ?>.rows.each(function(row)
+    {
+        if ($(row).getElementsByClassName('checkbox')[column]){
+            $(row).getElementsByClassName('checkbox')[column].checked = allCheckbox.checked;
+            dashboardUsersRowInit(<?php echo $myBlock->getJsObjectName() ?>, row);
+        }
+
+    });
+    }
+        <?php echo $myBlock->getJsObjectName() ?>.rowClickCallback = dashboardRowClick;
+        <?php echo $myBlock->getJsObjectName() ?>.initRowCallback = dashboardUsersRowInit;
+        <?php echo $myBlock->getJsObjectName() ?>.checkboxCheckCallback = registerUserDashboard;
+        <?php echo $myBlock->getJsObjectName() ?>.checkCheckboxes = massSelectUsers;
+        <?php echo $myBlock->getJsObjectName() ?>.rows.each(function(row){dashboardUsersRowInit(<?php echo $myBlock->getJsObjectName() ?>, row)});
+        //$('in_dashboard_view_user_old').value = $('in_dashboard_view_user').value;
+        <?php endif; ?>
+    //-->
+</script>

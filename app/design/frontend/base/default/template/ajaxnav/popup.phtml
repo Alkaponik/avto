@@ -1,0 +1,31 @@
+<?
+$_helper = $this->helper('catalog/output');
+?>
+<?php if ($_product = $this->getProduct()):?>
+<div id="add-product-popup">
+    <div class="product">
+        <div class="img-container fl">
+            <img src="<?php echo $this->helper('catalog/image')->init($_product, 'small_image')->resize(135); ?>" width="135" height="135" alt="<?php echo $this->stripTags($this->getImageLabel($_product, 'small_image'), null, true) ?>" />
+            <span class="icon-ok"></span>
+        </div>
+        <div class="content">
+            <div class="details fl">
+                <span class="product-name fl"><?php echo $_helper->productAttribute($_product, $_product->getName(), 'name') ?></span>
+                <span class="notice fl">wurde in Ihren Warenkorb gelegt.</span>
+                <a class="link fl" href="<?php echo $_product->getProductUrl() ?>" title="<?php echo $_helper->productAttribute($_product, $_product->getName(), 'name') ?>">Produktdetails</a>
+            </div>
+            <div class="buttons">
+                <button class="btn btngrey close fl" type="button"><span>Weiter einkaufen</span></button>
+                <button title="Warenkorb ansehen / Zur Kasse" onclick="setLocation('<?php echo $this->getUrl('checkout/cart') ?>')" type="button" class="btn fl"><span>Warenkorb / Kasse</span></button>
+            </div>
+        </div>
+    </div>
+</div>
+<?php elseif ($_location = $this->getLocation()):?>
+<div class="loading"></div>
+<script type="text/javascript">
+//<![CDATA[
+    setLocation("<?php echo $_location ?>");
+//]]>
+</script>
+<?php endif; ?>

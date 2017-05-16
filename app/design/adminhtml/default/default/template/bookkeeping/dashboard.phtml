@@ -1,0 +1,62 @@
+<script type="text/javascript">
+    window.bookkepingAccountCobobox = {};
+
+    metricChangeHandler = function (event) {
+        var element = event.target;
+        var accountFieldName = element.name == 'metric'
+            ? 'account_id'
+            : 'compare_account_id';
+        //var widgetName = element.id.split('-')[0];
+        var widgetName = element.id;
+        if (element.value.indexOf('bookkeeping_account_') == 0) {
+            //var bookkepingAccount = $('bookkeeping_account');
+            if (typeof element.bookkepingAccountCobobox != 'undefined') {
+                element.bookkepingAccountCobobox.container.show();
+            } else {
+                var bookkepingAccountLabel = new Element(
+                    'label',
+                    {for:accountFieldName});
+                bookkepingAccountLabel.innerText = 'Bookkeeping Account';
+                var bookkepingAccount = new Element(
+                        'div',
+                        {class:'combo-container filter', 'id': accountFieldName});
+                var bookkepingAccountInput = new Element(
+                        'input',
+                        {type:'text', class:'combo-input form-combo-input', name:'text_'+accountFieldName});
+                var bookkepingAccountSelect = new Element(
+                        'select',
+                        {class:'combo-select', name: accountFieldName, 'size':10, 'tabindex': -1, 'style': 'display: none;'});
+                bookkepingAccount.insert(bookkepingAccountLabel);
+                bookkepingAccount.insert(bookkepingAccountInput);
+                bookkepingAccount.insert(bookkepingAccountSelect);
+                element.up('div').insert(bookkepingAccount);
+                var widget = <?php echo $this->getWidget()->getWidgetConfig() ? $this->getWidget()->getWidgetConfig() : '{}'?>;
+                var filterIndex = accountFieldName == 'account_id'
+                    ? 0
+                    : 1;
+                var accountId = typeof widget.filters != 'undefined'
+                    && typeof widget.filters[filterIndex] != 'undefined'
+                    && typeof widget.filters[filterIndex][accountFieldName] != 'undefined'
+                    ? widget.filters[filterIndex][accountFieldName]
+                    : null;
+                var combobox = new Combobox(
+                        bookkepingAccount,
+                        '<?php echo $this->getUrl('*/bookkeeping_account/list')?>', null, null, accountId,
+                        {'isAjax':false});
+                combobox.getRequestData();
+                element.bookkepingAccountCobobox = combobox;
+            }
+        } else {
+            if (typeof element.bookkepingAccountCobobox != 'undefined') {
+                element.bookkepingAccountCobobox.container.hide();
+            }
+        }
+    }
+
+    $$('select[name="metric"],select[name="metric_compare"]').each(function (element) {
+        if (typeof element.bookkepingAccountCobobox == 'undefined'){
+            element.observe('change', metricChangeHandler);
+            metricChangeHandler({'target': element});
+        }
+    });
+</script>

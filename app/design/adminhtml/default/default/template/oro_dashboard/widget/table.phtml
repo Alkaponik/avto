@@ -1,0 +1,65 @@
+<?php
+/**
+* {magecore_license_notice}
+*
+* @category   MageCore
+* @package    Dashboard
+* @copyright  {magecore_copyright}
+* @license    {magecore_license}
+*/
+
+/**
+ * @var $this Oro_Dashboard_Block_Adminhtml_Userdashboard_Widget_Table
+ */
+?>
+<?php
+    /** @var $helper Oro_Dashboard_Helper_Data */
+    $helper = Mage::helper('oro_dashboard');
+    $widgetId = $this->getWidget()->getId();
+    $widgetData = $this->getWidgetData();
+    $mainData = $widgetData->getDataMain();
+    $compareData = $widgetData->getDataCompare();
+?>
+<div class="entry-edit">
+    <div class="entry-edit-head">
+        <div class="nav-tools">
+            <span id="print-<?php echo $widgetId ?>" class="print-btn">print</span>
+            <span class="settings">settings</span>
+        </div>
+        <h4><?php echo $this->getWidgetName();?></h4>
+    </div>
+    <fieldset class="entry-edit-content grid oro-table">
+        <table class="data" cellspacing="0">
+            <tr>
+                <th><?php echo $this->getGroupedByAttributeLabel();?></th>
+                <th><?php echo $helper->getMetricLabel($this->getMetric());?></th>
+                <?php if ($this->getMetricCompare()){?>
+                    <th><?php echo $helper->getMetricLabel($this->getMetricCompare());?></th>
+                <?php }?>
+            </tr>
+            <?php if ($mainData){?>
+                <?php foreach ($mainData as $period=>$value){?>
+                    <tr>
+                        <td><?php echo $period;?></td>
+                        <td><?php echo $value;?></td>
+                        <?php if ($this->getMetricCompare()){?>
+                            <td><?php echo isset($compareData[$period])?$compareData[$period]:'0';?></td>
+                        <?php }?>
+                    </tr>
+                <?php }?>
+            <?php } else {?>
+                    <tr><td colspan="<?php echo $this->getMetricCompare() ? '3' : '2' ?>"><?php echo $this->__("No data for this period");?></td></tr>
+            <?php }?>
+        </table>
+    </fieldset>
+</div>
+<script type="text/javascript">
+    jQuery(document).ready(function() {
+        jQuery('#print-<?php echo $widgetId ?>').click(function(){
+            jQuery('#metric-image-container').empty();
+            jQuery(this).parents('.entry-edit').clone().appendTo(jQuery('#metric-image-container'));
+            jQuery('#metric-print-container').dialog('open');
+
+        });
+    });
+</script>

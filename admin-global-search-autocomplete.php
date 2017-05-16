@@ -1,0 +1,1 @@
+.modman/clean-elastic-search/admin-global-search-autocomplete.php

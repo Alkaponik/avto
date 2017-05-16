@@ -1,0 +1,116 @@
+<?php
+/**
+ * @copyright   Copyright (c) 2011 http://magentosupport.net
+ * @author		Vlad Vysochansky
+ * @license     http://opensource.org/licenses/gpl-license.php  GNU General Public License (GPL)
+ */
+?>
+<script type="text/javascript">
+    Validation.add('ua-phone', 'Введите правильный номер телефона без пробелов',
+            function(v){return Validation.get('IsEmpty').test(v) ||  /^(\d){10}$/.test(v)});
+
+	function call_validate() {
+        var validateFlag = true;
+        var fields = jQuery('input[type=text][data-validation]');
+
+        fields
+            .closest("li")
+            .find("label.error-message")
+            .css("display","none");
+
+        fields
+            .removeClass('validation-failed')
+            .each( function() {
+                    var value = jQuery(this).val();
+                    var validationRules = jQuery(this).attr("data-validation").split(' ');
+
+                    for (var i=0; i < validationRules.length; i++ ) {
+                        if (!Validation.get(validationRules[i].trim()).test(value)) {
+                            jQuery(this)
+                                    .addClass('validation-failed')
+                                    .parent()
+                                    .find("label.error-message")
+                                    .css("display", "block");
+                            validateFlag = false;
+                        }
+                    }
+                }
+            );
+
+        return validateFlag;
+	}
+
+    function call_subm() {
+        if ( call_validate() ) {
+			var call_name = jQuery('#call_name').val();
+			var call_telephone = jQuery('#call_telephone').val();
+			var call_comment = jQuery('#call_comment').val();
+			var call_hideit = jQuery('#call_hideit').val();
+            var validation= jQuery('#block-callback input[name=validation]').val();
+            var shoppingCart = typeof document.shoppingCart != 'undefined'
+                    ? JSON.stringify(document.shoppingCart)
+                    : false;
+
+            jQuery('#callback-request-submit').addClass('on-sending')
+                    .addClass('btngrey').attr('disabled', 'disabled');
+            jQuery.ajax({
+                url : '<?php echo $this->getUrl('callbackrequest/index/send', array('is_ajax' => 1))?>',
+                type : 'post',
+                data : {
+                    name:call_name,
+                    telephone:call_telephone,
+                    comment:call_comment,
+                    validation: validation,
+                    is_ajax:1,
+                    checkout_cart: shoppingCart
+                },
+                success : function(result) {
+                    jQuery("#block-callback").html(result);
+                    jQuery('#callback-request-submit').removeClass('on-sending');
+                    jQuery('#call_name').val('');
+                    jQuery('#call_telephone').val('');
+                }
+            })
+    	}
+    	return false;
+	}
+</script>
+<style type="text/css">
+    .block-callback input.input-text {display: block; margin: 3px 0; width: 160px;}
+    .block-callback .block-content {padding: 5px 10px;}
+
+</style>
+<div class="block block-callback skip-active" id="block-callback">
+	<div class="block-title"><?php echo $this->__('Call Back Request');?></div>
+    <div class="block-hint"><?php echo $this->__('Please fill your contacts and we will call you ASAP');?></span></div>
+    <div class="block-content" id="content-callback">
+        <ul id="loadingform" class="form-list">
+            <li class="fields">
+                <div class="field">
+                    <label for="call_name" class="required"><em>*</em><?php echo $this->__('Name') ?></label>
+                    <div class="input-box">
+                        <input name="name" class="input-text" data-validation="required-entry" id="call_name" title="<?php echo $this->__('Name') ?>" value="<?php echo $this->htmlEscape($this->helper('contacts')->getUserName()) ?>" class="input-text jrequired" type="text" />
+                        <label for="call_name" class="error-message" style="display: none;"><?php echo $this->__('Name is too short') ?></label>
+                    </div>
+                </div>
+            </li>
+            <li>
+                <label for="call_telephone" class="required"><em>*</em><?php echo $this->__('Telephone (10 digits)') ?></label>
+                <div class="input-box">
+                    <input name="telephone" id="call_telephone" data-validation="required-entry ua-phone" title="<?php echo $this->__('Telephone') ?>" value="" class="input-text" type="text" />
+                    <label for="call_telephone" class="error-message" style="display: none;"><?php echo $this->__('Wrong phone format') ?></label>
+                </div>
+            </li>
+            <li>
+                <label for="call_comment" ><?php echo $this->__('Comment') ?></label>
+                <div class="input-box">
+                    <textarea name="comment" id="call_comment" title="<?php echo $this->__('Comment') ?>" value="" class="input-text"></textarea>
+                </div>
+            </li>
+            <li>
+		        <input type="text" name="validation" id="call_validation" value=""/>
+	        	<button id="callback-request-submit" onclick="call_subm(); return false;" title="<?php echo $this->__('Submit') ?>" class="button btn"><span><span><?php echo $this->__('Submit') ?></span></span></button>
+            </li>
+        </ul>
+    </div>
+</div>

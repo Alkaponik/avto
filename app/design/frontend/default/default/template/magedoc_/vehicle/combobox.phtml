@@ -1,0 +1,6 @@
+<div class="combo-container" id="<?php echo $this->getContainerId()?>">
+    <label><?php echo $this->getTitle() ?></label>
+    <input type="text" class="combo-input" autocomplete="off" value="<?php echo $this->getDefaultText()?>" placeholder="<?php echo $this->getPlaceholder()?>" <? echo $this->getDisabled() ?>/>
+    <select class="combo-select required-entry validate-select" size="<?php echo $this->getSelectSize()?>" name="<?php echo $this->getName() ?>[]" <? echo $this->getDisabled() ?> tabindex="-1">
+    </select>
+</div>

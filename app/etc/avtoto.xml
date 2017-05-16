@@ -1,0 +1,9 @@
+<config>
+    <global>
+        <avtoto>
+            <shop_database>
+                <db_name>avtotot</db_name>
+            </shop_database>
+        </avtoto>
+    </global>
+</config>

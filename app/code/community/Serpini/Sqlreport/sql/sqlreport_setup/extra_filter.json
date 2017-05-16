@@ -1,0 +1,1 @@
+[{"object_type":"combo","combo_id":"CBC_USER_NAME","title":"User name","parameter":"USERNAME","type":"evaluated","atributes":{"sql":"Mage::getSingleton('admin\/session')->getUser()->getUsername() "}}]

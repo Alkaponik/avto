@@ -1,0 +1,96 @@
+<?xml version="1.0"?>
+<config>
+	<default>
+		<carriers>
+			<multipletablerates>
+				<active>0</active>
+				<sallowspecific>0</sallowspecific>
+				<model>multipletablerates_shipping/carrier_multipletablerates</model>
+				<name>Delivery Rates Name</name>
+				<title>Delivery Rates Title</title>
+				<specificerrmsg>This shipping method is currently unavailable. If you would like to ship using this shipping method, please contact us.</specificerrmsg>
+				<handling_type>F</handling_type>
+			</multipletablerates>
+		</carriers>
+	</default>
+	
+	<modules>
+		<!-- declare module's version information -->
+		<Pw_Multipletablerates>
+			<!-- this version number will be used for database upgrades -->
+			<version>0.2.2</version>
+           
+			<depends>
+				<Mage_Shipping />
+			</depends>			
+		</Pw_Multipletablerates>
+	</modules>
+ 
+	<global>
+		<!-- declare model group for new module -->
+		<models>
+			<!-- model group alias to be used in Mage::getModel() -->
+			<Multipletablerates>
+				<!-- base class name for the model group -->
+				<class>Pw_Multipletablerates</class>
+			</Multipletablerates>
+
+			<multipletablerates_shipping>
+				<class>Pw_Multipletablerates_Model</class>
+				<resourceModel>multipletablerates_mysql4</resourceModel>
+			</multipletablerates_shipping>
+
+			<!-- Custom resource model -->
+            <multipletablerates_mysql4>
+                <class>Pw_Multipletablerates_Model_Mysql4</class>
+                <entities>
+                    <multipletablerates>
+                        <table>shipping_multipletablerates</table>
+                    </multipletablerates>
+                </entities>
+            </multipletablerates_mysql4>			
+		</models>
+
+		<!-- declare resource setup for new module -->
+		<resources>
+			<!-- resource identifier -->
+			<multipletablerates_setup>
+				<!-- specify that this resource is a setup resource and used for upgrades -->
+				<setup>
+					<!-- which module to look for install/upgrade files in -->
+					<module>Pw_Multipletablerates</module>
+				</setup>
+				
+				<!-- specify database connection for this resource -->
+				<connection>
+					<!-- do not create new connection, use predefined core setup connection -->
+					<use>core_setup</use>
+				</connection>
+            
+				<multipletablerates_write>
+					<connection>
+						<use>core_write</use>
+					</connection>
+				</multipletablerates_write>
+            
+				<multipletablerates_read>
+					<connection>
+						<use>core_read</use>
+					</connection>
+				</multipletablerates_read>
+			</multipletablerates_setup>
+		</resources>		
+	</global>
+		
+    <admin>
+        <routers>
+            <multipletablerates>
+                <use>admin</use>
+                <args>
+                    <module>Pw_Adminhtml</module>
+                    <frontName>multipletablerates</frontName>
+                </args>
+            </multipletablerates>
+        </routers>
+    </admin> 	
+</config>

@@ -1,0 +1,8 @@
+"SugarCRM User Id","Id пользователя SugarCRM "
+"Current order manager doesn\'t have related SugarCRM account defined","Мененджер заказа не имеет соответствующей учетной записи в SugarCRM"
+"Unable to connect SugarCRM API %s","Не удается подключиться к SugarCRM API %s"
+"Call","Звонок"
+"Scheduled","Назначен"
+"Not Scheduled","Не назначен"
+"Unable to schedule call: %s","Не удается назначить звонок %s"
+"Unable to create contact: %s","Не удается создать контакт: %s"

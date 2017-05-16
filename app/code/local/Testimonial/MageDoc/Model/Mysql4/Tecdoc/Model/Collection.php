@@ -1,0 +1,124 @@
+<?php
+
+class Testimonial_MageDoc_Model_Mysql4_Tecdoc_Model_Collection extends Testimonial_MageDoc_Model_Mysql4_Collection_Abstract
+{
+    protected function _construct()
+    {
+        $this->_init('magedoc/tecdoc_model');
+
+    }
+    
+    public function addManufacturerFilter($manufacturer)
+    {
+        if ($manufacturer instanceof Testimonial_MageDoc_Model_Manufacturer
+                || $manufacturer instanceof Testimonial_MageDoc_Model_Tecdoc_Manufacturer){
+            $manufacturer = $manufacturer->getId();
+        }
+        $this->getSelect()
+                ->where("MOD_MFA_ID = $manufacturer");
+        return $this;
+    }
+
+    public function addYearFilter($year)
+    {
+        $year = (int)$year;
+        $this->getSelect()
+            ->where("(MOD_PCON_START <= {$year}12 OR MOD_PCON_START IS NULL) AND (MOD_PCON_END >= {$year}00 OR MOD_PCON_END IS NULL)");
+        return $this;
+    }
+
+    public function addYearStartFilter($yearStart = null)
+    {
+        if(is_null($yearStart)){
+            $yearStart = Mage::helper('magedoc')->getYearStart().'00';
+        }
+        $this->getSelect()
+                ->where("MOD_PCON_START >= $yearStart OR MOD_PCON_START IS NULL")
+                ->order('MOD_PCON_START');
+        return $this;
+    }
+
+    public function addDateIntervalFilter($from = null, $to = null)
+    {
+        $conditions = array();
+        if (!is_null($from)){
+            $conditions[] = $this->getConnection()->quoteInto('(MOD_PCON_END >= ? OR MOD_PCON_END IS NULL)', $from);
+        }
+        if (!is_null($to)){
+            $conditions[] = $this->getConnection()->quoteInto('(MOD_PCON_START <= ? OR MOD_PCON_START IS NULL)', $to);
+        }
+        $this->getSelect()
+                ->where(implode(' AND', $conditions));
+        
+        return $this;
+    }
+    
+    public function joinDesignations()
+    {
+        $this->joinCountryDesignation(null, 'main_table', 'MOD_CDS_ID', 'MOD_CDS_TEXT');
+        return $this;
+    }
+
+    public function joinManufacturers()
+    {
+        if (isset($this->_joins['manufacturer'])){
+            return $this->_joins['manufacturer'];
+        }
+        $this->getResource()->joinManufacturers($this->getSelect(), 'main_table');
+        $this->addFilterToMap('manufacturer_enabled', 'md_manufacturer.enabled');
+
+        $this->_joins['manufacturer'] = $this;
+        return $this;
+    }
+
+    public function joinModels()
+    {
+        if (isset($this->_joins['model'])){
+            return $this->_joins['model'];
+        }
+
+        $this->getResource()->joinModels($this->getSelect(), 'main_table');
+
+        $this->_joins['model'] = $this;
+        return $this;
+    }
+
+    public function addManufacturerEnabledFilter($enabled = true)
+    {
+        if (!isset($this->_joins['manufacturer'])){
+            $this->joinManufacturers();
+        }
+        $this->addFieldToFilter('manufacturer_enabled', $enabled);
+        return $this;
+    }
+
+    public function addEnabledFilter($enabled = true)
+    {
+        $this->addManufacturerEnabledFilter($enabled);
+        if (!isset($this->_joins['model'])){
+            $this->joinModels();
+        }
+        if ($enabled){
+            $this->getSelect()
+                ->where('md_model.enabled IS NULL OR md_model.enabled = 1');
+        } else {
+            $this->getSelect()
+                ->where('md_model.enabled = 0');
+        }
+
+        return $this;
+    }
+
+    public function joinTypes()
+    {
+        if (isset($this->_joins['type'])){
+            return $this->_joins['type'];
+        }
+
+        $this->getResource()->joinTypes($this->getSelect(), 'main_table');
+
+        $this->_joins['type'] = $this;
+        return $this;
+    }
+
+}

@@ -1,0 +1,104 @@
+<?php
+/**
+ * {magecore_license_notice}
+ *
+ * @category   MageCore
+ * @package    Dashboard
+ * @copyright  {magecore_copyright}
+ * @license    {magecore_license}
+ */
+?>
+<script type="text/javascript">
+    <!--
+    <?php $myBlock = $this->getLayout()->getBlock('dashboardRolesGrid'); ?>
+    <?php if( is_object($myBlock) && $myBlock->getJsObjectName() ): ?>
+    var checkBoxesViewRole = $H(<?php echo $myBlock->_getSelectedRoles('view',true) ?>);
+    var checkBoxesEditRole = $H(<?php echo $myBlock->_getSelectedRoles('edit',true) ?>);
+    var checkBoxesDefaultRole = $H(<?php echo $myBlock->_getSelectedRoles('is_default',true) ?>);
+
+
+
+
+    $('in_dashboard_view_role').value = checkBoxesViewRole.toQueryString();
+    $('in_dashboard_edit_role').value = checkBoxesEditRole.toQueryString();
+    $('in_dashboard_default_role').value = checkBoxesDefaultRole.toQueryString();
+
+    function dashboardRowClick(grid, event){
+        var trElement = Event.findElement(event, 'tr');
+        var isInput   = Event.element(event).tagName == 'INPUT';
+        if(isInput){
+            var checkbox = Element.getElementsBySelector(trElement, 'input');
+            for (var i = 0; i < checkbox.length; i++){
+                    var checked = checkbox[i].checked;
+                    <?php echo $myBlock->getJsObjectName() ?>.setCheckboxChecked(checkbox[i], checked);
+            }
+
+        }
+    }
+
+    function registerRoleDashboard(grid, element, checked)
+    {
+        if (checked) {
+            if (element.name == 'view[]'){
+                checkBoxesViewRole.set(element.value, 0);
+            }
+            if (element.name == 'edit[]'){
+                checkBoxesEditRole.set(element.value, 0);
+            }
+            if (element.name == 'is_default[]'){
+                checkBoxesDefaultRole.set(element.value, 0);
+            }
+        } else {
+            if (element.name == 'view[]'){
+                checkBoxesViewRole.unset(element.value);
+            }
+            if (element.name == 'edit[]'){
+                checkBoxesEditRole.unset(element.value);
+            }
+            if (element.name == 'is_default[]'){
+                checkBoxesDefaultRole.unset(element.value);
+            }
+        }
+        $('in_dashboard_view_role').value = checkBoxesViewRole.toQueryString();
+        $('in_dashboard_edit_role').value = checkBoxesEditRole.toQueryString();
+        $('in_dashboard_default_role').value = checkBoxesDefaultRole.toQueryString();
+        grid.reloadParams = {'in_dashboard_view_role[]':checkBoxesViewRole.keys(),'in_dashboard_edit_role[]':checkBoxesEditRole.keys(),'in_dashboard_default_role[]':checkBoxesDefaultRole.keys()};
+    }
+
+
+    function dashboardRolesRowInit(grid, row)
+    {
+        var checkbox = $(row).getElementsByClassName('checkbox');
+        if (checkbox) {
+            for (var i = 0; i < checkbox.length; i++){
+                var checked = checkbox[i].checked;
+                <?php echo $myBlock->getJsObjectName() ?>.setCheckboxChecked(checkbox[i], checked);
+            }
+        }
+    }
+
+    function massSelectRoles(allCheckbox)
+    {
+        /*Define what column was checked*/
+        var column = 0;
+        if (allCheckbox.name == 'edit[]') column = 1;
+        if (allCheckbox.name == 'is_default[]') column = 2;
+
+        <?php echo $myBlock->getJsObjectName() ?>.rows.each(function(row)
+    {
+        if ($(row).getElementsByClassName('checkbox')[column]){
+            $(row).getElementsByClassName('checkbox')[column].checked = allCheckbox.checked;
+            dashboardRolesRowInit(<?php echo $myBlock->getJsObjectName() ?>, row);
+        }
+
+    });
+    }
+        <?php echo $myBlock->getJsObjectName() ?>.rowClickCallback = dashboardRowClick;
+        <?php echo $myBlock->getJsObjectName() ?>.initRowCallback = dashboardRolesRowInit;
+        <?php echo $myBlock->getJsObjectName() ?>.checkboxCheckCallback = registerRoleDashboard;
+        <?php echo $myBlock->getJsObjectName() ?>.checkCheckboxes = massSelectRoles;
+        <?php echo $myBlock->getJsObjectName() ?>.rows.each(function(row){dashboardRolesRowInit(<?php echo $myBlock->getJsObjectName() ?>, row)});
+        //$('in_dashboard_view_role_old').value = $('in_dashboard_view_role').value;
+        <?php endif; ?>
+    //-->
+</script>

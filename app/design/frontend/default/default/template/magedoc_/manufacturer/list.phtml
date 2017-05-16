@@ -1,0 +1,57 @@
+<?php
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE_AFL.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magentocommerce.com for more information.
+ *
+ * @category    design
+ * @package     base_default
+ * @copyright   Copyright (c) 2011 Magento Inc. (http://www.magentocommerce.com)
+ * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ */
+?>
+
+<?php $manufacturers = $this->getManufacturerCollection(); ?>
+
+<?php $_count = 0; ?>
+<?php $_manufacturersCount = count($manufacturers); ?>
+<?php if ($_manufacturersCount): ?>
+
+<h1>
+    <a name="serchbyavto"><?php echo Mage::helper('magedoc')->__('Please choose your vehicle make')?></a>
+</h1>
+
+    <table id="makes-grid">
+        <tbody>
+            <?php foreach ($manufacturers as $manufacturer): ?>
+                <?php if(++$_count % $this->getColumnCount() == 1): ?>
+                    <tr>                    
+                <?php endif; ?>
+                    <td>
+                        <img alt="<?php echo $manufacturer->getTitle() ?>" src="<?php echo $this->getLogoUrl($manufacturer) ?>"/>
+                        <a title="<?php echo $manufacturer->getTitle() ?>" href="<?php echo $this->getManufacturerUrl($manufacturer) ?>"><?php echo $manufacturer->getTitle() ?></a>
+                    </td>                   
+                <?php if ($_count % $this->getColumnCount() == 0
+                            || $_count == $_manufacturersCount): ?>
+                    </tr>
+                <?php endif; ?>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+<?php endif; ?>
+
+

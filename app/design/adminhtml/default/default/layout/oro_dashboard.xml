@@ -1,0 +1,118 @@
+<?xml version="1.0"?>
+<!--
+ * {magecore_license_notice}
+ *
+ * @category   MageCore
+ * @package    Dashboard
+ * @copyright  {magecore_copyright}
+ * @license    {magecore_license}
+-->
+<layout>
+    <default>
+        <reference name="notifications">
+            <block type="oro_dashboard/adminhtml_notifications" name="oro_dashboard_notifications" template="oro_dashboard/notifications.phtml"></block>
+        </reference>
+    </default>
+    <adminhtml_dashboards_index>
+        <reference name="content">
+            <block type="oro_dashboard/adminhtml_dashboard" name="oro_dashboard" />
+        </reference>
+    </adminhtml_dashboards_index>
+    <adminhtml_userdashboard_view>
+        <reference name="root">
+            <action method="addBodyClass"><className>analitics-dashboard</className></action>
+        </reference>
+        <reference name="head">
+            <action method="addJs"><script>oro/jquery-1.8.2.min.js</script></action>
+            <action method="addJs"><script>oro/jquery.form.js</script></action>
+            <!--action method="addJs"><script>oro/jquery.print.js</script></action-->
+            <action method="addJs"><script>oro/jquery.print2.js</script></action>
+            <action method="addJs"><script>oro/jquery-ui-1.9.0.custom.min.js</script></action>
+            <action method="addJs"><script>oro/jquery.jqplot.min.js</script></action>
+            <action method="addItem"><type>js</type><name>oro/excanvas.min.js</name><params/><if>lt IE 9</if></action>
+
+            <action method="addJs"><script>oro/jquery.noConflict.js</script></action>
+
+            <action method="addJs"><script>oro/plugins/jqplot.barRenderer.min.js</script></action>
+            <action method="addJs"><script>oro/plugins/jqplot.enhancedLegendRenderer.min.js</script></action>
+            <action method="addJs"><script>oro/plugins/jqplot.highlighter.min.js</script></action>
+            <action method="addJs"><script>oro/plugins/jqplot.cursor.min.js</script></action>
+            <action method="addJs"><script>oro/plugins/jqplot.pointLabels.min.js</script></action>
+            <action method="addJs"><script>oro/plugins/jqplot.categoryAxisRenderer.min.js</script></action>
+            <action method="addJs"><script>oro/plugins/jqplot.logAxisRenderer.min.js</script></action>
+            <action method="addJs"><script>oro/plugins/jqplot.canvasTextRenderer.min.js</script></action>
+            <action method="addJs"><script>oro/plugins/jqplot.canvasAxisLabelRenderer.min.js</script></action>
+            <action method="addJs"><script>oro/plugins/jqplot.canvasAxisTickRenderer.min.js</script></action>
+            <action method="addJs"><script>oro/plugins/jqplot.pieRenderer.min.js</script></action>
+            <action method="addJs"><script>oro/plugins/jqplot.donutRenderer.min.js</script></action>
+            <action method="addJs"><script>oro/plugins/jqplot.bubbleRenderer.min.js</script></action>
+            <action method="addJs"><script>oro/plugins/jqplot.dateAxisRenderer.min.js</script></action>
+            <action method="addJs"><script>oro/progressbar/progressbar.min.js</script></action>
+            <action method="addJs"><script>oro/date/moment.js</script></action>
+
+            <action method="addJs"><script>oro/custom.js</script></action>
+            <action method="addItem"><type>js</type><name>oro/ie.js</name><params/><if>lt IE 8</if></action>
+
+            <action method="addItem"><type>skin_css</type><name>oro_dashboard/ui-lightness/jquery-ui-1.8.24.custom.css</name></action>
+            <action method="addItem"><type>skin_css</type><name>oro_dashboard/jquery.jqplot.min.css</name></action>
+            <action method="addItem"><type>skin_css</type><name>oro_dashboard/custom.css</name></action>
+            <action method="addItem"><type>skin_css</type><name>oro_dashboard/progressbar.css</name></action>
+        </reference>
+        <reference name="content">
+            <block type="oro_dashboard/adminhtml_userdashboard" name="userdashboard" template="oro_dashboard/user/main.phtml">
+                <block type="adminhtml/store_switcher" name="store_switcher" as="store_switcher">
+                    <action method="setUseConfirm"><params>0</params></action>
+                </block>
+            </block>
+        </reference>
+    </adminhtml_userdashboard_view>
+    <adminhtml_userdashboard_print>
+        <reference name="root">
+            <action method="addBodyClass"><className>analitics-dashboard</className></action>
+        </reference>
+        <reference name="head">
+            <action method="addItem"><type>skin_css</type><name>oro_dashboard/ui-lightness/jquery-ui-1.8.24.custom.css</name></action>
+            <action method="addItem"><type>skin_css</type><name>oro_dashboard/jquery.jqplot.min.css</name></action>
+            <action method="addItem"><type>skin_css</type><name>oro_dashboard/custom.css</name></action>
+            <action method="addItem"><type>skin_css</type><name>oro_dashboard/printpage.css</name><params>media="all"</params></action>>
+
+            <action method="addJs"><script>oro/jquery-1.8.2.min.js</script></action>
+            <action method="addJs"><script>oro/jquery.form.js</script></action>
+            <action method="addJs"><script>oro/jquery.print2.js</script></action>
+            <action method="addJs"><script>oro/jquery-ui-1.9.0.custom.min.js</script></action>
+            <action method="addJs"><script>oro/jquery.jqplot.js</script></action>
+            <action method="addItem"><type>js</type><name>oro/excanvas.min.js</name><params/><if>lt IE 9</if></action>
+
+            <action method="addJs"><script>oro/plugins/jqplot.barRenderer.min.js</script></action>
+            <action method="addJs"><script>oro/plugins/jqplot.enhancedLegendRenderer.min.js</script></action>
+            <action method="addJs"><script>oro/plugins/jqplot.highlighter.min.js</script></action>
+            <action method="addJs"><script>oro/plugins/jqplot.cursor.min.js</script></action>
+            <action method="addJs"><script>oro/plugins/jqplot.pointLabels.min.js</script></action>
+            <action method="addJs"><script>oro/plugins/jqplot.categoryAxisRenderer.min.js</script></action>
+            <action method="addJs"><script>oro/plugins/jqplot.logAxisRenderer.min.js</script></action>
+            <action method="addJs"><script>oro/plugins/jqplot.canvasTextRenderer.min.js</script></action>
+            <action method="addJs"><script>oro/plugins/jqplot.canvasAxisLabelRenderer.min.js</script></action>
+            <action method="addJs"><script>oro/plugins/jqplot.canvasAxisTickRenderer.min.js</script></action>
+            <action method="addJs"><script>oro/plugins/jqplot.pieRenderer.min.js</script></action>
+            <action method="addJs"><script>oro/plugins/jqplot.donutRenderer.min.js</script></action>
+            <action method="addJs"><script>oro/plugins/jqplot.bubbleRenderer.min.js</script></action>
+            <action method="addJs"><script>oro/plugins/jqplot.dateAxisRenderer.min.js</script></action>
+
+            <action method="addJs"><script>oro/jquery.noConflict.js</script></action>
+            <action method="addJs"><script>oro/custom.js</script></action>
+        </reference>
+        <reference name="content">
+            <block type="oro_dashboard/adminhtml_userdashboard" name="userdashboard" template="oro_dashboard/user/print.phtml" />
+        </reference>
+    </adminhtml_userdashboard_print>
+    <adminhtml_userdashboard_dailyaggregationstart>
+        <reference name="head">
+            <action method="addItem"><type>skin_css</type><name>oro_dashboard/aggregation.css</name></action>
+            <action method="addJs"><script>oro/jquery-1.8.2.min.js</script></action>
+            <action method="addJs"><script>oro/jquery.noConflict.js</script></action>
+        </reference>
+        <reference name="content">
+            <block type="oro_dashboard/adminhtml_userdashboard_aggregation" name="aggregation" />
+        </reference>
+    </adminhtml_userdashboard_dailyaggregationstart>
+</layout>

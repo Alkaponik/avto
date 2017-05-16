@@ -1,0 +1,86 @@
+<?php
+/**
+ * Magento Enterprise Edition
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Magento Enterprise Edition License
+ * that is bundled with this package in the file LICENSE_EE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://www.magentocommerce.com/license/enterprise-edition
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magentocommerce.com for more information.
+ *
+ * @category	design
+ * @package	 enterprise_default
+ * @copyright   Copyright (c) 2009 Irubin Consulting Inc. DBA Varien (http://www.varien.com)
+ * @license	 http://www.magentocommerce.com/license/enterprise-edition
+ */
+?>
+<?php
+/**
+ * Create account form template
+ *
+ * @see Mage_Customer_Block_Form_Register
+ */
+?>
+<h1><?php echo $this->__('Subscribe for Newsletters') ?></h1>
+
+<?php echo $this->getMessagesBlock()->getGroupedHtml() ?>
+
+<?php echo  $this->getLayout()->createBlock('cms/block')->setBlockId('newsletter')->toHtml() ?>
+<form action="<?php echo $this->getPostActionUrl() ?>" method="post" id="form-validate" class="form">
+	<?php echo $this->getBlockHtml('formkey')?>
+	<fieldset>
+		<input type="hidden" name="success_url" value="<?php echo $this->getSuccessUrl() ?>" />
+		<input type="hidden" name="error_url" value="<?php echo $this->getErrorUrl() ?>" />
+		<h2><?php echo $this->__('Personal Information') ?></h2>
+		
+		<?php echo $this->getLayout()->createBlock('vfg/customer_widget_name')->setObject($this->getFormData())->toHtml() ?>
+		
+		<div>
+			<label for="email_address" class="required"><?php echo $this->__('Email Address') ?><em>*</em></label>
+			<input type="text" name="email" id="email_address" value="<?php echo $this->htmlEscape($this->getFormData()->getEmail()) ?>" title="<?php echo $this->__('Email Address') ?>" class="ti validate-email required-entry" />
+		</div>
+		
+<?php if ($this->isNewsletterEnabled()): ?>
+		<div>
+			<input type="radio" name="is_subscribed" title="<?php echo $this->__('I want to subscribe for a newsletters') ?>" value="1" id="is_subscribed"<?php if($this->getFormData()->getIsSubscribed()): ?> checked="checked"<?php endif; ?> class="rb" />
+			<label for="is_subscribed" class="radiolabel"><?php echo $this->__('I want to subscribe for a newsletters') ?></label>
+		</div>
+		
+		<div>
+			<input type="radio" name="is_subscribed" title="<?php echo $this->__('I want to unsubscribe') ?>" value="0" id="is_unsubscribed"<?php if(!$this->getFormData()->getIsSubscribed()): ?> checked="checked"<?php endif; ?> class="rb" />
+			<label for="is_unsubscribed" class="radiolabel"><?php echo $this->__('I want to unsubscribe') ?></label>
+		</div>
+<?php endif ?>
+
+<?php $_taxvat = $this->getLayout()->createBlock('customer/widget_taxvat') ?>
+<?php if ($_taxvat->isEnabled()): ?>
+		<?php echo $_taxvat->setTaxvat($this->getFormData()->getTaxvat())->toHtml() ?>
+<?php endif ?>
+
+<?php $_gender = $this->getLayout()->createBlock('customer/widget_gender') ?>
+<?php if ($_gender->isEnabled()): ?>
+		<?php echo $_gender->setGender($this->getFormData()->getGender())->toHtml() ?>
+<?php endif ?>
+	</fieldset>
+	<fieldset class="formnavi">
+		<button type="submit" class="btn" title="<?php echo $this->__('Submit') ?>"><span><?php echo $this->__('Submit') ?></span></button>
+	</fieldset>
+</form>
+
+<p class="hint"><?php echo $this->__('* Required Fields') ?></p>
+
+<script type="text/javascript">
+//<![CDATA[
+	var dataForm = new VarienForm('form-validate', true);		
+//]]>
+</script>

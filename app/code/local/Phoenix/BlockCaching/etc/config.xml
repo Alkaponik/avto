@@ -1,0 +1,174 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Magento - Block Caching
+ *
+ * NOTICE OF LICENSE
+ * 
+ * This source file is subject to license that is bundled with
+ * this package in the file LICENSE.txt.
+ *
+ * @category   Phoenix
+ * @package	   Phoenix_BlockCaching
+ * @copyright  Copyright (c) 2009 Phoenix Medien GmbH & Co. KG (http://www.phoenix-medien.de)
+ */
+-->
+<config>
+	<modules>
+		<Phoenix_BlockCaching>
+			<version>0.9</version>
+		</Phoenix_BlockCaching>
+	</modules>
+	<global>
+		<models>
+			<blockcaching>
+				<class>Phoenix_BlockCaching_Model</class>
+			</blockcaching>
+		</models>
+		<helpers>
+			<blockcaching>
+				<class>Phoenix_BlockCaching_Helper</class>
+			</blockcaching>
+		</helpers>
+		
+        <events>
+            <review_save_after>
+	            <observers>
+	                <blockcaching_review_update>
+	                    <type>singleton</type>
+	                    <class>blockcaching/observer</class>
+	                    <method>reviewUpdate</method>
+	                </blockcaching_review_update>
+	            </observers>
+            </review_save_after>
+        </events>
+	</global>
+	<adminhtml>
+		<translate>
+			<modules>
+				<Phoenix_BlockCaching>
+					<files>
+						<default>Phoenix_BlockCaching.csv</default>
+					</files>
+				</Phoenix_BlockCaching>
+			</modules>
+		</translate>
+		<acl>
+			<resources>
+				<admin>
+					<children>
+						<system>
+							<children>
+								<config>
+									<children>
+										<blockcaching>
+											<title>Block Caching Settings</title>
+										</blockcaching>
+									</children>
+								</config>
+							</children>
+						</system>
+					</children>
+				</admin>
+			</resources>
+		</acl>
+	</adminhtml>
+	<frontend>
+        <events>
+            <sales_order_item_save_before>
+                <observers>
+                    <blockcaching_stock_update>
+                        <type>singleton</type>
+                        <class>blockcaching/observer</class>
+                        <method>stockUpdate</method>
+                    </blockcaching_stock_update>
+                </observers>
+            </sales_order_item_save_before>
+            <core_block_abstract_to_html_after>
+                <observers>
+                    <blockcaching_debug>
+                        <type>singleton</type>
+                        <class>blockcaching/observer</class>
+                        <method>afterToHtml</method>
+                    </blockcaching_debug>
+                </observers>
+            </core_block_abstract_to_html_after>
+            <core_block_abstract_to_html_before>
+                <observers>
+                    <blockcaching_debug>
+                        <type>singleton</type>
+                        <class>blockcaching/observer</class>
+                        <method>beforeToHtml</method>
+                    </blockcaching_debug>
+                </observers>
+            </core_block_abstract_to_html_before>
+        </events>
+	</frontend>
+	<default>
+		<blockcaching>
+			<catalog>
+				<catalog_view_enabled>0</catalog_view_enabled>
+				<product_list_enabled>0</product_list_enabled>
+				<product_view_enabled>0</product_view_enabled>
+				<product_related_enabled>0</product_related_enabled>
+				<product_upsell_enabled>0</product_upsell_enabled>
+				<category_navigation_enabled>0</category_navigation_enabled>
+				<lifetime>1800</lifetime>
+			</catalog>
+			<cms>
+				<cms_pages_enabled>0</cms_pages_enabled>
+				<cms_block_enabled>0</cms_block_enabled>
+				<lifetime>3600</lifetime>
+			</cms>
+			<checkout>
+				<cart_sidebar_enabled>0</cart_sidebar_enabled>
+			</checkout>
+			<template>
+				<page_links_enabled>0</page_links_enabled>
+				<template_enabled>0</template_enabled>
+				<lifetime>1800</lifetime>
+			</template>
+			<debug>
+			    <enable>0</enable>
+			    <highlight_noncacheable_blocks>0</highlight_noncacheable_blocks>
+			</debug>
+		</blockcaching>
+	</default>
+	
+	<!-- Configuration for blocks to be cacheable -->
+	<block_config>
+	   <Mage_Catalog_Block_Product_View>
+	       <handler_model>blockcaching/cacheHandler_product_view</handler_model>
+	   </Mage_Catalog_Block_Product_View>
+	   <Mage_Catalog_Block_Product_List>
+           <handler_model>blockcaching/cacheHandler_product_list</handler_model>
+       </Mage_Catalog_Block_Product_List>
+       <Mage_Catalog_Block_Product_List_Related>
+           <handler_model>blockcaching/cacheHandler_product_list_related</handler_model>
+       </Mage_Catalog_Block_Product_List_Related>
+       <Mage_Catalog_Block_Product_List_Upsell>
+           <handler_model>blockcaching/cacheHandler_product_list_upsell</handler_model>
+       </Mage_Catalog_Block_Product_List_Upsell>
+       <Mage_Catalog_Block_Category_View>
+           <handler_model>blockcaching/cacheHandler_category_view</handler_model>
+       </Mage_Catalog_Block_Category_View>
+       <Mage_Page_Block_Template_Links>
+           <handler_model>blockcaching/cacheHandler_template_links</handler_model>
+           <priority>110</priority>
+       </Mage_Page_Block_Template_Links>
+       <Mage_Core_Block_Template>
+           <handler_model>blockcaching/cacheHandler_template</handler_model>
+           <priority>100</priority>
+       </Mage_Core_Block_Template>
+       <Mage_Cms_Block_Page>
+           <handler_model>blockcaching/cacheHandler_cms_page</handler_model>
+       </Mage_Cms_Block_Page>
+       <Mage_Cms_Block_Block>
+           <handler_model>blockcaching/cacheHandler_cms_block</handler_model>
+       </Mage_Cms_Block_Block>
+       <Mage_Checkout_Block_Cart_Sidebar>
+           <handler_model>blockcaching/cacheHandler_checkout_cart_sidebar</handler_model>
+           <priority>110</priority>
+       </Mage_Checkout_Block_Cart_Sidebar>
+	</block_config>
+</config>

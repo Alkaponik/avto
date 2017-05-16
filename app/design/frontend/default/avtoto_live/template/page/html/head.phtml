@@ -1,0 +1,29 @@
+<title><?php echo $this->getTitle() ?></title>
+
+<meta http-equiv="content-type" content="<?php echo $this->getContentType() ?>" />
+
+<meta name="description" content="<?php echo htmlspecialchars($this->getDescription()) ?>" />
+<meta name="keywords" content="<?php echo htmlspecialchars($this->getKeywords()) ?>" />
+<meta name="robots" content="<?php echo htmlspecialchars($this->getRobots()) ?>" />
+<meta name="language" content="ru" />
+<meta name="author" content="АвтоТО" />
+<meta property="og:site_name" content="АвтоТО"/>
+<meta property="fb:admins" content="100003491252729" />
+<meta name="msvalidate.01" content="41C148329CB333721AA5E7F25DD012BC" />
+<meta name="viewport" content="initial-scale=1.0, width=device-width" />
+
+<link rel="icon" href="<?php echo $this->getSkinUrl('favicon.ico') ?>" type="image/x-icon" />
+<link rel="shortcut icon" href="<?php echo $this->getSkinUrl('favicon.ico') ?>" type="image/x-icon" />
+
+<?php echo $this->getCssJsHtml() ?>
+<?php if(strpos(Mage::app()->getRequest()->getRequestString(), 'sales/order/print') === false) : ?>
+<?php echo $this->getChildHtml() ?>
+<?php echo $this->getIncludes() ?>
+<?php echo $this->helper('core/js')->getTranslatorScript() ?>
+<?php endif; ?>
+
+<?php if(strpos($_SERVER['SERVER_NAME'], 'vfg-apotheke.at') !== false || strpos($_SERVER['SERVER_NAME'], 'vfg-jobapo.at') !== false) : ?>
+<link rel="stylesheet" type="text/css" href="<?php echo $this->getSkinUrl('css/styles-at.css'); ?>" />
+<?php endif; ?>
+
+<!--[if lte IE 6]><link rel="stylesheet" type="text/css" href="<?php echo $this->getSkinUrl('css/styles-ie6.css'); ?>" /><![endif]-->

@@ -1,0 +1,88 @@
+<?xml version="1.0"?>
+
+<layout version="0.1.0">
+    <catalog_category_layered>
+        <reference name="root">
+            <!--<action method="setTemplate"><template>page/2columns-left.phtml</template></action>-->
+	    <action method="setTemplate"><template>page/3columns.phtml</template></action>
+        </reference>
+        <reference name="product_list">
+            <action method="setColumnCount"><count>4</count></action>
+        </reference>
+        <remove name="left.newsletter"/>
+	<!--<remove name="catalog.subnav"/>-->
+	<reference name="category.products">
+	    <block type="catalog/layer_view" name="catalog.subnav" before="product_list" template="catalogsearch/layer/view.phtml"/>
+	</reference>
+    </catalog_category_layered>
+
+    <default>
+        <remove name="top.links"/>
+        <remove name="footer.links"/>
+        <remove name="switches"/>
+        <remove name="callback_sidebar"/>
+        <remove name="right.permanent.callout"/>
+        <remove name="left.permanent.callout"/>
+        <remove name="phoenixbrands.list.sidebar"/>
+        <remove name="catalog.leftnav"/>
+        <remove name="catalog.rightnav"/>
+        <remove name="catalogsearch.leftnav"/>
+        <remove name="topCart"/>
+        <remove name="catalog.compare.sidebar"/>
+        <reference name="head">
+            <action method="addJs"><script>jquery/jquery-1.9.1.min.js</script></action>
+            <action method="addJs"><script>fancybox/source/jquery.fancybox.pack.js</script></action>
+            <action method="addJs"><script>jquery/jquery-noconflict.js</script></action>
+            <action method="addJs"><script>ajaxcart/handler.js?v=1.0.3</script></action>
+            <action method="addItem"><type>js_css</type><script>fancybox/source/jquery.fancybox.css</script></action>
+        </reference>
+        <reference name="top.search">
+            <action method="setTemplate"><template>avtoto/catalogsearch/form.mini.phtml</template></action>
+        </reference>
+        <reference name="footer_links">
+            <action method="removeLinkByUrl">
+                <url helper="catalogsearch/getSearchTermUrl" />
+            </action>
+            <action method="removeLinkByUrl">
+                <url helper="flatcatalogsearch/getSearchTermUrl" />
+            </action>
+            <action method="removeLinkByUrl">
+                <url helper="catalogsearch/getAdvancedSearchUrl" />
+            </action>
+            <action method="removeLinkByUrl">
+                <url helper="flatcatalogsearch/getAdvancedSearchUrl" />
+            </action>
+        </reference>
+    </default>
+
+    <customer_logged_out>
+        <reference name="customer_form_mini_login">
+            <action method="setTemplate"><template>avtoto/customer/form/mini.login.phtml</template></action>
+        </reference>
+    </customer_logged_out>
+
+    <customer_account>
+        <reference name="customer_account_navigation">
+            <action method="removeLink"><name>newsletter</name></action>
+	        <action method="removeLink"><name>reviews</name></action>
+	        <action method="removeLink"><name>tags</name></action>
+	        <action method="removeLink"><name>wishlist</name></action>
+	        <action method="removeLink"><name>magedoc</name></action>
+	        <action method="removeLink"><name>downloadable_products</name></action>
+	        <action method="removeLink"><name>OAuth Customer Tokens</name></action>
+        </reference>
+    </customer_account>
+
+    <flatcatalogsearch_result_index>
+        <remove name="flatcatalogsearch.leftnav"/>
+        <reference name="search.result">
+            <block type="flatcatalogsearch/layer" name="flatcatalogsearch.nav" before="search_result_list" template="catalogsearch/layer/view.phtml"/>
+        </reference>
+        <reference name="search_result_list">
+            <action method="setTemplate"><template>flatcatalog/product/list.phtml</template></action>
+        </reference>
+        <reference name="flatcatalogsearch.nav">
+            <action method="setTemplate"><template>avtoto/empty.phtml</template></action>
+        </reference>
+    </flatcatalogsearch_result_index>
+</layout>

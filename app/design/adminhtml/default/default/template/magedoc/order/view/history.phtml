@@ -1,0 +1,180 @@
+<?php
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE_AFL.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magentocommerce.com for more information.
+ *
+ * @category    design
+ * @package     default_default
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ */
+?>
+<div id="order_history_block">
+    <?php if ($this->canAddComment()):?>
+    <div id="history_form" class="order-history-form">
+        <div><?php echo Mage::helper('sales')->__('Add Order Comments') ?></div>
+        <span class="field-row">
+            <label class="normal" for="history_status"><?php echo Mage::helper('sales')->__('Status') ?></label>
+            <select name="history[status]" class="select" id="history_status">
+            <?php foreach ($this->getStatuses() as $_code=>$_label): ?>
+                <option value="<?php echo $_code ?>"<?php if($_code==$this->getOrder()->getStatus()): ?> selected="selected"<?php endif; ?>><?php echo $_label ?></option>
+            <?php endforeach; ?>
+            </select>
+        </span>
+        <span class="field-row">
+            <label class="normal" for="history_supply_status"><?php echo Mage::helper('magedoc')->__('Supply Status') ?></label>
+            <select name="history[supply_status]" class="select" id="history_supply_status">
+                <?php foreach ($this->getSupplyStatuses() as $_code=>$_label): ?>
+                <option value="<?php echo $_code ?>"<?php if($_code==$this->getOrder()->getSupplyStatus()): ?> selected="selected"<?php endif; ?>><?php echo $_label ?></option>
+                <?php endforeach; ?>
+            </select>
+        </span>
+        <span class="field-row">
+            <label class="normal" for="history_status_change_reason"><?php echo Mage::helper('magedoc')->__('Status Change Reason') ?></label>
+            <select name="history[status_change_reason]" class="select" id="history_status_change_reason">
+                <?php foreach (Mage::getSingleton('magedoc/source_order_reason')->getOptionArray(true) as $_code=>$_label): ?>
+                    <option value="<?php echo $_code ?>"<?php if(false && $_code==$this->getOrder()->getSupplyStatus()): ?> selected="selected"<?php endif; ?>><?php echo $_label ?></option>
+                <?php endforeach; ?>
+            </select>
+        </span>
+        <?php if ($this->getOrder()->canChangeManager()): ?>
+        <span class="field-row">
+            <label class="normal" for="order_manager_id"><?php echo Mage::helper('magedoc')->__('Manager') ?></label>
+            <select name="history[order_manager_id]" class="select" id="order_manager_id">
+                <?php foreach (Mage::getModel('magedoc/source_orderManager')->setIsActive(true)->getOptionArray() as $_managerId=>$_label): ?>
+                <option value="<?php echo $_managerId ?>"<?php if($_managerId==$this->getOrder()->getManagerId()): ?> selected="selected"<?php endif; ?>><?php echo $_label ?></option>
+                <?php endforeach; ?>
+            </select>
+        </span>
+        <?php endif; ?>
+        <span class="field-row">
+            <label class="normal" for="history_comment"><?php echo Mage::helper('sales')->__('Comment') ?></label>
+            <textarea name="history[comment]" rows="3" cols="5" style="height:6em; width:99%;" id="history_comment"></textarea>
+        </span>
+        <div class="f-left">
+            <input name="history[create_crm_call]" type="checkbox" id="create_crm_call" value="1" onchange = "showCrmDate(this);"/><label class="normal" for="create_crm_call"> <?php echo Mage::helper('magedoc')->__('Schedule a call in CRM') ?></label><br />
+            <div id="date_crm_call_container" hidden>
+                <input type="text" name="history[date_crm_call]" id="date_crm_call" value="<?php echo Mage::helper('magedoc')->getDefaultDateTime();?>" />
+                <img src="<?php echo $this->getSkinUrl('images/grid-cal.gif') ?>" alt="" class="v-middle" id="date_crm_call_trig" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Date selector')) ?>" /><br />
+            </div>
+            <?php if ($this->canSendCommentEmail()): ?>
+                <input name="history[is_customer_notified]" type="checkbox" id="history_notify" value="1" /><label class="normal" for="history_notify"> <?php echo Mage::helper('sales')->__('Notify Customer by Email') ?></label><br />
+            <?php endif; ?>
+            <?php if (Mage::helper('core')->isModuleEnabled('Testimonial_CustomerNotification')): ?>
+                <input name="history[is_customer_notified_by_sms]" type="checkbox" id="history_notify_sms" value="1" /><label class="normal" for="history_notify_sms"> <?php echo Mage::helper('magedoc')->__('Notify Customer by SMS') ?></label><br />
+            <?php endif; ?>
+            <input name="history[is_visible_on_front]" type="checkbox" id="history_visible" value="1" /><label class="normal" for="history_visible"> <?php echo Mage::helper('sales')->__('Visible on Frontend') ?></label><br />
+            <!--<input name="history[is_visible_on_printables]" type="checkbox" id="history_printable_visible" value="1" /><label class="normal" for="history_visible"> <?php echo Mage::helper('magedoc')->__('Visible on Printables') ?></label>-->
+        </div>
+        <div class="f-right">
+            <?php echo $this->getChildHtml('submit_button') ?>
+        </div>
+        <div class="clear"></div>
+    </div>
+    <div class="divider"></div>
+    <?php endif;?>
+    <ul class="note-list">
+    <?php foreach ($this->getOrder()->getStatusHistoryCollection(true) as $_item): ?>
+        <li>
+            <strong><?php echo $this->helper('core')->formatDate($_item->getCreatedAtDate(), 'medium') ?></strong>
+            <?php echo $this->helper('core')->formatTime($_item->getCreatedAtDate(), 'medium') ?><span class="separator">|</span>
+            <?php if ($_item->getManagerName()): ?>
+            <?php echo $_item->getManagerName() ?><span class="separator">|</span>
+            <?php endif; ?>
+            <strong><?php echo $_item->getStatusLabel() ?></strong><span class="separator">|</span>
+            <strong><?php echo Mage::helper('magedoc/supply')->getSupplyStatusLabel($_item->getSupplyStatus()) ?></strong>
+            <?php if ($_item->getStatusChangeReason()): ?>
+            <span class="separator">|</span>
+            <strong><?php echo Mage::helper('magedoc')->getOrderStatusChangeReasonLabel($_item->getStatusChangeReason()) ?></strong>
+            <?php endif; ?>
+            <br/>
+            <small><?php echo $this->helper('sales')->__('Customer') ?>
+                <strong class="subdue">
+                    <?php if ($this->isCustomerNotificationNotApplicable($_item)): ?>
+                    <?php echo $this->helper('sales')->__('Notification Not Applicable') ?>
+                    <?php elseif ($_item->getIsCustomerNotified()): ?>
+                    <?php echo $this->helper('sales')->__('Notified') ?>
+                    <img src="<?php echo $this->getSkinUrl('images/ico_success.gif') ?>"
+                         width="16" height="16" alt=""/>
+                    <?php else: ?>
+                    <?php echo $this->helper('sales')->__('Not Notified') ?>
+                    <?php endif; ?>
+                </strong>
+            </small>
+            <?php if (Mage::helper('core')->isModuleEnabled('Testimonial_SugarCRM')): ?>
+            <span class="separator">|</span>
+            <small><?php echo $this->helper('sugarcrm')->__('Call') ?>
+                <strong class="subdue">
+                    <?php if ($_item->getIsSugarcrmCallScheduled()): ?>
+                    <?php echo $this->helper('sugarcrm')->__('Scheduled') ?>
+                    <img src="<?php echo $this->getSkinUrl('images/ico_success.gif') ?>" width="16" height="16" alt="" />
+                    <?php else: ?>
+                    <?php echo $this->helper('sugarcrm')->__('Not Scheduled') ?>
+                    <?php endif; ?>
+                </strong>
+            </small>
+            <?php endif; ?>
+            <?php if (Mage::helper('core')->isModuleEnabled('Testimonial_CustomerNotification')): ?>
+                <span class="separator">|</span>
+                <small><?php echo $this->helper('customernotification')->__('SMS') ?>
+                    <strong class="subdue">
+                        <?php if ($_item->getIsSmsSent()): ?>
+                            <?php echo $this->helper('customernotification')->__('Sent') ?>
+                            <img src="<?php echo $this->getSkinUrl('images/ico_success.gif') ?>" width="16" height="16" alt="" />
+                        <?php else: ?>
+                            <?php echo $this->helper('sugarcrm')->__('Not Sent') ?>
+                        <?php endif; ?>
+                    </strong>
+                </small>
+            <?php endif; ?>
+            <?php if ($_item->getComment()): ?>
+                <br/><?php echo $this->escapeHtml($_item->getComment(), array('b','br','strong','i','u')) ?>
+            <?php endif; ?>
+        </li>
+    <?php endforeach; ?>
+    </ul>
+    <script type="text/javascript">
+        if($('order_status'))$('order_status').update('<?php echo $this->getOrder()->getStatusLabel() ?>');
+        Calendar.setup({
+            inputField : 'date_crm_call',
+            ifFormat : '<?php echo Mage::helper('magedoc')->getDefaultDateTimeDisplayFormat();?>',
+            showsTime: true,
+            button : 'date_crm_call_trig',
+            align : 'Bl',
+            singleClick : true,
+            timeFormat: 24,
+        });
+        function showCrmDate(element){
+            $('date_crm_call_container').hidden = (element.checked)? false: true;
+        }
+        <?php if ($this->getOrder()->canCancel()): ?>
+        if (!$$('.content-header .form-buttons button.scalable[onclick~="/cancel/"]').length){
+            console.log('ok');
+            var d = new Date();
+            var url = '<?php echo Mage::getModel('adminhtml/url')->getUrl('*/*/cancel', array('order_id' => $this->getOrder()->getId())) ?>';
+            var buttonHtml = "<button id=\"id_" + d.getTime() + "\" title=\"<?php echo Mage::helper('sales')->__('Cancel') ?>\" " +
+                "type=\"button\" class=\"scalable \" " +
+                "onclick=\"deleteConfirm('<?php echo Mage::helper('sales')->__('Are you sure you want to cancel this order?') ?>', '" + url + "')\" " +
+                "style=\"\"><span><span><span><?php echo Mage::helper('sales')->__('Cancel') ?></span></span></span></button>"
+            $$('.content-header .form-buttons').each(function(e){
+                e.insert(buttonHtml);
+            });
+        }
+        <?php endif; ?>
+    </script>
+</div>

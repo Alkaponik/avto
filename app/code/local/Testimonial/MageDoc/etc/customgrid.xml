@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+
+<customgrid>
+    <grid_types>
+        <magedoc_adminhtml_supply_document type="magedoc/grid_type_supply_document" module="magedoc">
+            <name>MageDoc Supply Documents</name>
+            <sort_order>9000</sort_order>
+        </magedoc_adminhtml_supply_document>
+        <magedoc_adminhtml_supply_item type="magedoc/grid_type_supply_item" module="magedoc">
+            <name>MageDoc Supply Documents</name>
+            <sort_order>9000</sort_order>
+        </magedoc_adminhtml_supply_item>
+        <magedoc_adminhtml_supply_inquiry type="magedoc/grid_type_supply_inquiry" module="magedoc">
+            <name>MageDoc Supply Documents</name>
+            <sort_order>9000</sort_order>
+        </magedoc_adminhtml_supply_inquiry>
+        <magedoc_adminhtml_order type="magedoc/grid_type_order" module="magedoc">
+            <name>MageDoc Orders</name>
+            <sort_order>9010</sort_order>
+        </magedoc_adminhtml_order>
+    </grid_types>
+</customgrid>

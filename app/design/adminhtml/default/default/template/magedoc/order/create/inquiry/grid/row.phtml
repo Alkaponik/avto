@@ -1,0 +1,35 @@
+    <td>
+        <?php echo $this->getCombobox('category')->toHtml(); ?>
+    </td>
+    <td>
+        <?php echo $this->getCombobox('supplier')->toHtml(); ?>
+    </td>
+    <td>
+        <?php echo $this->getCombobox('number')->toHtml(); ?>
+    </td>
+    <td>
+        <input type="text" name="input_sku" class=" input-text" size="15"/>
+    </td>
+    <td>
+        <input type="text" name="input_cost" class=" input-text" size="10"/>
+    </td>
+    <td>
+        <input type="text" name="input_price" class=" input-text" size="10"/>
+    </td>
+    <td>
+        <input type="text" name="input_qty" class=" input-text" size="4"/>
+    </td>
+    <td>
+        <?php echo $this->getCombobox('retailer')->toHtml(); ?></td>
+    <td>
+        <div id="total"></div>
+    </td>
+    <td>
+        <div id="discount"></div>
+    </td>
+    <td>
+        <div id="row-total"></div>
+    </td>
+    <td>
+        <button type="button" name="delete"><?php echo $this->__('Delete'); ?></button>
+    </td>

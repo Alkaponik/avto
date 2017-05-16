@@ -1,0 +1,129 @@
+.vehicle-changer label {color:#666; font-weight:bold; position:relative; z-index:0; }
+
+.combo-container{
+    position:relative;
+    width: 250px;
+    min-width: 200px;
+/*    overflow-x:none;*/
+}
+
+.layed-navigation-chooser .combo-container{
+    position:relative;
+    width: 100%;
+    min-width: 100px;
+}
+
+.combo-container .combo-input{
+    background-image: url(../images/combo_select_dhx_blue.gif) ;
+    background-repeat: no-repeat;
+    background-position: right;
+    position:relative;
+    width: 100%;
+	color:#333333;
+	font-size: 9pt;
+	border:1px solid #7F9DB9;
+	padding:2px 19px 2px 0;
+	top:0px;
+}
+
+.combo-container .combo-select{
+   width: 109%; 
+   display: none; 
+   position:absolute;
+   z-index:230;
+   border:1px solid #7F9DB9;
+   font-size: 9pt;
+   background-color: white;
+}
+.layed-navigation-chooser .combo-container .combo-select{
+   width: 114%; 
+   display: none; 
+   position:absolute;
+   z-index:230;
+   border:1px solid #7F9DB9;
+   font-size: 9pt;
+   background-color: white;
+}
+
+
+button[disabled]{
+	background-color: #ddd;
+}
+
+button[disabled] span{
+    border: 1px solid #999;
+	background-color: #ddd;
+}
+
+button[disabled] span span{   
+	background-color: #ddd;
+}
+
+.magedoc-form-buttons{
+    text-align:right;
+}
+
+button#add-vehicle { padding-top: 10px; }
+
+.block-layered-nav dd ol { overflow-x: hidden; max-height: 300px; }
+
+.tab-list  {
+    background: none repeat scroll 0 0 #FDF4EB;
+    margin: 10px 0;
+    padding: 5px 0 0;
+    position: relative;
+}
+.tab-list .active {
+    cursor: default;
+}
+.tab-list .tab-container {
+    left: 0;
+    position: absolute;
+}
+.tab-list .tab {
+    background: none repeat scroll 0 0 transparent;
+    color: #EA7601;
+    cursor: pointer;
+    float: left;
+    line-height: 34px;
+    padding: 0 5px;
+    position: relative;
+    z-index: 2;
+}
+.tab-list .tab.first {
+    margin-left: 8px;
+}
+.tab-list .active {
+    -moz-border-radius: 3px 3px 0 0;
+    background: none repeat scroll 0 0 #FDF4EB;
+    border-color: #C8C8C8 #C8C8C8 -moz-use-text-color;
+    border-style: solid solid none;
+    border-width: 1px 1px 0;
+    color: #000000;
+    z-index: 3;
+}
+.tab-list .tab-container {
+    background: none repeat scroll 0 0 #FDF4EB;
+    border-color: #C8C8C8;
+    border-style: solid;
+    border-width: 2px 0 0;
+    top: 38px;
+    width: 100%;
+    z-index: 1;
+}
+
+#car-models-list li.model, .car-type-product-list .product-group {overflow: hidden;
+    margin-bottom: 10px;
+    padding: 10px 10px;
+    border: 1px solid #3EA0F6;
+}
+#car-models-list li a.model-title {display: block; margin-left: 30px;}
+#car-models-list li div {margin-left: 30px;}
+ul.car-types-list {list-style-type: none;}
+.car-types-list li {padding-top: 5px; clear: both;}
+.car-types-list span {float: left;}
+.car-types-list a:hover span {text-decoration: underline !important;}
+.car-types-list .body-type {min-width: 80px;}
+.car-types-list .start-date, .car-types-list .model{margin-left: 10px;}
+.car-types-list .end-date {min-width: 80px;}
+.car-types-list .engine-description {padding-left: 10px}

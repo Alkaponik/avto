@@ -1,0 +1,195 @@
+/**
+ * {magecore_license_notice}
+ *
+ * @category   MageCore
+ * @package    Dashboard
+ * @copyright  {magecore_copyright}
+ * @license    {magecore_license}
+ */
+
+*     { background:none !important; text-align:left !important; color: #000;}
+html  { margin:0 !important; padding:0 !important; }
+body  { background:#fff !important; font-size:9pt !important; padding:0 !important; margin:0 !important; }
+a     { color:#2976c9 !important; }
+th,td { color:#333 !important;  }
+
+.middle { padding:0; }
+
+.entry-edit-head .nav-tools,
+#detebar-drop,
+.jqplot-image-button,
+.page-help-link,
+.dashboard-container p.switcher,
+.content-header,
+.header,
+.notification-global,
+.actions,
+.massaction,
+#sales_order_grid_massaction,
+.content-header-floating,
+.content-header .form-buttons,
+.footer { display:none !important; }
+
+.box,
+.entry-edit fieldset,
+.entry-edit .fieldset,
+.dashboard-container {
+    border: 0;
+}
+.dashboard-container .dashboard-calendar{
+    float:none;
+}
+/* three-colunm-layout */
+.three-colunm-layout #sortable2{
+    float:none;
+}
+.three-colunm-layout #sortable3{
+    float:none;
+}
+table.jqplot-table-legend{
+    white-space: nowrap;
+    background: #fff9e9 !important;
+}
+.pie-graff table.jqplot-table-legend{
+    position: absolute !important;
+    left: auto !important;
+    right: 0 !important;
+}
+.dashboard-container{
+    width: 600px;
+}
+.entry-edit-content > .jqplot-target{
+    width: 552px;
+}
+.entry-edit > fieldset,
+.entry-edit-content{
+    padding: 0 0 0 10px !important;
+}
+#jqplot-print-container .nav-tools,
+#metric-image-container .nav-tools{
+    display: none !important;
+}
+#jqplot-print-container .entry-edit-head h4,
+#metric-image-container .entry-edit-head h4,
+#jqplot-print-container .entry-edit-head h3,
+#metric-image-container .entry-edit-head h3{
+    margin: 0;
+    background: none;
+    color: #000;
+    text-align: left;
+}
+#anchor-content{
+    padding: 50px 20px;
+}
+.datebar {
+    float: left;
+}
+.datebar .date-range{
+    background: none !important;
+    border: 0 !important;
+}
+.date-range:after{
+    display: none !important;
+}
+.print-title{
+
+}
+.magecore-copyright{
+    float: left;
+}
+.magecore-copyright img{
+    float: left;
+}
+.box, .entry-edit fieldset,
+.entry-edit .fieldset,
+.drop-zone{
+    padding: 0;
+}
+#sortable1, #sortable2, #sortable3{
+    width: 100%;
+}
+.entry-edit .entry-edit-head h4{
+    color: #000;
+    float:none;
+    border-bottom: 1px solid #000 !important;
+    width: 600px;
+    margin: 0 0 10px !important;
+}
+.print-actions{
+    float:right;
+}
+.clearfix-print{
+    width: 600px;
+    overflow: hidden;
+}
+.clearfix-print h1{
+    float: left;
+}
+.clearfix-print .button{
+    background: url("../images/btn_bg.gif") repeat-x scroll 0 100% #ffac47 !important;
+    border-color: #ed6502 #a04300 #a04300 #ed6502;
+    border-style: solid;
+    border-width: 1px;
+    color: #fff !important;
+    cursor: pointer;
+    font: bold 12px arial,helvetica,sans-serif;
+    padding: 1px 7px 2px;
+    text-align: center !important;
+    white-space: nowrap;
+}
+.clearfix-print .button span{
+    background-position: 0 50%;
+    background-repeat: no-repeat;
+    line-height: 1.35em;
+}
+.clearfix-print .button.delete{
+    background-color: #fcaf81;
+    background-image: url("../images/cancel_btn_bg.gif") !important;
+    border-color: #d24403 #a92000 #a92000 #d24403;
+}
+.clearfix-print .button.delete span {
+    background: url("../images/cancel_btn_icon.gif") no-repeat !important ;
+}
+.clearfix-print .button.delete span span,
+.clearfix-print .button span span{
+    background: none repeat scroll 0 0 transparent !important;
+    display: inline !important;
+    margin: 0 !important;
+    color: #fff !important;
+    padding: 0 !important;
+}
+.drop-zone {
+    padding: 25px;
+}
+.drop-zone:after{
+    content: '';
+    display: block;
+    clear: both;
+}
+*+ html .drop-zone{
+    height: 1%;
+}
+
+#sortable1{
+    float: none;
+    width: 100%;
+    margin: 0 !important;
+    position: relative;
+
+}
+#sortable2 {
+    width: 100%;
+    margin: 0 !important;
+    position: relative;
+    float: none;
+}
+#sortable3{
+    width: 100%;
+}
+.entry-edit-head{
+    width: 537px;
+}
+/*Need verify FE*/
+.drop-zone > div > ul, .drop-zone li.ui-state-default {
+    overflow: visible;
+}

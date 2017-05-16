@@ -1,0 +1,90 @@
+<?php $checkUseForShipping = Mage::getSingleton('core/session')->getData('use_for_shipping'); ?>
+<script type="text/javascript">
+countryRegions = <?php echo $this->helper('directory')->getRegionJson() ?>
+</script>
+<div class="onestepcheckout-wrapper v-fix f-fix">
+    <div class="onestepcheckout-header">
+        <h3><?php echo $this->__('One step Checkout') ?></h3>
+        <p class="onestepcheckout-note"><?php echo $this->__('Please enter your details below to complete your purchase.') ?></p>
+    </div>
+    <?php if(!$this->isCustomerLoggedIn()): ?>
+    <div class="onestepcheckout-login">            
+        <div class="checkout-step-login">
+            <?php echo $this->getChildHtml('osc-login'); ?>
+        </div>
+    </div>
+    <?php endif; ?>
+    <?php $i=0; foreach($this->getSteps() as $_stepId => $_stepInfo): ?>
+    <?php if (!$this->getChild($_stepId) || !$this->getChild($_stepId)->isShow()): continue; endif; ?>
+ <?php if($_stepId == 'login'): ?>
+        <div class="onestepcheckout-<?php echo $_stepId ?>">            
+            <div class="checkout-step-<?php echo $_stepId ?>">
+                <?php echo $this->getChildHtml($_stepId) ?>
+            </div>
+        </div>
+        <?php else: ?>
+        <?php if($_stepId == 'shipping'): ?>
+        <?php if($checkUseForShipping): ?>
+        <?php $i++; ?>
+        <?php endif; ?>
+        <?php else: ?>
+        <?php $i++ ?>
+        <?php endif; ?>
+        <?php if($_stepId == 'billing'): ?>
+        <form id="onestepcheckout-form" action="" method="post">
+        <div id="os-container" class="clearfix f-fix v-fix">
+        <div id="os-row">
+        <div id="os-left" class="f-left left">
+        <ol class="first">
+        <?php endif; ?>
+        <?php if($_stepId == 'shipping_method' || $i == 2): ?>
+        </ol>
+        </div>
+        <div id="os-right" class="f-left left">
+        <div id="os-ship-payment" class="v-fix f-fix">
+        <ol class="second f-fix v-fix">
+        <?php elseif($_stepId == 'review'):?>
+        </ol>
+        </div>
+        <div id="os-review" class="v-fix f-fix">
+        <ol class="last">
+        <?php endif;?>
+        <?php if($_stepId == 'shipping'): ?>
+        <li class="step onestepcheckout-<?php echo $_stepId ?>" <?php if($checkUseForShipping): ?>style="display:block;"<?php else: ?>style="display:none;"<?php endif; ?> id="shipping-address-form">
+        <?php else: ?>
+        <li class="step onestepcheckout-<?php echo $_stepId ?>">
+        <?php endif; ?>
+            <div class="step-title">
+                <span id="step-number" <?php if($_stepId == 'review'): ?>class="step-review"<?php elseif($checkUseForShipping): ?>class="step-<?php echo $i ?>"<?php elseif($_stepId != 'shipping'): ?>class="step-<?php echo $i ?>"<?php endif; ?>></span>
+                <h2><?php echo $_stepInfo['label'] ?></h2>
+            </div>
+            <div class="content checkout-step-<?php echo $_stepId ?>">
+                <?php echo $this->getChildHtml($_stepId) ?>
+            </div>
+        </li>
+        <?php endif; ?>
+    <?php endforeach ?>
+        </ol>
+        </div>
+        </div>
+        </div>
+        </div>
+        </form>
+</div>
+<script type="text/javascript">
+//<![CDATA[
+    var onestepcheckout = new Onestepcheckout(
+                {
+                    failure: '<?php echo $this->getUrl('checkout/onepage/failure') ?>',
+                    reloadReview: '<?php echo $this->getUrl('checkout/onestep/reloadReview') ?>',
+                    reloadPayment: '<?php echo $this->getUrl('checkout/onestep/reloadPayment') ?>',
+                    success: '<?php echo $this->getUrl('checkout/onepage/success') ?>'
+                }                                      
+            );
+    if($('billing-address-select')) {
+        billing.setAddress($('billing-address-select').value);
+    } else {
+        billing.saveCountry();
+    }
+//]]>
+</script>

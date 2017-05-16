@@ -1,0 +1,83 @@
+ <?php
+/**
+ * Magento Enterprise Edition
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Magento Enterprise Edition License
+ * that is bundled with this package in the file LICENSE_EE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://www.magentocommerce.com/license/enterprise-edition
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magentocommerce.com for more information.
+ *
+ * @category    design
+ * @package     enterprise_default
+ * @copyright   Copyright (c) 2009 Irubin Consulting Inc. DBA Varien (http://www.varien.com)
+ * @license     http://www.magentocommerce.com/license/enterprise-edition
+ */
+?>
+<?php echo $this->getChildHtml('login_before')?>
+<div class="cols">
+    <div class="col col-1">
+        <h4><?php echo $this->__('Customer Account Login') ?></h4>
+        <?php echo $this->getMessagesBlock()->getGroupedHtml() ?>
+        <form id="login-form" action="<?php echo $this->getPostAction() ?>" method="post" class="form">
+	        <fieldset>
+	            <p><?php echo $this->__('Already registered?') ?> <?php echo $this->__('Please log in below:') ?></p>
+	            <div>
+            		<label for="login-email" class="required"><?php echo $this->__('Email Address') ?><em>*</em></label>
+            		<input type="text" class="ti required-entry validate-email" id="login-email" name="login[username]" value="<?php echo $this->htmlEscape($this->getUsername()) ?>" />
+	            </div>
+	            <div>
+            		<label for="login-password" class="required"><?php echo $this->__('Password') ?><em>*</em></label>
+            		<input type="password" class="ti validate-password required-entry" id="login-password" name="login[password]" />
+	            </div>
+	        </fieldset>
+	        <fieldset class="formnavi">
+	            <button type="button" class="btn" onclick="loginForm.submit()"><span><?php echo $this->__('Login') ?></span></button><br /><br />
+	            <a href="<?php echo $this->getUrl('customer/account/forgotpassword') ?>" title="<?php echo $this->__('Forgot your password?') ?>" class="link"><?php echo $this->__('Forgot your password?') ?></a>
+	        </fieldset>
+	    </form>
+    </div>
+    <?php if ( $this->getQuote()->isAllowedGuestCheckout() || $this->helper('customer')->isRegistrationAllowed() ): ?>
+    <div class="col col-2">
+        <?php if($this->helper('customer')->isRegistrationAllowed() ): ?>
+        <h4><?php echo $this->__('Register to Create an Account') ?></h4>
+        <p><?php echo $this->__('If you do not have online account, please sign up for more shopping convenience at every visit.') ?></p>
+        <p class="tr">
+        	<input type="hidden" name="checkout_method" id="login:register" value="register" />
+        	<button type="button" class="btn" onclick="$('login:register').checked = true; checkout.setMethod();" title="<?php echo $this->__('Continue As New Customer') ?>"><span><?php echo $this->__('Continue As New Customer') ?></span></button>
+        </p>
+        <?php endif; ?>
+        
+    <?php if( $this->getQuote()->isAllowedGuestCheckout()): ?>
+        <h4><?php echo $this->__('Checkout as a Guest') ?></h4>
+        <p><?php echo $this->__('You do not even want to use the advantages of the online customer account and continue the ordering process without registering.') ?></p>
+        <p class="tr">
+        	<input type="hidden" name="checkout_method" id="login:guest" value="guest" />
+        	<button type="button" class="btn" onclick="$('login:guest').checked = true;  checkout.setMethod();" title="<?php echo $this->__('Continue As The Guest') ?>"><span><?php echo $this->__('Continue As The Guest') ?></span></button>
+        </p>
+        <?php endif; ?>
+    </div>
+    <?php endif; ?>
+    <script type="text/javascript">
+    //<![CDATA[
+        var loginForm = new VarienForm('login-form', true);
+        $('login-email').observe('keypress', bindLoginPost);
+        $('login-password').observe('keypress', bindLoginPost);
+        function bindLoginPost(evt){
+            if (evt.keyCode == Event.KEY_RETURN) {
+                loginForm.submit();
+            }
+        }
+    //]]>
+    </script>
+</div>

@@ -1,0 +1,69 @@
+<?php if($this->getItemsCount()):?>
+<div id="vehicle-filter-items">
+<ol>
+<?php foreach ($this->getItems() as $_item): ?>
+    <li>
+        <?php if ($_item->getCount() > 0): ?>
+        <a href="<?php echo $this->urlEscape($_item->getUrl()) ?>"><?php echo $_item->getLabel() ?></a>
+        <?php else: echo $_item->getLabel() ?>
+        <?php endif; ?>
+        (<?php echo $_item->getCount() ?>)
+    </li>
+<?php endforeach ?>
+</ol>
+<div class="magedoc-form-buttons">
+    <button type="button" id="add-vehicle" class="button"><span><span><?php echo $this->__('Add Vehicle')?></span></span></button>
+</div>
+</div>
+<?php endif; ?>
+<?php $display = 'display: none;';?>
+<?php if(!$this->getItemsCount()):?>
+    <?php $display ='';?>
+<?php endif;?>
+<div style="<? echo $display?>" id="vehicle-form-container">
+    <div class="layed-navigation-chooser">
+            <?php echo $this->getChooserHtml(); ?>
+    </div>
+    <form method="get" action="<?php echo $this->getCurrentCategoryUrl()?>" id="vehicle-form">
+        <div class="magedoc-form-buttons">
+            <input type="hidden" name="type" id="type-field"/>
+            <button type="button" id="vehicle-form-cancel" class="button"><span><span><?php echo $this->__('Cancel')?></span></span></button>
+            <button type="submit" id="vehicle-form-submit" class="button" disabled="disabled"><span><span><?php echo $this->__('Ok')?></span></span></button>
+        </div>
+    </form>    
+</div>
+
+<script type="text/javascript">
+    var myVehiclesForm = new VarienForm('vehicle-form');
+    
+    if ($('add-vehicle'))
+    {
+        $('add-vehicle').observe('click', function(){
+            $('vehicle-form-container').show();
+            $('vehicle-filter-items').hide();
+        });
+    }
+    
+    $('vehicle-form-cancel').observe('click', function(){
+        $('vehicle-form-container').hide();
+        $('vehicle-filter-items').show();
+    });
+    
+    $('vehicle-form-submit').observe('click', function(event){
+        var type = $('type').down('select').value;
+        if(!type){
+            event.stop();
+            return false;
+        }
+        $('type-field').value = type;
+    });
+    
+    vehicleChooserObject.setChangeCallback(function(value){
+                    if(value){
+                        $('vehicle-form-submit').disabled = '';
+                    }else{
+                        $('vehicle-form-submit').disabled = 'disabled';
+                    }
+                });
+    
+</script>

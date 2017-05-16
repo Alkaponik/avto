@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!--
+ * {magecore_license_notice}
+ *
+ * @category   MageCore
+ * @package    Analytics
+ * @copyright  {magecore_copyright}
+ * @license    {magecore_license}
+-->
+<config>
+    <modules>
+        <Oro_Analytics>
+            <active>true</active>
+            <codePool>community</codePool>
+        </Oro_Analytics>
+    </modules>
+</config>

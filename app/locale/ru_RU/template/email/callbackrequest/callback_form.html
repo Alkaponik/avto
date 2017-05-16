@@ -1,0 +1,29 @@
+<body style="background:#F6F6F6; font-family:Verdana, Arial, Helvetica, sans-serif; font-size:12px; margin:0; padding:0;">
+    <div class="content-header">
+        <table cellspacing="0">
+            <tr>
+                <td style="width:50%;">ID: <b>{{var call.getId()}}</b></td>
+            </tr>
+            <tr>
+                <td style="width:50%;">Дата создания: <b>{{var call.getCreatedAtDate()}}</b></td>
+            </tr>
+            <tr>
+                <td style="width:50%;">Имя: <b>{{var call.getName()}}</b></td>
+            </tr>
+            <tr>
+                <td style="width:50%;">Телефон: <b>{{var call.getTelephone()}}</b></td>
+            </tr>
+            <tr>
+                <td style="width:50%;">Коментарий:  <b>{{var call.getComment()}}</b></td>
+            </tr>
+            <tr>
+                <td style="width:50%;">
+                    <a href="{{var call.getUrl()}}" >Изменить статус на "Обработан".</a>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div style="width: 100%; margin-top: 10px;">
+        {{var call.getCartContent()}}
+    </div>
+</body>

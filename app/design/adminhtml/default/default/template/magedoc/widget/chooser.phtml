@@ -1,0 +1,20 @@
+<div class="inline">
+<?php if($this->getContainerId() == 'dummy'):?>
+    <ul class="vehicle-changer form-list" id="#{_chooser_id}">
+<?php else:?>
+    <ul class="vehicle-changer form-list" id="<?php echo $this->getContainerId();?>">
+<?php endif;?>
+    <li class="fields">
+    <?php foreach($this->getComboboxes() as $comboBox): ?>
+        <div class="field inline">
+            <?php echo $comboBox->toHtml(); ?>
+        </div>
+    <?php endforeach;?>
+
+    </li>
+</ul>
+</div>
+<!--<div style="clear: both;"></div>-->
+    
+    
+    

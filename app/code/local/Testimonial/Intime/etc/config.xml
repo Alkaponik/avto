@@ -1,0 +1,172 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Testimonial_Intime>
+            <version>0.1.0</version>
+        </Testimonial_Intime>
+    </modules>
+    <global>
+        <models>
+            <intime>
+                <class>Testimonial_Intime_Model</class>
+                <resourceModel>intime_resource</resourceModel>
+            </intime>
+            <intime_resource>
+                <class>Testimonial_Intime_Model_Resource</class>
+                <entities>
+                    <city>
+                        <table>intime_city</table>
+                    </city>
+                    <warehouse>
+                        <table>intime_warehouse</table>
+                    </warehouse>
+                    <consignment>
+                        <table>intime_consignment</table>
+                    </consignment>
+                </entities>
+            </intime_resource>
+        </models>
+        <blocks>
+            <intime>
+                <class>Testimonial_Intime_Block</class>
+            </intime>
+        </blocks>
+        <helpers>
+            <intime>
+                <class>Testimonial_Intime_Helper</class>
+            </intime>
+        </helpers>
+        <resources>
+           <intime_setup>
+               <setup>
+                   <module>Testimonial_Intime</module>
+               </setup>
+           </intime_setup>
+        </resources>
+        <events>
+            <sales_order_shipment_track_save_after>
+                <observers>
+                    <testimonial_intime_model_observer>
+                        <type>singleton</type>
+                        <class>intime/observer</class>
+                        <method>sales_order_shipment_track_save_after</method>
+                    </testimonial_intime_model_observer>
+                </observers>
+            </sales_order_shipment_track_save_after>
+            <sales_order_shipment_track_save_before>
+                <observers>
+                    <testimonial_intime_model_observer>
+                        <type>singleton</type>
+                        <class>intime/observer</class>
+                        <method>sales_order_shipment_track_save_before</method>
+                    </testimonial_intime_model_observer>
+                </observers>
+            </sales_order_shipment_track_save_before>
+        </events>
+    </global>
+    <frontend>
+        <translate>
+            <modules>
+                <Testimonial_Intime>
+                    <files>
+                        <default>Testimonial_Intime.csv</default>
+                    </files>
+                </Testimonial_Intime>
+            </modules>
+        </translate>
+    </frontend>
+    <admin>
+        <routers>
+            <intime>
+                <use>admin</use>
+                <args>
+                    <module>Testimonial_Intime</module>
+                    <frontName>intime</frontName>
+                </args>
+            </intime>
+        </routers>
+    </admin>
+    <adminhtml>
+        <layout>
+            <updates>
+                <Testimonial_Intime>
+                    <file>Intime.xml</file>
+                </Testimonial_Intime>
+            </updates>
+        </layout>
+        <translate>
+            <modules>
+                <Testimonial_Intime>
+                    <files>
+                        <default>Testimonial_Intime.csv</default>
+                    </files>
+                </Testimonial_Intime>
+            </modules>
+        </translate>
+    </adminhtml>
+    <default>
+        <carriers>
+            <intime>
+                <!-- disabled by default not to propose unconfigured shipping method to customer -->
+                <active>0</active>
+                <!-- allow only for specific countries flag -->
+                <sallowspecific>1</sallowspecific>
+                <!-- allow only for Ukraine -->
+                <specificcountry>UA</specificcountry>
+                <!-- carrier model -->
+                <model>intime/carrier_intime</model>
+                <!-- carrier title -->
+                <title>Интайм</title>
+                <!-- error message -->
+                <specificerrmsg>Этот способ доставки на текущий момент не доступен. Если вы желаете, чтобы мы доставили заказ Интаймом, обратитесь к менеджеру интернет-магазина.</specificerrmsg>
+                <enable_log>0</enable_log>
+                <api_key>1a7d1a52-6788-11e2-9ef4-005056a7291e</api_key>
+                <api_user_id>8 943 289</api_user_id>
+                <api_url>https://ws.intime.ua/test98/ws/integration.1cws?wsdl</api_url>
+                <min_update_timeout>1</min_update_timeout>
+                <tracking>
+                    <status>
+                        <status_not_faund>
+                            <value>0</value>
+                            <label>Number was not found</label>
+                        </status_not_faund>
+                        <status_no_request>
+                            <value>1</value>
+                            <label>Inquiry is present but consignment is missing</label>
+                        </status_no_request>
+                        <status_delivery_accepted>
+                            <value>2</value>
+                            <label>Shipment accepted</label>
+                        </status_delivery_accepted>
+                        <status_shipment_in_transit>
+                            <value>3</value>
+                            <label>Shipment is in transit</label>
+                        </status_shipment_in_transit>
+                        <status_shipment_received>
+                            <value>4</value>
+                            <label>Shipment reached destination warehouse</label>
+                        </status_shipment_received>
+                        <status_loads_of_stock>
+                            <value>5</value>
+                            <label>Shipment received</label>
+                        </status_loads_of_stock>
+                        <status_return_of_cargo>
+                            <value>6</value>
+                            <label>Shipment returned</label>
+                        </status_return_of_cargo>
+                    </status>
+                    <back_delivery>
+                        <back_delivery_no>
+                            <value>0</value>
+                            <label>No</label>
+                        </back_delivery_no>
+                        <back_delivery_yes>
+                            <value>1</value>
+                            <label>Yes</label>
+                        </back_delivery_yes>
+                    </back_delivery>
+                </tracking>
+            </intime>
+        </carriers>
+    </default>
+</config>

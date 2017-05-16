@@ -1,0 +1,19 @@
+<?php if (!$this->getAgreements()) return; ?>
+<div class="checkout-agreements">
+<?php foreach ($this->getAgreements() as $_a): ?>
+    <p class="agree">
+        <input class="checkbox required-entry" type="checkbox" name="agreement[<?php echo $_a->getId()?>]" value="1" title="<?php echo $this->htmlEscape($_a->getCheckboxText()) ?>" class="checkbox" /><label for="agreement-<?php echo $_a->getId()?>"><?php echo $this->htmlEscape($_a->getCheckboxText()) ?></label>
+        <a href="#" onclick="agreements.scrollShow('agreement-<?php echo $_a->getId()?>');return false;"><?php echo $_a->getName() ?></a>
+    </p>
+    <div class="agreement-content"<?php echo ($_a->getContentHeight() ? ' style="height:' . $_a->getContentHeight() . '"' : '')?> id="agreement-<?php echo $_a->getId()?>" style="display:none;">
+        <?php if ($_a->getIsHtml()):?>
+            <?php echo $_a->getContent() ?>
+        <?php else:?>
+            <?php echo nl2br($this->htmlEscape($_a->getContent())) ?>
+        <?php endif; ?>
+    </div>
+<?php endforeach ?>
+</div>
+<script type="text/javascript">
+    var agreements = new Agreements(8);
+</script>

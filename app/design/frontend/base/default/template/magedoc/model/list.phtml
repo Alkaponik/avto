@@ -1,0 +1,40 @@
+<?php
+/**
+ * @var Testimonial_MageDoc_Block_Model_List $this
+ */
+?>
+<?php $helper = Mage::helper('magedoc')?>
+<?php $modelCollection = $this->getModelCollection(); ?>
+<ul id="car-models-list">
+    <?php foreach($modelCollection as $model): ?>
+
+            <li class="model">
+               <span class="expand-button"></span>
+               <a class="model-title" title="<?php echo $model->getFullName() ?>" href="<?php echo $model->getUrl() ?>" onclick="return false;"><?php echo $model->getFullName() ?>
+                   <span class="start-date"><?php echo '('.$model->getProductionPeriod().')' ?></span>
+               </a>
+								
+               <div style="display:none;">
+                 <ul class="car-types-list">
+                
+                   <?php $modelId = $model->getModId() ?>
+                   <?php $typeCollection = $model->getTypeCollection() ?>
+                   <?php while ($type = $typeCollection->fetchItem()): ?>
+                      <?php $engineLabel = $this->getTypeEngineLabel($type); ?>
+                      <?php $engineLabel = $type->getEngineVolume().' '.$type->getTypFuelDesText().' '.$type->getTypHpFrom().' '.$this->__('h.p.').' ('.$type->getEngCode().')' ?>
+                      <li>
+                          <a title="<?php echo $model->getFullName().' '.$engineLabel ?>" href="<?php echo $type->getUrl()?>">
+                              <span class="body-type"><?php echo $type->getTypBodyDesText() ?></span>
+                              <span class="start-date"><?php echo $type->getProductionPeriod($type) ?></span>
+                              <span class="engine-description"><?php echo $engineLabel ?></span>
+                          </a>
+                      </li>	
+                    <?php endwhile;?>
+               </ul>
+             </div>
+           </li>
+    <?php endforeach;?>		
+</ul>
+<script type="text/javascript">
+    Event.observe(window, 'load', function(){ document.folder = new ContainerFolder('car-models-list');});
+</script>

@@ -1,0 +1,1 @@
+../../../../../../.modman/adminrwd/skin/adminhtml/default/default/js/magedoc/rwd.js

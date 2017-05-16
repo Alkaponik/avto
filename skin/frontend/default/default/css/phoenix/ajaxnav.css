@@ -1,0 +1,32 @@
+#phoenix-ajax-layer {
+    background: #FFF;
+    -moz-opacity:0.8; opacity:0.8; filter:alpha(opacity=80);
+    height: 100%;
+    left: 0;
+    overflow: hidden;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 10010;
+}
+
+#phoenix-ajax-popup-container{
+    /*background-color: #FFF;
+    border: #bbb solid 1px;
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    box-shadow: 1px 1px 6px #999;
+    -moz-box-shadow: 1px 1px 6px #999;
+    -webkit-box-shadow: 1px 1px 6px #999;
+    margin: -100px 0 0 -267px;*/
+    left: 50%;
+    position: fixed;
+    top: 50%;
+    vertical-align: middle;
+    /*width: 534px;*/
+    z-index: 10020;
+}
+#phoenix-ajax-popup-container .loading {padding: 20px; background: #fff url(../../images/opc-ajax-loader.gif) 10px center no-repeat; /*margin-left: 257px;*/}
+#phoenix-ajax-popup-container .error-msg, #phoenix-ajax-popup-container .success-msg {margin: 0;}
+#phoenix-ajax-popup-container .details {height: 120px;overflow:hidden;}

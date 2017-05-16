@@ -1,0 +1,132 @@
+<?php $_element = $this->getElement() ?>
+<?php if ($_element->getComment()): ?>
+    <p class="comment"><?php echo $this->escapeHtml($_element->getComment()) ?></p>
+<?php endif; ?>
+<?php if ($_element->hasHtmlContent()): ?>
+    <?php echo $_element->getHtmlContent(); ?>
+<?php else: ?>
+    <?php echo $_element->getChildrenHtml(); ?>
+<?php endif; ?>
+<?php echo $_element->getSubFieldsetHtml() ?>
+
+<div class="magedoc-form-button">
+        <button type="button" id="add-inquiry" class="button"><span><span><?php echo $this->__('Add inquiry') ?></span></span></button>
+        <button type="button" id="save-inquiries" class="button"><span><span><?php echo $this->__('Save inquiries') ?></span></span></button>
+</div>
+
+
+<script type="text/javascript">
+
+  var InquiryCreator = Class.create({
+    initialize:function(container, addButton, saveButton, requestUrl, template)
+    {
+        this.container = $(container);
+        this.addButton = $(addButton);
+        this.saveButton = $(saveButton);
+        this.requestUrl = requestUrl;
+        this.inquiriesChanged = false;
+        this.formTemplate = $(template);
+        this.template = new Template('<div id="#{_container_id}" class="inquiry-container">' + $(template).innerHTML + '</div>');
+        this.addButton.observe('click', this.add.bind(this));
+        $(this.saveButton).observe('click', this.saveInquiries.bind(this));
+        this.inquiries = {};
+        this.validator = new Validation(this.container);
+        this.initInquiries();
+        Event.observe(window, 'load', this.doFilterGrid.bind(this));
+        this.addOnchangeHandlers();
+    },
+
+    getTypes : function()
+    {
+        return this.types;
+    },
+
+    resetAllFilters : function()
+    {
+        for(var i in this.inquiries){
+             this.inquiries[i].checkbox.checked = false;
+        }
+    },
+
+    addOnchangeHandlers : function(container){
+        var elementsContainer = container || this.container;
+        var elems = elementsContainer.select('input', 'select');
+        for(var i = 0; i < elems.length; i++){
+            if(!elems[i].bindOnchange){
+                elems[i].bindOnchange = true;
+                elems[i].observe('change', this.elementChange.bind(this))
+            }
+        }
+    },
+
+    elementChange : function()
+    {
+        this.inquiriesChanged = true;
+    },
+
+    saveInquiries : function()
+    {
+        if(this.validator.validate()){
+            var area = ['totals', 'inquiries', 'items', 'shipping_method', 'billing_method'];
+            var fieldsPrepare = {update_inquiries: 1};
+            var info = $(this.container).select('input', 'select');
+            for(var i=0; i < info.length; i++){
+                if(!info[i].disabled && (info[i].type != 'checkbox')) {
+                    fieldsPrepare[info[i].name] = info[i].getValue();
+                }
+            }
+            fieldsPrepare = Object.extend(fieldsPrepare, {});
+            order.productConfigureSubmit('quote_inquiries', area, fieldsPrepare);
+            this.inquiriesChanged = false;
+        }
+    },
+
+    doFilterGrid : function()
+    {
+        sales_order_create_search_gridJsObject.doFilter();
+        return this;
+    },
+
+    chooserCallback: function()
+    {
+        this.doFilterGrid();
+    },
+
+    initInquiries: function()
+    {
+        var inquiryForms = this.container.select('.inquiry-container');
+        for(var i = 0; i < inquiryForms.length; i++){
+            if(inquiryForms[i].id !== 'inquiry-template'){
+                this.inquiries[inquiryForms[i].id] =
+                    new InquiryManager($(inquiryForms[i].id),
+                        this.requestUrl,
+                        this.chooserCallback.bind(this),
+                        $(inquiryForms[i]).select('#row-template').first());
+            }
+        }
+    },
+
+    add : function()
+    {
+        var d = new Date();
+        var containerId = 'id_container_' + d.getMilliseconds();
+        var chooserContainerId = 'chooser_' + d.getMilliseconds();
+        var vehicleId = 'added_' + d.getMilliseconds();
+        var templateData = {
+            _container_id   : containerId,
+            _chooser_id     : chooserContainerId,
+            _vehicle_id     : vehicleId
+        };
+        Element.insert($(this.formTemplate), {before : this.template.evaluate(templateData)});
+        this.inquiries[containerId] =
+              new InquiryManager($(containerId), this.requestUrl,
+                                this.chooserCallback.bind(this),
+                                $(containerId).select('#row-template').first());
+    }
+});
+
+var Manager = new InquiryCreator('order-inquiries', 'add-inquiry', 'save-inquiries',
+            '<?php echo $this->getUrl('magedoc/sales_order/request/') ?>',
+            'inquiry-template');
+
+</script>

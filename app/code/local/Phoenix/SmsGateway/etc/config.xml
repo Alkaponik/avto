@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * Phoenix SMS Gateway
+ *
+ * NOTICE OF LICENSE
+ * 
+ * This source file is subject to license that is bundled with
+ * this package in the file LICENSE.txt.
+ *
+ * @category   Phoenix
+ * @package    Phoenix_SmsGateway
+ * @copyright  Copyright (c) 2009 by Phoenix Medien GmbH & Co. KG (http://www.phoenix-medien.de)
+ */
+-->
+<config>
+	<modules>
+		<Phoenix_SmsGateway>
+			<version>0.1</version>
+		</Phoenix_SmsGateway>
+	</modules>
+	<global>
+		<models>
+			<smsgateway>
+				<class>Phoenix_SmsGateway_Model</class>
+			</smsgateway>
+		</models>
+		<helpers>
+			<smsgateway>
+				<class>Phoenix_SmsGateway_Helper</class>
+			</smsgateway>
+		</helpers>
+	</global>
+    <adminhtml>
+        <translate>
+            <modules>
+                <Phoenix_SmsGateway>
+                    <files>
+                        <default>Phoenix_SmsGateway.csv</default>
+                    </files>
+                </Phoenix_SmsGateway>
+            </modules>
+        </translate>
+		<acl>
+			<resources>
+				<admin>
+					<children>
+						<system>
+							<children>
+								<config>
+									<children>
+										<smsgateway>
+											<title>SMS Gateway</title>
+										</smsgateway>
+									</children>
+								</config>
+							</children>
+						</system>
+					</children>
+				</admin>
+			</resources>
+		</acl>
+    </adminhtml>
+    <phoenix>
+        <smsgateway>
+            <api>
+                <LOX24>
+                    <code>Lox24</code>
+                    <name>LOX24</name>
+                </LOX24>
+                <HOSTSERVER>
+                    <code>Hostserver</code>
+                    <name>Hostserver</name>
+                </HOSTSERVER>
+                <alphasms>
+                    <code>alphasms</code>
+                    <name>AlphaSMS</name>
+                </alphasms>
+                <turbosms>
+                    <code>turbosms</code>
+                    <name>TurboSMS</name>
+                </turbosms>
+            </api>
+        </smsgateway>
+    </phoenix>
+    <default>
+        <smsgateway>
+            <common>
+                <enabled>0</enabled>
+                <debug>0</debug>
+            </common>
+            <lox24>
+                <service>5</service>
+                <url>https://www.lox24.eu/API/httpsms.php</url>
+            </lox24>
+            <hostserver>
+                <service>5</service>
+                <url>https://smsgate.hostserver.de/smsgate.php</url>
+            </hostserver>
+            <turbosms>
+                <wsdl>http://turbosms.in.ua/api/wsdl.html</wsdl>
+            </turbosms>
+        </smsgateway>
+    </default>       
+</config>

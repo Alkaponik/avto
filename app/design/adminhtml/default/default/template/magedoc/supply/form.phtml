@@ -1,0 +1,173 @@
+<form id="edit_form" method="post" action="<?php echo $this->getSaveUrl() ?>">
+    <?php echo $this->getBlockHtml('formkey')?>
+    
+    <div class="content-header">
+        <h3 class="icon-head head-sales-order"><?php echo $this->__('Orders Supply');?></h3>
+        <h3><label for="document_reference"><?php echo $this->__('Reference') ?></label><input type="text" id="document_reference" name="document_reference" value="<?php echo $this->_getSession()->getDocumentReference() ?>"/></h3>
+        <p class="form-buttons">
+            <?php echo $this->getButtonsHtml();?>
+        </p>
+    </div>
+    <?php echo $this->getChildHtml('item_grid') ?>
+    <div class="content-header">
+        <br/>
+        <h3 class="icon-head head-sales-order"><?php echo $this->__('Inquiries Supply');?></h3>
+    </div>
+    <?php echo $this->getChildHtml('inquiry_grid')?>
+</form>
+
+<?php $displayFormat = Mage::helper('magedoc')->getDefaultDateDisplayFormat() ?>
+
+<script type="text/javascript">// <![CDATA[
+    $('item_filter_ean').focus();
+
+    var saveButton = $$('button.scalable.save').first();
+    if (saveButton){
+        document.observe('keydown', function(saveButton, event){
+            if (event.ctrlKey && event.keyCode == 13){
+                saveButton.onclick();
+            }
+        }.curry(saveButton));
+    }
+
+    function initCalendar(object)
+    {
+        var dateElements = $(object.containerId).select(' .date');
+        for(var i = 0; i < dateElements.length; i++){
+            var dateElement = dateElements[i];
+            Calendar.setup({
+                inputField : dateElement,
+                ifFormat : '<?php echo $displayFormat ?>',
+                button : dateElement,
+                align : 'Bl',
+                singleClick : true
+            });
+        }
+    }
+    initCalendar(itemJsObject);
+    initCalendar(inquiryJsObject);
+    itemJsObject.initCallback = initCalendar;
+    inquiryJsObject.initCallback = initCalendar;
+
+var grids = [itemJsObject, inquiryJsObject];
+var relatedGrid = new RelatedGrid(grids);
+
+var doFilterGridInitCallback = function(e){
+    initCalendar(e);
+    relatedGrid.addHandlers();
+    addRetailerFilterChangeHandler();
+    //referenceChangeHandler({target: $('document_reference')});
+    if (!e.stopPropogation.search){
+        relatedGrid.triggerSearch(e);
+    }else{
+        e.stopPropogation.search = false;
+    }
+};
+
+var resetFilterGridInitCallback = function(e){
+    initCalendar(e);
+    relatedGrid.addHandlers();
+    addRetailerFilterChangeHandler();
+    $('document_reference').value = '';
+    if (!e.stopPropogation.reset){
+        relatedGrid.triggerReset(e);
+    }else{
+        e.stopPropogation.reset = false;
+    }
+};
+
+var retailerFilterChangeHandler = function(e)
+{
+    $('document_reference').value = '';
+}
+
+var addRetailerFilterChangeHandler = function(){
+    $('item_filter_retailer_id').stopObserving('change', retailerFilterChangeHandler);
+    $('item_filter_retailer_id').observe('change', retailerFilterChangeHandler);
+    $('inquiry_filter_retailer_id').stopObserving('change', retailerFilterChangeHandler);
+    $('inquiry_filter_retailer_id').observe('change', retailerFilterChangeHandler);
+}
+
+var referenceChangeHandler = function(e)
+{
+    var element = e.target;
+    $$('input[name*="[receipt_reference]"').each(function(reference, e){
+        if (!e.value || e.wasEmpty){
+            e.value = reference;
+            e.wasEmpty = true;
+            e.addClassName('retailerMinCost');
+        }
+    }.curry(element.value));
+}
+
+//$('document_reference').observe('change', referenceChangeHandler);
+
+addRetailerFilterChangeHandler();
+//referenceChangeHandler({target: $('document_reference')});
+
+for (var i=0; i < grids.length; i++){
+    grids[i].resetFilter = grids[i].resetFilter.wrap(function(grid, callback, callOriginal){
+        grid.initCallback = callback;
+        callOriginal();
+    }.curry(grids[i], resetFilterGridInitCallback));
+    grids[i].doFilter = grids[i].doFilter.wrap(function(grid, callback, callOriginal){
+        grid.initCallback = callback;
+        callOriginal();
+    }.curry(grids[i], doFilterGridInitCallback));
+}
+
+var supplyManager = new SupplyManager(<?php echo Mage::helper('magedoc')->getRetailersSupplyConfigJson() ?>);
+
+var scannerCommandCallback = function(command)
+{
+    switch (command){
+        case '0010':
+            var saveButton = $$('button.scalable.save').first();
+            if (saveButton){
+                saveButton.click();
+            }
+            break;
+        case '0020':
+            var shipActions = $$('td a.ship');
+            if (shipActions.length == 1){
+                shipActions.first().click();
+            }
+            break;
+        case '0030':
+            $('item_filter_status').value = 'reserved';
+            $('inquiry_filter_status').value = 'reserved';
+            break;
+        case '0040':
+            $('item_filter_status').value = 'warehouse_delivery';
+            $('inquiry_filter_status').value = 'warehouse_delivery';
+            break;
+        case '0050':
+            var supplyStatus = $$('select[name*="[supply_status]"]');
+            if (supplyStatus.length == 1){
+                supplyStatus.first().value = 'returned';
+            }
+            break;
+        case '0060':
+            itemJsObject.resetFilter();
+            break;
+        default:
+            if (command > 1000 && command < 2000){
+                $('item_filter_retailer_id').value = command - 1000;
+                $('inquiry_filter_retailer_id').value = command - 1000;
+                retailerFilterChangeHandler();
+            }
+    }
+}
+
+var inputStartCallback = function()
+{
+    $('item_filter_ean').focus();
+}
+
+var scannerListener = new ScannerListener(scannerCommandCallback,
+        {
+            'inputStartCallback': inputStartCallback
+        }
+);
+
+// ]]></script>

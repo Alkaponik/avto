@@ -1,0 +1,54 @@
+<?php
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Open Software License (OSL 3.0)
+ * that is available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/osl-3.0.php
+ *
+ * @package	Mage_Debit
+ * @copyright  Copyright (c) 2010 Phoenix Medien GmbH & Co. KG (http://www.phoenix-medien.de)
+ * @license	http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ */
+?>
+<h1><?php echo $this->__('Edit Debit Account Data') ?></h1>
+<?php echo $this->getMessagesBlock()->getGroupedHtml() ?>
+<form action="<?php echo $this->getUrl('debit/account/save') ?>" method="post" id="form-validate" class="form">
+	<fieldset>
+		<?php echo $this->getBlockHtml('formkey')?>
+		<h2><?php echo $this->__('Debit Account Data') ?></h2>
+		<div>
+			<label for="kreditinstitut"><?php echo $this->__('Kreditinstitut') ?></label>
+			<?php echo $this->getBankName(); ?>
+		</div>
+		
+		<div>
+			<label for="bankleitzahl"><?php echo $this->__('Bankleitzahl') ?></label>
+			<input type="text" id="bankleitzahl" name="account_blz" title="<?php echo $this->__('Bankleitzahl') ?>" class="ti required-entry validate-number validate-debit-blz" value="<?php echo $this->htmlEscape($this->getAccountBLZ()) ?>" onchange="blzCheck.checkBlz(this); return false;" />
+		</div>
+		
+		<div>
+			<label for="kontoinhaber"><?php echo $this->__('Kontoinhaber') ?></label>
+			<input type="text" id="kontoinhaber" name="account_name" title="<?php echo $this->__('Kontoinhaber') ?>" class="ti required-entry" value="<?php echo $this->htmlEscape($this->getAccountName()) ?>" />
+		</div>
+		
+		<div>
+			<label for="kontonummer"><?php echo $this->__('Konto-Nummer') ?></label>
+			<input type="text" id="kontonummer" name="account_number" title="<?php echo $this->__('Konto-Nummer') ?>" class="ti required-entry validate-number validate-debit-number" value="<?php echo $this->htmlEscape($this->getAccountNumber()) ?>" />
+		</div>
+	</fieldset>
+	<fieldset class="formnavi">
+		<button type="submit" title="<?php echo $this->__('Save') ?>" class="btn"><span><?php echo $this->__('Save') ?></span></button>
+	</fieldset>
+</form>
+
+<p class="bottom-links"><a href="<?php echo $this->getBackUrl() ?>" title="<?php echo $this->__('Back') ?>" class="link link-back"><?php echo $this->__('Back') ?></a></p>
+
+<script type="text/javascript">
+//<![CDATA[
+	blzCheck = new blzAjaxCheck('<?php echo $this->getUrl('debit/ajax/checkblz');?>');
+	var dataForm = new VarienForm('form-validate', true);
+//]]>
+</script>

@@ -1,0 +1,27 @@
+/**
+ * {magecore_license_notice}
+ *
+ * @category   MageCore
+ * @package    Dashboard
+ * @copyright  {magecore_copyright}
+ * @license    {magecore_license}
+ */
+
+#progress {
+    width:500px;
+    height:30px;
+}
+
+#finished-cont{
+    width:450px;
+    float:left;
+}
+
+#finished {
+    background:#0044ff !important;
+    width:0;
+}
+
+#count {
+    float:right;
+}

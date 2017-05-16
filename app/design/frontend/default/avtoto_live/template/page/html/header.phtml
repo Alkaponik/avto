@@ -1,0 +1,182 @@
+<?php
+$customerSession = Mage::getSingleton('customer/session');
+?>
+<script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-8304556-1']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+
+    (function (d, w, c) { (w[c] = w[c] || []).push(function() { try { w.yaCounter36512550 = new Ya.Metrika({ id:36512550, clickmap:true, trackLinks:true, accurateTrackBounce:true, webvisor:true, trackHash:true }); } catch(e) { } }); var n = d.getElementsByTagName("script")[0], s = d.createElement("script"), f = function () { n.parentNode.insertBefore(s, n); }; s.type = "text/javascript"; s.async = true; s.src = "https://mc.yandex.ru/metrika/watch.js"; if (w.opera == "[object Opera]") { d.addEventListener("DOMContentLoaded", f, false); } else { f(); } })(document, window, "yandex_metrika_callbacks");
+
+    jQuery(document).ready(function() {
+
+        jQuery(".fancybox").fancybox({
+            helpers : {
+                overlay: {
+                    css: {'background': 'none rgba(255,255,255,0.8)'}
+                }
+            },
+            scrolling : 'no',
+            padding : 0,
+            minHeight: 50,
+            closeBtn: false,
+            afterShow: function(){
+
+                    <?php if ($customerSession->isLoggedIn()): ?>
+                    
+                    $('block-callback').down('input[name=name]').value = '<?php echo $customerSession->getCustomer()->getName(); ?>';
+                    <?php if ($customerSession->getCustomer()->getDefaultBillingAddress()): ?>
+                    $('block-callback').down('input[name=telephone]').value = '<?php echo $customerSession->getCustomer()->getDefaultBillingAddress()->getTelephone(); ?>';
+                    <?php endif; ?>
+                    
+                        <?php endif; ?>
+                        
+                        var url = '<?php echo Mage::getBaseUrl() ?>index.php?shopping_cart=yes&is_ajax=1';
+                        var productId = jQuery(this.element).data('product_id');
+                        var offerId = jQuery(this.element).data('offer_id');
+                        if( typeof productId !== 'undefined' ) {
+                            url += '&product_id=' + productId;
+                        }
+                        if( typeof offerId !== 'undefined' ) {
+                            url += '&offer_id=' + offerId;
+                        }
+
+                        jQuery.ajax(url).done(
+                                function(response){
+                                    document.shoppingCart = response;
+                                });
+                    }
+
+                    })
+        var url = '<?php echo Mage::getBaseUrl() ?>index.php?shopping_cart=yes&is_ajax=1';
+        new jQuery.ajax({
+            url: url,
+            success: function(data){
+                if (typeof data['#block-cart'] != 'undefined'){
+                    jQuery('#block-cart').replaceWith(data['#block-cart']);
+                }
+        }});
+
+        // =============================================
+        // Primary Break Points
+        // =============================================
+
+        // These should be used with the bp (max-width, xx) mixin
+        // where a min-width is used, remember to +1 to break correctly
+        // If these are changed, they must also be updated in _var.scss
+
+        var bp = {
+            xsmall: 479,
+            small: 599,
+            medium: 770,
+            large: 979,
+            xlarge: 1199
+        }
+
+        var $j = jQuery.noConflict();
+
+        // ==============================================
+        // Shared Vars
+        // ==============================================
+
+        // Document
+        var w = $j(window);
+        var d = $j(document);
+        var body = $j('body');
+
+        // =============================================
+        // Skip Links
+        // =============================================
+
+        var skipContents = $j('.skip-content');
+        var skipLinks = $j('.skip-link');
+
+        skipLinks.on('click', function (e) {
+            e.preventDefault();
+
+            var self = $j(this);
+            var target = self.attr('href');
+
+            // Get target element
+            var elem = $j(target);
+
+            // Check if stub is open
+            var isSkipContentOpen = elem.hasClass('skip-active') ? 1 : 0;
+
+            // Hide all stubs
+            skipLinks.removeClass('skip-active');
+            $j('.skip-content').removeClass('skip-active');
+
+            // Toggle stubs
+            if (isSkipContentOpen) {
+                self.removeClass('skip-active');
+                if (skipLinks.find('.skip-active').length == 0){
+                    $j('#my-car-block').addClass('skip-active');
+                }
+            } else {
+                self.addClass('skip-active');
+                elem.addClass('skip-active');
+            }
+        });
+
+        // ==============================================
+        // Enquire JS
+        // ==============================================
+
+        enquire.register('screen and (min-width: ' + (bp.medium + 1) + 'px)', {
+            match: function () {
+                $j('.menu-active').removeClass('menu-active');
+                $j('.sub-menu-active').removeClass('sub-menu-active');
+                $j('.skip-active').removeClass('skip-active');
+            },
+            unmatch: function () {
+                $j('.menu-active').removeClass('menu-active');
+                $j('.sub-menu-active').removeClass('sub-menu-active');
+                $j('.skip-active').removeClass('skip-active');
+            }
+        });
+    });
+</script>
+
+<a href="<?php echo $this->getUrl('') ?>" title="<?php echo $this->getLogoAlt() ?>" id="logo"></a>
+
+<div id="navi">
+	<ul id="meta-navi"><?php if($this->getChildHtml('topStaticLinks')) echo $this->getChildHtml('topStaticLinks'); ?></ul>
+	
+	<?php if($this->getChildHtml('topLinks') || $this->getChildHtml('switches')) : ?>
+	<div style="background-color: red;">
+		<div class="switches"><?php echo $this->getChildHtml('switches') ?></div>
+		<?php if($this->getChildHtml('topLinks')) :?><div class="topLinks"><ul id="meta-navi"><?php echo $this->getChildHtml('topLinks') ?></ul></div><?php endif;?>
+	</div>
+	<?php endif;?>
+	<?php echo $this->getChildHtml('topMenu') ?>
+    <div class="skip-links">
+        <a href="#block-categories" class="skip-link skip-nav">
+            <span class="icon"></span>
+            <span class="label"><?php echo $this->__('Запчасти') ?></span>
+        </a>
+
+        <a href="#block-search" class="skip-link skip-search">
+            <span class="icon"></span>
+            <span class="label"><?php echo $this->__('Поиск') ?></span>
+        </a>
+
+        <a href="#block-login" class="skip-link skip-account">
+            <span class="icon"></span>
+            <span class="label"><?php echo $this->__('Учетная запись') ?></span>
+        </a>
+        <a href="#block-cart" class="skip-link skip-cart  no-count">
+            <span class="icon"></span>
+            <span class="label"><?php echo $this->__('Корзина') ?></span>
+            <span class="count">0</span>
+        </a>
+        <a class="fancybox fancybox.ajax link callbackrequest" rel="nofollow" href="/callbackrequest/index/index/?is_ajax=1"><?php echo $this->__('Перезвоните мне') ?></a>
+    </div>
+</div>
+
+<?php echo $this->getChildHtml('topContainer') ?>

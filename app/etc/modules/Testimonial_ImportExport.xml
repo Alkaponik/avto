@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+
+<config>
+    <modules>
+        <Testimonial_ImportExport>
+            <active>true</active>
+            <codePool>local</codePool>
+        </Testimonial_ImportExport>
+    </modules>
+</config>

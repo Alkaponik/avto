@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Testimonial_Intime>
+            <active>true</active>
+            <codePool>local</codePool>
+        </Testimonial_Intime>
+    </modules>
+</config>

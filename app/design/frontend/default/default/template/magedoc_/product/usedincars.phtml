@@ -1,0 +1,50 @@
+<?php $relatedTypes = $this->getRelatedTypes() ?>
+<?php $firstPass = true;?>
+<?php $manufacturerName = ''; ?>
+<?php $helper = Mage::helper('magedoc') ?>
+<?php $manufacturers = $this->getManufacturerList(); ?>
+<?php if (count($relatedTypes)): ?>
+<div id="used_in_cars">
+    <h2><?php echo $this->__('Used in cars:') ?></h2>
+    <dl class="tab-list subcategories">
+        <?php foreach ($manufacturers as $manufacturer): ?>
+            <dt class="tab" style="z-index: 6;">
+                <a title="<?php echo $manufacturer ?>" href="#"><?php echo $manufacturer ?></a>
+            </dt>
+                <dd class="tab-container" >
+                    <div class="product-info-table-wrapper rnd">
+                        <table class="used-in-cars product-info-table">
+                            <thead>
+                                <tr>
+                                    <th><?php echo $this->__('Model') ?></th>
+                                    <th colspan="2"><?php echo $this->__('Engine') ?></th>
+                                    <th class="tc"><?php echo $this->__('Release') ?></th>
+                                    <th class="tc"><?php echo $this->__('Body') ?></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($relatedTypes as $type): ?>
+                                    <?php if ($manufacturer != $type->getMfaBrand()): ?>
+                                        <?php continue;?>
+                                    <?php endif; ?>
+                                    <tr>
+                                        <td><?php echo $type->getModCdsText() ?></td>
+                                        <td><?php echo $type->getTypCdsText() ?></td>
+                                        <td><?php echo $type->getTypFuelDesText() ?></td>
+                                        <td  class="tc"><?php echo $helper->getTypePeriod($type) ?></td>
+                                        <td  class="tc"><?php echo $type->getTypBodyDesText() ?></td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </dd>
+        <?php endforeach; ?>       
+    </dl>
+</div>    
+<script type="text/javascript">
+    if($('used_in_cars') !== null){
+        var usedInCarsTabManager = new Tabs($('used_in_cars').down('dl.tab-list'));
+    }
+</script>
+<?php endif;?>

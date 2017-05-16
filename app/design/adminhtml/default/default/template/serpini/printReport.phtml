@@ -1,0 +1,424 @@
+<?php 
+
+	Mage::helper('sqlreport/InstallManager')->checkInstall();
+	$setupmanager = Mage::getModel('sqlreport/setup');
+
+	$report = Mage::getModel('sqlreport/report');
+	$reportsmg = Mage::helper('sqlreport/ReportManager');
+	$reportList = $reportsmg->getReportsList('read');
+	$params = $this->getRequest()->getParams();
+	$permitmanager = Mage::getModel('sqlreport/permissionrole');
+	$notPermission = false;
+	if(array_key_exists('id', $params) && $params['id']!=""){
+		$report_id = $params['id'];
+		if($permitmanager->userHasPermissionViewReport($report_id)){
+			$report->loadReport($report_id);
+			if(isset($params['rowPerPage']) && $params['rowPerPage']!="") $report->setRowPerPage($params['rowPerPage']);
+			if(isset($params['page']) && $params['page']!="") $report->setActualPage($params['page']);
+			 
+			if(isset($params['filterHeader']) && $params['filterHeader']!="") $report->setFilterHeader($params['filterHeader']);
+			if(isset($params['sqlCustom']) && $params['sqlCustom']!="") $report->setSqlCustom(base64_decode($params['sqlCustom']));
+			
+			if(isset($params['filter']) && $params['filter']!=""){
+				$report->setComboValues($params['filter']);
+			}else{
+				$report->loadDataReport();
+			}
+			
+		}else{
+			$notPermission = true;
+		}
+		
+	}
+?>
+<style>
+
+	table.data tbody tr:hover{
+	  background:#fcf5dd;  
+	  color: #000;
+	}
+	
+	table.data thead th:hover{
+	  color: #ea7601;cursor:pointer;
+	}
+	
+	table.data th.sortasc{
+		background: url(<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_SKIN);?>adminhtml/default/default/images/grid_sort_asc.gif),url(<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_SKIN);?>adminhtml/default/default/images/sort_on_bg.gif);
+		border-bottom: 1px solid #fff;
+		border-right: 1px solid #fff;
+		padding-bottom: 2px;
+		background-repeat:no-repeat,no-repeat;
+		background-position:right center,0 0;
+	}
+	
+	table.data th.sortdesc{
+		background: url(<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_SKIN);?>adminhtml/default/default/images/grid_sort_desc.gif),url(<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_SKIN);?>adminhtml/default/default/images/sort_on_bg.gif);
+		border-bottom: 1px solid #fff;
+		border-right: 1px solid #fff;
+		padding-bottom: 2px;
+		background-repeat:no-repeat,no-repeat;
+		background-position:right center,0 0;
+	}
+	
+	.link{
+		cursor:pointer;
+	}
+	
+	.rowodd{
+		background: #f6f6f6;
+	}
+	
+	#chart {
+	  height: <?php echo $setupmanager->getValue("chart_height_default");?>px;
+	}
+	
+</style>
+
+<SCRIPT LANGUAGE="JavaScript"> 
+<!-- 
+	var reportManager = new ReportManager('<?php echo $this->getUrl('*/*/viewReport', array('_current'=>true));?>');
+	var cmText;
+	var urlViewReport = "<?php echo $this->getUrl('*/*/viewReport', array('_current'=>true));?>";
+	var urlAdmin = "<?php echo $this->getUrl('*/*/admin', array('_current'=>true));?>";
+	var urlExport = "<?php echo $this->getUrl('*/*/export', array('_current'=>true));?>";
+
+	 
+	Event.observe(window, 'load', init, false); 
+//--> 
+</SCRIPT> 
+
+	<!-- REPORT LIST -->
+<p class="switcher"><label for="store_switcher"><?php echo $this->__('Choose Report');?>:</label>
+	<select name="codeReport" style="width:50%;" id="general_code">
+    	<?php foreach ($reportList as $groupDes=>$reportListGroup){ ?>
+    	<optgroup label="<?php echo $groupDes;?>">
+    		<?php foreach ($reportListGroup as $code=>$description){ ?>	
+			<option value="<?php echo $code; ?>" <?php if($code==$report->getId()){ echo "selected='yes'"; }?>><?php echo $description;?></option>
+			<?php }?>
+		</optgroup>
+		<?php }?>
+	</select>
+	<button id="butPrintReport" type="button" class="scalable task" onclick="reportManager.loadReport()" style="">
+	     <span>Go!</span>
+	</button>
+</p>
+
+	<!-- REPORT TITLE -->
+
+<div class="content-header">
+    <table cellspacing="0">
+        <tr>
+            <td style="width:50%;"><h3 class="icon-head head-report-customer-totals"><?php echo ($report->isLoaded()?$report->getTitle():$this->__('Select report')); ?></h3></td>
+            <td class="form-buttons">
+            <?php if($report->isLoaded()){?>
+            	<button type="button" class="scalable task" onclick="reportManager.doFilter()" style=""><span><?php echo $this->__('Show Report');?></span></button>
+                
+				<img class="link" src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA)?>serpini_sqlreport/customization.png" class="v-middle" title="Edit report" alt="Edit report" onclick="reportManager.openAdminReport('<?php echo $report->getId();?>')" >
+            <?php }?>
+                 </td>
+        </tr>
+    </table>
+    
+</div>
+
+<!--  DESCRIPTION -->
+<?php if($report->isLoaded()){
+		if(""!=$report->getAtribute('reportDescription')){ ?>
+<div class="entry-edit" style="margin: 0px 0px 10px 20px;">
+		<?php echo str_replace("\n","<br/>",$report->getAtribute('reportDescription')); ?>
+		
+</div>
+<?php 	}
+	  }?>
+<!-- SQL's -->
+<div class="entry-edit">
+	<div class="entry-edit-head collapseable"><a  href="#" class="" id="sql_field-head"  onClick="reportManager.collapse('sql_field');	reportManager.showSQL(<?php if ($report->isChangedSQL()){ echo "'sqlReport_edit',false"; }else { echo "'sqlReport',true";} ?>);return false;">SQL</a></div>
+				
+	<fieldset class="config collapseable" id="sql_field" style="display:none">
+		<button id="butRefParams" type="button" class="scalable task" onclick="reportManager.showSQLRefParams()" style=""><span><?php echo $this->__('Show Params');?></span></button>
+		<button id="butValueParams" style="display:none" type="button" class="scalable task" onclick="reportManager.showSQLValueParams()" style=""><span><?php echo $this->__('Show Values');?></span></button>
+	<?php if($report->isLoaded()):
+			if($permitmanager->userHasPermissionEditReport($report_id)): ?>	
+		<button id="butEditSQL" type="button" <?php if ($report->isChangedSQL()){ echo 'style="display:none"'; } ?> class="scalable task" onclick="reportManager.editSQLReportView()" style=""><span><?php echo $this->__('Edit SQL');?></span></button>
+		<button id="butOriginalSQL" type="button" <?php if (!$report->isChangedSQL()){ echo 'style="display:none"'; } ?> class="scalable task" onclick="reportManager.showOriginalSql()" style=""><span><?php echo $this->__('Show Original SQL');?></span></button>
+	<?php 	endif; 
+		  endif;?>
+		<textarea style="display:none;" id="sqlReport" name="sqlReport"><?php echo $report->getSqlNoParams(true);?></textarea>
+		<textarea style="display:none;" id="sqlReport_value" name="sqlReport_value"><?php echo $report->getSqlYesParams(true);?></textarea>
+		<textarea style="display:none;" id="sqlReport_edit" name="sqlReport_edit"><?php echo $report->getSqlNoParams(false);?></textarea>
+		<textarea style="display:none;" id="sqlReport_edit_value" name="sqlReport_edit_value"><?php echo $report->getSqlYesParams(false);?></textarea>
+		
+	</fieldset>
+	</div>
+<?php if($report->hasCombos()){
+		foreach ($report->getComboList() as $combo){
+			 ?>
+<textarea style="display:none;" id="sqlCombo<?php echo $combo->getParameter();?>" name="sqlCombo<?php echo $combo->getParameter();?>"><?php echo $combo->getAtribute("sql");?></textarea>
+<textarea style="display:none;" id="sqlCombo<?php echo $combo->getParameter();?>_value" name="sqlCombo<?php echo $combo->getParameter();?>_value"><?php echo $combo->getAtribute("sql");?></textarea>
+<?php   	
+		}
+	  }?>
+
+	<!-- ERROR MESSAGES -->
+<?php if($report->isError()){?>
+<ul class="messages"><li class="error-msg"><ul><li><?php echo $report->getErrorMsg();?></li></ul></li></ul>
+
+<?php }?>
+
+	<!-- CHART -->
+<?php if($report->hasChart() && $report->hasRows()){?>
+<div class="entry-edit">
+	<div class="entry-edit-head collapseable"><a id="chart_field-head" href="#" class="open" onClick="return reportManager.collapse('chart_field')"><?php echo $this->__('Chart');?></a></div>
+		<fieldset class="config collapseable" id="chart_field">
+			<div id="chart">
+			  <svg></svg>
+			</div>
+		</fieldset>
+</div>
+	<SCRIPT LANGUAGE="JavaScript"> 
+	
+	<?php
+	echo $report->printDataChart();
+	echo $report->printJSChart();
+	?>
+	</SCRIPT>
+<?php }?>
+
+	<!-- FILTERS LIST -->
+<?php if($report->hasCombos()){?>
+<div class="entry-edit">
+	<form id="filter_form">
+	<div class="entry-edit-head collapseable"><a id="filter_field-head" href="#" class="open" onClick="return reportManager.collapse('filter_field')"><?php echo $this->__('Filter');?></a></div>
+	<fieldset class="config collapseable" id="filter_field">
+    	<div class="hor-scroll">
+			<table cellspacing="0" class="form-list" id="comboList">
+			<?php foreach ($report->getComboList() as $combo){ 
+					if($combo->getType()!="evaluated"){?>
+				<tr>
+					<td class="label">
+						<label for="<?php echo $combo->getParameter();?>"><?php echo $combo->getTitle();?> <span class="required">*</span></label>
+					</td>
+					<td class="value">
+							<?php echo $combo->printHTML(); ?>
+					</td>
+				</tr>
+			<?php 	}
+				 }?>
+			</table>
+		</div>
+	</fieldset>
+	</form>
+</div>
+<?php }?>
+    <!-- ACTIONS -->
+    <?php if($report->isLoaded()){?>
+    <table cellspacing="0" class="actions">
+        <tbody>
+        	<tr>
+        		<?php if($report->hasRows() && !$notPermission){?>
+        		<td class="pager">
+        			<?php echo $this->__('Ingles');?> 
+        			<?php if($report->getActualPage()>1){?>
+        			<a href="#" title="Previous page" onclick="reportManager.setPage('<?php echo $report->getActualPage()-1; ?>');">
+        				<img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_SKIN);?>adminhtml/default/default/images/pager_arrow_left.gif" alt="<?php echo $this->__('Go to previous page');?>" class="arrow">
+        			</a>
+        			<?php } else {?>
+        			<img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_SKIN);?>adminhtml/default/default/images/pager_arrow_left_off.gif" alt="<?php echo $this->__('Go to previous page');?>" class="arrow">
+					<?php }?>
+        			<input type="text" id="page" name="page" value="<?php echo $report->getActualPage(); ?>" class="input-text page" onchange="reportManager.doFilter()">
+        			
+        			<?php if($report->getActualPage()<$report->getNumPages()){?>
+        			<a href="#" title="Next page" onclick="reportManager.setPage('<?php echo $report->getActualPage()+1; ?>');">
+        				<img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_SKIN);?>adminhtml/default/default/images/pager_arrow_right.gif" alt="<?php echo $this->__('Go to next page');?>" class="arrow">
+        			</a>
+        			<?php } else { ?>
+        			<img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_SKIN);?>adminhtml/default/default/images/pager_arrow_right_off.gif" alt="<?php echo $this->__('Go to next page');?>" class="arrow">
+        			<?php }?>
+        			<?php echo $this->__('of');?> <?php echo $report->getNumPages();?> <?php echo $this->__('Pages');?>
+        			<span class="separator">|</span>
+        			<?php echo $this->__('View');?> <select name="rowPerPage" id="rowPerPage" onchange="reportManager.doFilter()">
+			                <option value="20" <?php if($report->getRowPerPage()==20) echo 'selected="selected"';?>>20</option>
+			                <option value="30" <?php if($report->getRowPerPage()==30) echo 'selected="selected"';?>>30</option>
+			                <option value="50" <?php if($report->getRowPerPage()==50) echo 'selected="selected"';?>>50</option>
+			                <option value="100" <?php if($report->getRowPerPage()==100) echo 'selected="selected"';?>>100</option>
+			                <option value="200" <?php if($report->getRowPerPage()==200) echo 'selected="selected"';?>>200</option>
+			                <option value="all" <?php if($report->getRowPerPage()=='all') echo 'selected="selected"';?>><?php echo $this->__('All');?></option>
+			            </select>
+			         <?php echo $this->__('per page');?>
+			         <span class="separator">|</span>
+			         <?php echo $this->__('Total');?> <?php echo $report->getTotalRows();?> <?php echo $this->__('records found');?>
+        		</td>
+        		<?php }else{?>
+        		<td class="pager"></td>
+        		<?php }?>
+				<td class="export a-right">
+            		<img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_SKIN);?>adminhtml/default/default/images/icon_export.gif" alt="" class="v-middle">&nbsp; <?php echo $this->__('Export to');?>: 
+            			<select name="exportList" id="exportList" style="width:8em;">
+                            <option value="CSV">CSV</option>
+                            <option value="XML">Excel XML</option>
+                            <option value="PDF">PDF</option>
+                        </select>
+            		<button type="button" class="scalable task" onclick="reportManager.doExport()" style=""><span><?php echo $this->__('Export');?></span></button>
+            	</td>
+            	<td class="filter-actions a-right">
+            		<button type="button" class="scalable task" onclick="reportManager.doResetFilter()" style=""><span><?php echo $this->__('Reset Filter');?></span></button>
+            		<button type="button" class="scalable task" onclick="reportManager.doFilter()()" style=""><span><?php echo $this->__('Search');?></span></button>
+            	</td>
+            	<td class="filter-actions a-right"></td>
+        	</tr>
+    	</tbody>
+   	</table>
+   	<?php }?>
+        
+	<!-- REPORT DATA -->
+<div class="grid">
+	<?php if($report->hasRows() && !$notPermission){?>
+	
+    <table cellspacing="0" class="data sortable resizable mergeable ">
+        <?php foreach ($report->getColumnsName() as $_column){ ?>
+        <col <?php echo $report->getHtmlProperty($_column) ?>/>
+        <?php } ?>
+        
+        
+        <tbody>
+        <?php if ($report->getSize()>0){ 
+        		$fila=0;?>
+        <?php 	foreach ($report->getResults() as $result){  
+        			$fila++;
+        			$columna=0;?>
+        	<tr <?php echo $report->getLinkResult("TR",0,$result); ?>>
+        		<?php foreach ($report->getColumnsName() as $_column){  
+        			    $report->addResult2Sum($columna,$result[$_column]);
+        				$columna++;?>
+        			<td class="<?php echo $report->getCssProperty($result[$_column]);?> "><?php echo $report->getLinkResult("TD",$columna,$result[$_column]); ?></td>
+        			
+        		<?php } ?>
+        	 </tr>
+            
+        <?php 	}
+			  }?>
+		</tbody>
+		<thead>
+			<?php $groups = $report->getColumnsGroup();
+
+				if(count($groups)>0){ ?>
+			<tr class="headings" >	
+			<?php foreach ($groups as $_group){ 
+			?>
+				<th colspan="<?php echo $_group[0];?>" style="text-align: center;" class="nosort"><span class="no-br"><?php echo $_group[1] ?></span></th>
+			<?php }?>
+			</tr>
+			<?php }?>
+			<tr class="headings">
+				<?php foreach ($report->getColumnsName() as $_column){ ?>
+				<th ><span class="no-br"><?php echo $report->getHeaderHtml($_column) ?></span></th>
+				<?php } ?>
+			</tr>
+			<tr class="filter">
+			<?php
+				$_column = $report->getColumnsName();
+				for($columna=0;$columna<$report->getNumColumns();$columna++){?>
+				<td >
+					
+						<?php if($report->getTypeColumn($columna)==2){?>
+						<div class="range">
+							<div class="range-line"><span class="label" ><?php echo $this->__('From');?>:</span><input type="text" name="<?php echo "2F".$_column[$columna];?>" id="filterData-<?php echo $columna;?>_from" value="<?php echo $report->getValueFilterHeader("2F".$_column[$columna])?>" class="input-text no-changes"></div>
+							<div class="range-line"><span class="label" ><?php echo $this->__('To');?> : </span><input type="text" name="<?php echo "2T".$_column[$columna];?>" id="filterData-<?php echo $columna;?>_to" value="<?php echo $report->getValueFilterHeader("2T".$_column[$columna])?>" class="input-text no-changes"></div>
+						</div>
+						<?php } else if($report->getTypeColumn($columna)==3) {?>
+						
+						<select name="<?php echo "3".$_column[$columna];?>" id="filterData-<?php echo $columna;?>" class="no-changes">
+							<option value=""></option>
+							<option <?php if("true"==$report->getValueFilterHeader("3".$_column[$columna])) echo "selected"; ?> value="true"><?php echo $this->__('true');?></option>
+							<option  <?php if("false"==$report->getValueFilterHeader("3".$_column[$columna])) echo "selected"; ?> value="false"><?php echo $this->__('false');?></option>
+						</select>
+						
+						<?php }else if(substr($report->getTypeColumn($columna),0,1)==4) {?>
+						<div class="range">
+							<div class="range-line date"><span class="label"><?php echo $this->__('From');?>:</span><input type="text" name="<?php echo "4F".substr($report->getTypeColumn($columna),1)."$$".$_column[$columna];?>" id="filterData-<?php echo $columna;?>_from" value="<?php echo $report->getValueFilterHeader("4F".substr($report->getTypeColumn($columna),1)."$$".$_column[$columna])?>" class="input-text no-changes">
+								<img class="link" src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_SKIN);?>adminhtml/default/default/images/grid-cal.gif" title="" alt="" id="filterData-<?php echo $columna;?>_from_trig">
+								<script type="text/javascript">
+					                Calendar.setup({
+					                    inputField : 'filterData-<?php echo $columna;?>_from',
+					                    ifFormat : '%m/%e/%y',
+					                    button : 'filterData-<?php echo $columna;?>_from_trig',
+					                    align : 'Bl',
+					                    singleClick : true
+					                });
+					                </script>
+								</div>
+							<div class="range-line date"><span class="label"><?php echo $this->__('To');?> : </span><input type="text" name="<?php echo "4T".substr($report->getTypeColumn($columna),1)."$$".$_column[$columna];?>" id="filterData-<?php echo $columna;?>_to" value="<?php echo $report->getValueFilterHeader("4T".substr($report->getTypeColumn($columna),1)."$$".$_column[$columna])?>" class="input-text no-changes">
+								<img class="link" src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_SKIN);?>adminhtml/default/default/images/grid-cal.gif" title="" alt="" id="filterData-<?php echo $columna;?>_to_trig">
+								<script type="text/javascript">
+					                Calendar.setup({
+					                    inputField : 'filterData-<?php echo $columna;?>_to',
+					                    ifFormat : '%m/%e/%y',
+					                    button : 'filterData-<?php echo $columna;?>_to_trig',
+					                    align : 'Bl',
+					                    singleClick : true
+					                });
+					                </script>
+								</div>
+						</div>
+						<?php } else {  ?>
+						<div class="field-100">
+						<input type="text" name="<?php echo "1".$_column[$columna];?>" id="filterData-<?php echo $columna;?>" value="<?php echo $report->getValueFilterHeader("1".$_column[$columna])?>" class="input-text no-changes">
+						</div>
+						<?php }  ?>
+						
+					
+				</td>
+			<?php } ?>
+			</tr>
+        </thead>
+		<tfoot>
+        	
+        	<?php if($report->haveResultSum()):
+        			$columna=0;?>
+        	<tr class="totals">
+        		<?php foreach ($report->getResultSum() as $resultSum):
+        				$columna++;
+        				if($columna==1 && $resultSum=="s"):  ?>
+        		<th><?php echo $this->__('Total of');?> <?php echo $report->getSize();?> <?php echo $this->__('Rows');?></th>
+        		  <?php else:?>
+        		<th class=" a-right"><?php echo ($resultSum=="s")?"":$resultSum; ?></th>
+        		<?php endif;?>
+        		<?php endforeach;?>
+        	</tr>
+        	<?php else:?>
+        	<tr class="totals">
+        		<th colspan="<?php echo $report->getNumColumns();?>"><?php echo $report->getSize();?> <?php echo $this->__('Rows');?></th>
+        	</tr>
+        	<?php endif;?>
+        </tfoot>
+    </table>
+    <?php } else { ?>
+    <div class="grid">
+    	<table cellspacing="0" class="data" style="" >
+    		<col width="500"/>
+    			<thead>
+    			<tr class="headings">
+    				<th class=" no-link"><span class="no-br"><?php echo $this->__('Message');?></span></th>
+    			</tr>
+    			</thead>
+        		<tbody>
+        		<tr>
+                <td class="empty-text a-center" colspan="10">
+           <?php 
+                if ($notPermission){
+                	echo $this->__("You don't have permission to view this report");
+                }else if(!$report->isLoaded()){
+					echo $this->__("No report loaded");
+				}else  if(!$report->hasCombos() || ($report->hasCombos() && $report->isComboSeted())) {
+                 	echo $this->__('No records found');
+                } else {
+                	echo $this->__('Select combo values');
+                }?></td>
+            </tr>
+                </tbody>
+        		</table>
+    </div>
+    
+    <?php }?>
+</div>
+    

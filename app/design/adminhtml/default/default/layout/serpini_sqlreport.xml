@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<layout version="0.1.0">
+    <default>
+        <reference name="head">
+            <action method="addItem"><type>js_css</type><name>serpini_sqlreport/codemirror.css</name></action>
+            <action method="addJs"><script>sqlreport/reporting.js</script></action>
+        </reference>
+        <reference name="before_body_end">
+            <block type="serpini_sqlreport/abstract_report" name="sqlreport_abstract_report" template="serpini_sqlreport/view_report.phtml" />
+        </reference>
+    </default>
+</layout>

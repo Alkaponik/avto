@@ -1,0 +1,62 @@
+<?php
+/**
+ * {magecore_license_notice}
+ *
+ * @category   MageCore
+ * @package    Dashboard
+ * @copyright  {magecore_copyright}
+ * @license    {magecore_license}
+ */
+
+/**
+ * @var $this Oro_Dashboard_Block_Adminhtml_Userdashboard_Widget_Table
+ */
+ ?>
+<?php
+    $metrics = Mage::helper("oro_dashboard")->getMetrics();
+    $groupedAttributes = Mage::helper("oro_dashboard")->getGroupByAttributes();
+?>
+<div class="row">
+    <label for="table-add-metric"><?php echo $this->__("Show the following metric:")?></label>
+    <select name="metric" id="table-add-metric">
+        <?php foreach ($metrics as $code=>$metric) {?>
+            <option value="<?php echo $code;?>" <?php if ($this->getMetric() == $code){?>selected="selected"<?php }?>><?php echo $this->__($metric['label']);?></option>
+        <?php }?>
+    </select>
+</div>
+<div class="row">
+    <label for="table-metric-compare"><?php echo $this->__("Compare with the following metric:")?></label>
+    <select name="metric_compare" id="table-metric-compare">
+        <option value=""><?php echo $this->__("No Comparison")?></option>
+        <?php foreach ($metrics as $code=>$metric){?>
+        <option value="<?php echo $code;?>" <?php if ($this->getMetricCompare() == $code){?>selected="selected"<?php }?>><?php echo $this->__($metric['label']);?></option>
+        <?php }?>
+    </select>
+</div>
+<div class="row">
+    <label for="table-grouped-by"><?php echo $this->__("Table View:")?></label>
+    <select name="grouped_by" id="table-grouped-by" class="required-entry">
+        <option value="flat"><?php echo $this->__("Flat View")?></option>
+        <optgroup label="<?php echo $this->__("Group By:")?>"></optgroup>
+        <optgroup label="&nbsp;&nbsp;<?php echo $this->__("Billing")?>"></optgroup>
+        <?php foreach ($groupedAttributes as $attribute) {?>
+        <option value="billing-<?php echo $attribute->getAttributeCode();?>" <?php if ($this->getGroupedByAttribute() == "billing-".$attribute->getAttributeCode()){?>selected="selected"<?php }?>>&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $this->__($attribute->getStoreLabel());?></option>
+        <?php }?>
+        <optgroup label="&nbsp;&nbsp;<?php echo $this->__("Shipping")?>"></optgroup>
+        <?php foreach ($groupedAttributes as $attribute) {?>
+        <option value="shipping-<?php echo $attribute->getAttributeCode();?>" <?php if ($this->getGroupedByAttribute() == "shipping-".$attribute->getAttributeCode()){?>selected="selected"<?php }?>>&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $this->__($attribute->getStoreLabel());?></option>
+        <?php }?>
+    </select>
+</div>
+<div class="row">
+    <label for="lines-number"><?php echo $this->__("Lines Number:")?></label>
+    <select id="lines-number" name="lines_number">
+        <?php for ($i = 5; $i <= Oro_Dashboard_Block_Adminhtml_Userdashboard_Widget_Table::LINES_LIMIT; $i++){?>
+            <option value="<?php echo $i;?>" <?php if ($i == $this->getLinesNumber()) {?>selected="selected"<?php }?>><?php echo $i;?></option>
+        <?php }?>
+    </select>
+</div>
+<div class="row">
+    <label for="table-widget-title"><?php echo $this->__("Widget title:")?></label>
+    <input type="text" id="table-widget-title" name="name" value="<?php echo $this->getWidgetName();?>" class="required-entry widget-title" />
+</div>

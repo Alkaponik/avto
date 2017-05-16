@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layout version="0.1.0">
+    <default>
+        <reference name="right">
+            <block type="core/template" name="callback_sidebar" before="-">
+                <action method="setTemplate" ifconfig="callbackrequest/general/enabled" >
+                    <template>callbackrequest/callbackform.phtml</template>
+                </action>
+                <action method="setModuleName">
+                    <module_name>Testimonial_CallBackRequest</module_name>
+                </action>
+            </block>
+        </reference>
+    </default>
+    <callbackrequest_index_index>
+        <reference name="content">
+            <block type="core/template" name="callback_form" template="callbackrequest/callbackform.phtml">
+                <action method="setModuleName">
+                    <module_name>Testimonial_CallBackRequest</module_name>
+                </action>
+            </block>
+        </reference>
+    </callbackrequest_index_index>
+</layout>
+

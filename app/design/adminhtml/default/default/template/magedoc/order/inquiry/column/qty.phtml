@@ -1,0 +1,38 @@
+<?php if ($_inquiry = $this->getInquiry()): ?>
+<table cellspacing="0" class="qty-table">
+    <tr>
+        <td><?php echo Mage::helper('sales')->__('Ordered') ?></td>
+        <td><strong><?php echo $_inquiry->getQtyOrdered()*1 ?></strong></td>
+    </tr>
+    <?php if ((float) $_inquiry->getQtyInvoiced()): ?>
+    <tr>
+        <td><?php echo Mage::helper('sales')->__('Invoiced') ?></td>
+        <td><strong><?php echo $_inquiry->getQtyInvoiced()*1 ?></strong></td>
+    </tr>
+    <?php endif; ?>
+    <?php if ((float) $_inquiry->getQtySupplied()): ?>
+    <tr>
+        <td><?php echo Mage::helper('magedoc')->__('Supplied') ?></td>
+        <td><strong><?php echo $_inquiry->getQtySupplied()*1 ?></strong></td>
+    </tr>
+    <?php endif; ?>
+    <?php if ((float) $_inquiry->getQtyShipped()): ?>
+    <tr>
+        <td><?php echo Mage::helper('sales')->__('Shipped') ?></td>
+        <td><strong><?php echo $_inquiry->getQtyShipped()*1 ?></strong></td>
+    </tr>
+    <?php endif; ?>
+    <?php if ((float) $_inquiry->getQtyRefunded()): ?>
+    <tr>
+        <td><?php echo Mage::helper('sales')->__('Refunded') ?></td>
+        <td><strong><?php echo $_inquiry->getQtyRefunded()*1 ?></strong></td>
+    </tr>
+    <?php endif; ?>
+    <?php if ((float) $_inquiry->getQtyCanceled()): ?>
+    <tr>
+        <td><?php echo Mage::helper('sales')->__('Canceled') ?></td>
+        <td><strong><?php echo $_inquiry->getQtyCanceled()*1 ?></strong></td>
+    </tr>
+    <?php endif; ?>
+</table>
+<?php endif; ?>

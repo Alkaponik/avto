@@ -1,0 +1,21 @@
+<?php $isActive = $this->isActive(); ?>
+<h3 id="sammelbestellung">Sammelbestellung</h3>
+<form id="is-aggregator-form" action="<?php echo $this->getUrl('checkout/cart/couponPost') ?>" method="post" class="form">
+	<fieldset>
+		<label><?php echo $this->__('Are you a catalog aggregator?') ?></label>
+		<?php $isAggregator = Mage::helper('vfg')->isAggregator() ?>
+		<input type="radio" name="is_aggregator" id="is_aggregator_yes" value="1" <?php if($isAggregator) echo ' checked="checked"'; if (!$isActive) echo 'disabled="disabled"' ?> class="rb" /><label class="radiolabel" for="is_aggregator_yes"><?php echo $this->__('Yes') ?></label>
+		<input type="radio" name="is_aggregator" id="is_aggregator_no" value="0" <?php if(!$isAggregator) echo 'checked="checked"'; if (!$isActive) echo 'disabled="disabled"' ?> class="rb" /><label class="radiolabel" for="is_aggregator_no"><?php echo $this->__('No') ?></label>
+	</fieldset>
+</form>
+<script type="text/javascript">
+//<![CDATA[  
+function isAggregatorRadioButtonClickHandler(event){
+    var url = '<?php echo $this->getUrl('vfg/checkout/isAggregatorPost')?>';
+    new Ajax.Request(url,{'parameters': {'is_aggregator': this.value}});
+}
+$('is-aggregator-form').select('input').each(function(input){
+    input.observe('click',isAggregatorRadioButtonClickHandler.bind(input));
+});
+//]]>
+</script>

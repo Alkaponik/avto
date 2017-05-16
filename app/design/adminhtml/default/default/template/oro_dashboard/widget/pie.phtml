@@ -1,0 +1,61 @@
+<?php
+/**
+ * {magecore_license_notice}
+ *
+ * @category   MageCore
+ * @package    Dashboard
+ * @copyright  {magecore_copyright}
+ * @license    {magecore_license}
+ */
+
+/**
+ * @var $this Oro_Dashboard_Block_Adminhtml_Userdashboard_Widget_Pie
+ */
+?>
+<?php
+    $widgetId = $this->getWidget()->getId();
+    $widgetData = $this->getWidgetData();
+?>
+<div class="entry-edit pie-graff">
+    <div class="entry-edit-head">
+        <div class="nav-tools">
+            <span class="settings">settings</span>
+        </div>
+        <h4><?php echo $this->getWidgetName();?></h4>
+    </div>
+    <fieldset  class="entry-edit-content">
+        <div id="chart-<?php echo $widgetId;?>"></div>
+        <?php if (!$widgetData){?>
+            <p><?php echo $this->__("No data available");?></p>
+        <?php }?>
+    </fieldset>
+</div>
+
+
+<?php if ($widgetData){?>
+<script type="text/javascript">
+    jQuery(document).ready(function(){
+        var plot_<?php echo $widgetId;?> = jQuery.jqplot('chart-<?php echo $widgetId;?>', [<?php echo $widgetData;?>], {
+            seriesColors: ["rgba(0, 168, 240, 0.8)", "rgba(69, 166, 35, 0.8)", "rgb(236, 150, 73)", "rgb(236, 222, 73)", "rgba(69, 166, 35, 0.8)", "rgb(203, 215, 87)", "rgb(60, 179, 190)", "rgb(1, 137, 137)", "rgb(52, 163, 193)", "rgb(196, 61, 57)", "rgb(226, 136, 40)"],
+            /* title:'<?php echo Mage::helper("oro_dashboard")->getMetricLabel($this->getMetric())?><?php echo $this->getMetricCompare() ? ", " . Mage::helper("oro_dashboard")->getMetricLabel($this->getMetricCompare()) : "";?>',*/
+            legend: {
+                show: true,
+                location: 'e'
+            },
+
+            seriesDefaults: {
+                renderer: jQuery.jqplot.PieRenderer,
+                rendererOptions: {
+                    showDataLabels: true
+                }
+            }/*,
+            title: {
+                text: '<?php /* echo $this->getWidgetName(); */ ?>',   // title for the plot,
+                show: true
+            }*/
+        })
+        plotArr[<?php echo $widgetId;?>] = plot_<?php echo $widgetId;?>;
+    });
+</script>
+
+<?php }?>

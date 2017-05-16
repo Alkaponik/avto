@@ -1,0 +1,188 @@
+<?php
+
+?>
+<?php
+/**
+ * Account permissions control
+ *
+ * @see MageDoc_Bookkeeping_Block_Adminhtml_Permission_Tab_Account
+ */
+?>
+<div class="entity-edit" id="manage-permissions-panel">
+    <div class="entry-edit-head">
+    <h4 class="icon-head head-edit-form fieldset-legend"><?php echo $this->__('Manage Account Permissions') ?></h4>
+    </div>
+    <div class="box">
+        <div class="hor-scroll">
+            <table class="dynamic-grid" cellspacing="0"  cellpadding="0">
+                <tr id="account-permissions-table">
+                        <th><?php echo $this->__('Account') ?></th>
+                        <th><?php echo $this->__('Corresponding Account') ?></th>
+                        <th><?php echo $this->__('Comments') ?> </th>
+                        <!--<th><?php echo $this->__('Allowed Transaction Types') ?></th>-->
+                        <th>
+                            <?php if (!$this->getReadOnly()):?>
+                                <?php echo $this->getAddNewButtonHtml() ?>
+                            <?php endif;?>
+                        </th>
+
+                </tr>
+                <tr class="no-display template" id="row-template">
+                    <td>
+                        <?php echo $this->getSelectHtml(array('name' => 'permission[account_id][{{id}}]', 'id' => 'bookkeeping_permission_row_{{id}}_account_id')); ?>
+                    </td>
+                    <td>
+                        <?php echo $this->getSelectHtml(array('name' => 'permission[corresponding_account_id][{{id}}]', 'id' => 'bookkeeping_permission_row_{{id}}_corresponding_account_id')); ?>
+                    </td>
+                    <td>
+                        <textarea class="bp_col" rows="3" cols="150" name="permission[comments][{{id}}]" id="bookkeeping_permission_row_{{id}}_comments"></textarea>
+                    </td>
+<!--                        <td>-->
+<!--                            <select class="select multiselect" name="permission[transaction_types][{{id}}][]" id="bookkeeping_permission_row_{{id}}_transaction_types" multiple="multiple">-->
+<!--                                --><?php //foreach ($this->getTransactionTypes() as $key => $value):?>
+<!--                                <option value="--><?php //echo $key?><!--">--><?php //echo $value?><!--</option>-->
+<!--                                --><?php //endforeach;?>
+<!--                            </select>-->
+<!--                        </td>-->
+                    <td>
+                        <input type="hidden" name="permission[transaction_types][{{id}}][]" id="bookkeeping_permission_row_{{id}}_transaction_types" value="<?php echo MageDoc_Bookkeeping_Model_Source_TransactionType::TRANSACTION_TYPE_DEBIT?>">
+                        <input type="hidden" class="delete-flag" name="permission[delete][{{id}}]" value="" />
+                        <?php if (!$this->getReadOnly()):?>
+                            <?php echo $this->getDeleteButtonHtml() ?>
+                        <?php endif;?>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <input type="hidden" id="option-count-check" value="" />
+    </div>
+</div>
+<script type="text/javascript">
+//<![CDATA[
+var optionDefaultInputType = 'radio';
+
+// IE removes quotes from element.innerHTML whenever it thinks they're not needed, which breaks html.
+var templateText =
+        '<tr class="option-row">'+
+<?php foreach ($this->getStores() as $_store): ?>
+            '<td><input name="option[value][{{id}}][<?php echo $_store->getId() ?>]" value="{{store<?php echo $_store->getId() ?>}}" class="input-text<?php if($_store->getId()==0): ?> required-option<?php endif; ?>" type="text" <?php if ($this->getReadOnly()):?> disabled="disabled"<?php endif;?>/><\/td>'+
+<?php endforeach; ?>
+            '<td><input class="input-text" type="text" name="option[order][{{id}}]" value="{{sort_order}}" <?php if ($this->getReadOnly()):?> disabled="disabled"<?php endif;?>/><\/td>'+
+            '<td class="a-center"><input class="input-radio" type="{{intype}}" name="default[]" value="{{id}}" {{checked}} <?php if ($this->getReadOnly()):?> disabled="disabled"<?php endif;?>/><\/td>'+
+            '<td class="a-left">'+
+                '<input type="hidden" class="delete-flag" name="option[delete][{{id}}]" value="" />'+
+                <?php if (!$this->getReadOnly()):?>
+                    '<?php echo $this->getDeleteButtonHtml() ?>'+
+                <?php endif;?>
+            '<\/td>'+
+        '<\/tr>';
+
+var templateText =
+        '<tr class="option-row">'+
+        $('row-template').innerHTML
+        + '<\/tr>';;
+
+var accountPermission = {
+    table : $('account-permissions-table'),
+    templateSyntax : /(^|.|\r|\n)({{(\w+)}})/,
+    templateText : templateText,
+    itemCount : 0,
+    totalItems : 0,
+    add : function(data) {
+        this.template = new Template(this.templateText, this.templateSyntax);
+        if(!data.permission_id){
+            data = {};
+            data.id  = 'permission_'+this.itemCount;
+        }else{
+            data.id = data.permission_id;
+        }
+
+        if (!data.intype)
+            data.intype = optionDefaultInputType;
+
+        Element.insert(this.table, {after: this.template.evaluate(data)});
+        if (data.permission_id){
+            $('bookkeeping_permission_row_' + data.id + '_account_id').value = data.account_id;
+            $('bookkeeping_permission_row_' + data.id + '_corresponding_account_id').value = data.corresponding_account_id;
+            $('bookkeeping_permission_row_' + data.id + '_comments').value = typeof data.comments != 'undefined' ? data.comments : '';
+            var element = $('bookkeeping_permission_row_' + data.id + '_transaction_types');
+            var transactionTypes = data.transaction_type.split(',');
+            if (element.options){
+                for (var i=0; i < element.options.length; i++){
+                    if (transactionTypes.indexOf(element.options[i].value) != -1){
+                        element.options[i].selected = 'selected';
+                    }
+                }
+            }
+        }
+        this.bindRemoveButtons();
+        this.itemCount++;
+        this.totalItems++;
+        this.updateItemsCountField();
+    },
+    remove : function(event){
+        var element = $(Event.findElement(event, 'tr')); // !!! Button already
+        // have table parent in safari
+        // Safari workaround
+        element.ancestors().each(function(parentItem){
+           if (parentItem.hasClassName('option-row')) {
+               element = parentItem;
+               throw $break;
+           } else if (parentItem.hasClassName('box')) {
+               throw $break;
+           }
+        });
+
+
+        if(element){
+            var elementFlags = element.getElementsByClassName('delete-flag');
+            if(elementFlags[0]){
+                elementFlags[0].value=1;
+            }
+
+            element.addClassName('no-display');
+            element.addClassName('template');
+            element.hide();
+            this.totalItems--;
+            this.updateItemsCountField();
+        }
+    },
+    updateItemsCountField: function() {
+        if (this.totalItems > 0) {
+            $('option-count-check').value = '1';
+        } else {
+            $('option-count-check').value = '';
+        }
+    },
+    bindRemoveButtons : function(){
+        var buttons = $$('.delete-option');
+        for(var i=0;i<buttons.length;i++){
+            if(!$(buttons[i]).binded){
+                $(buttons[i]).binded = true;
+                Event.observe(buttons[i], 'click', this.remove.bind(this));
+            }
+        }
+    }
+
+}
+if($('row-template')){
+    $('row-template').remove();
+}
+accountPermission.bindRemoveButtons();
+
+if($('add_new_permission_button')){
+    Event.observe('add_new_permission_button', 'click', accountPermission.add.bind(accountPermission));
+}
+Validation.addAllThese([
+    ['required-option', '<?php echo $this->__('Failed') ?>', function(v) {
+        return !Validation.get('IsEmpty').test(v);
+}]]);
+Validation.addAllThese([
+    ['required-options-count', '<?php echo $this->__('Options is required') ?>', function(v) {
+        return !Validation.get('IsEmpty').test(v);
+}]]);
+<?php foreach ($this->getPermissions() as $_value): ?>
+    accountPermission.add(<?php echo $_value->toJson() ?>);
+<?php endforeach; ?>
+//]]>
+</script>

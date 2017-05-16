@@ -1,0 +1,86 @@
+<?xml version="1.0"?>
+<!--
+ * {magecore_license_notice}
+ *
+ * @category   MageCore
+ * @package    Dashboard
+ * @copyright  {magecore_copyright}
+ * @license    {magecore_license}
+-->
+
+<config>
+    <menu>
+        <system>
+            <children>
+                <dashboards translate="title" module="oro_dashboard">
+                    <title>Dashboards</title>
+                    <sort_order>30</sort_order>
+                    <action>adminhtml/dashboards</action>
+                </dashboards>
+            </children>
+        </system>
+        <dashboard>
+            <children>
+                <user_dashboard translate="title" module="oro_dashboard">
+                    <title>User Dashboard</title>
+                    <sort_order>20</sort_order>
+                    <action>adminhtml/userdashboard</action>
+                </user_dashboard>
+                <system_dashboard translate="title" module="adminhtml">
+                    <title>System Dashboard</title>
+                    <sort_order>999</sort_order>
+                    <action>adminhtml/dashboard</action>
+                </system_dashboard>
+            </children>
+        </dashboard>
+    </menu>
+    <acl>
+        <resources>
+            <admin>
+                <children>
+                    <system>
+                        <children>
+                            <config>
+                                <children>
+                                    <oro_dashboard translate="title" module="oro_dashboard">
+                                        <title>Dashboards</title>
+                                    </oro_dashboard>
+                                </children>
+                            </config>
+                        </children>
+                    </system>
+                </children>
+            </admin>
+            <admin>
+                <children>
+                    <system>
+                        <children>
+                            <dashboards>
+                                <title>Dashboards</title>
+                                <sort_order>10</sort_order>
+                                <children>
+                                    <dashboards_manage>
+                                        <title>Dashboards Management</title>
+                                        <sort_order>5</sort_order>
+                                    </dashboards_manage>
+                                    <dashboards_create>
+                                        <title>Create dashboard</title>
+                                        <sort_order>10</sort_order>
+                                    </dashboards_create>
+                                </children>
+                            </dashboards>
+                        </children>
+                    </system>
+                    <dashboard>
+                        <children>
+                            <user_dashboard>
+                                <title>User Dashboard</title>
+                                <sort_order>20</sort_order>
+                            </user_dashboard>
+                        </children>
+                    </dashboard>
+                </children>
+            </admin>
+        </resources>
+    </acl>
+</config>

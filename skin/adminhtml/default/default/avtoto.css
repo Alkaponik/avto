@@ -1,0 +1,27 @@
+.page-create-order .switcher { 
+    display: none;
+}
+
+.page-create-order #order-coupons {
+    display: none;
+}
+
+.magedoc-adminhtml-supply-index .messages li{
+    font-size: 48px !important;
+    min-height: 50px !important;
+    padding: 20px 16px 2px 32px !important;
+    line-height: 1em;
+    margin: 0 0 20px 0 !important;
+}
+
+.fancybox-wrap .messages li{
+    font-size: 24px !important;
+    min-height: 25px !important;
+    padding: 10px 8px 2px 16px !important;
+    line-height: 1em;
+    margin: 0 0 10px 0 !important;
+}
+
+.grid tr.headings th span.sort-title { padding: 3px 2px 4px 0px !important; }
+
+.drop-zone { z-index: 10; }

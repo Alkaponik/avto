@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<config>
+    <menu>
+         <sales>
+            <children>
+                <admin_messenger translate="title" module="admin_messenger">
+                    <sort_order>220</sort_order>
+                    <title>Messages</title>
+                    <action>adminhtml/adminMessenger_message/</action>
+                </admin_messenger>
+            </children>
+         </sales>
+    </menu>
+    <acl>
+        <resources>
+            <admin>
+                <children>
+                    <sales>
+                        <children>
+                            <admin_messenger translate="title" module="admin_messenger">
+                                <title>Admin Messenger</title>
+                                <sort_order>220</sort_order>
+                            </admin_messenger>
+                        </children>
+                    </sales>
+                </children>
+            </admin>
+        </resources>
+    </acl>
+</config>

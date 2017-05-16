@@ -1,0 +1,16 @@
+<?php
+/**
+ * {magecore_license_notice}
+ *
+ * @category   MageCore
+ * @package    Dashboard
+ * @copyright  {magecore_copyright}
+ * @license    {magecore_license}
+ */
+?>
+<?php if(Mage::helper('oro_dashboard')->canUsePartitions() && !Mage::helper('oro_dashboard')->isPartitionsAvailable()):?>
+<div class="notification-global">
+    <strong><?php echo $this->helper('oro_dashboard')->__('Magecore Dashboard:') ?></strong>
+    <?php echo $this->helper('oro_dashboard')->__('MySQL server has no partitioning feature. Please set "Use MySql Partitioning" to No in <a href="%s">dashboard options</a>.', $this->getManageUrl());?>
+</div>
+<?php endif;?>

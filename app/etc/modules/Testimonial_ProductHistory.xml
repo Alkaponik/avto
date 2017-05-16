@@ -1,0 +1,8 @@
+<config>
+    <modules>
+        <Testimonial_ProductHistory>
+            <active>true</active>
+            <codePool>local</codePool>
+        </Testimonial_ProductHistory>
+    </modules>
+</config>

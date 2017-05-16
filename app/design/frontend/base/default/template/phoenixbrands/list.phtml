@@ -1,0 +1,30 @@
+<?php $columns = $this->getItemsInColumns() ?>
+<?php echo $this->getChildHtml('phoenixbrands.list.recommended') ?>
+<div class="all-brands-list">
+<?php if ($cols = count($columns)): ?>
+    <ul class="annotation">
+    <?php foreach($columns as $letters): ?>
+        <?php foreach ($letters as $letter => $categories): ?>
+        <li><a href="<?php echo Mage::helper('core/url')->getCurrentUrl()."#".$letter ?>"><?php echo $letter ?></a></li>
+        <?php endforeach; ?>
+    <?php endforeach; ?>
+    </ul>
+    <?php $width = floor(100/$cols) ?>
+    <div class="dictionary">
+    <?php foreach($columns as $letters): ?>    
+            <dl style="float: left; width: <?php echo $width ?>%;">
+            <?php foreach ($letters as $letter => $categories): ?>
+                <dt><a name="<?php echo $letter ?>"><?php echo $letter ?></a></dt>
+                <dd>
+                    <ul class="bare-list">
+                        <?php foreach ($categories as $category): ?>
+                        <li><a href="<?php echo $category->getUrl() ?>"><?php echo $this->htmlEscape($category->getName()) ?></a></li>
+                        <?php endforeach ?>
+                    </ul>
+                </dd>
+            <?php endforeach ?>
+            </dl>
+    <?php endforeach ?>
+    </div>
+<?php endif ?>
+</div>

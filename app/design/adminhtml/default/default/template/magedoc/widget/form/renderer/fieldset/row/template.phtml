@@ -1,0 +1,14 @@
+<?php $_element = $this->getElement() ?>
+<tr id="row-template" style="display:none;">
+    <?php foreach($_element->getElements() as $subElement): ?>
+        <td>
+            <?php echo $subElement->toHtml(); ?>
+        </td>
+    <?php endforeach; ?>
+    <td>
+            <button type="button" id="delete" name="delete"><?php echo $this->__('Delete'); ?></button>
+    </td>
+    <td class="information">
+        <span>Information</span>
+    </td>
+</tr>

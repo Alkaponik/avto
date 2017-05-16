@@ -1,0 +1,36 @@
+<?php
+/**
+ * {magecore_license_notice}
+ *
+ * @category   MageCore
+ * @package    Dashboard
+ * @copyright  {magecore_copyright}
+ * @license    {magecore_license}
+ */
+
+/**
+ * @var $this Oro_Dashboard_Block_Adminhtml_Userdashboard_Widget_Bar
+ */
+ ?>
+<?php $metrics = Mage::helper("oro_dashboard")->getMetrics()?>
+<div class="row">
+    <label for="bar-add-metric"><?php echo $this->__("Show the following metric:")?></label>
+    <select name="metric" id="bar-add-metric">
+        <?php foreach ($metrics as $code=>$metric) {?>
+            <option value="<?php echo $code;?>" <?php if ($this->getMetric() == $code){?>selected="selected"<?php }?>><?php echo $this->__($metric['label']);?></option>
+        <?php }?>
+    </select>
+</div>
+<div class="row">
+    <label for="bar-metric-compare"><?php echo $this->__("Compare with the following metric:")?></label>
+    <select name="metric_compare" id="bar-metric-compare">
+        <option value=""><?php echo $this->__("No Comparison")?></option>
+        <?php foreach ($metrics as $code=>$metric) {?>
+        <option value="<?php echo $code;?>" <?php if ($this->getMetricCompare() == $code){?>selected="selected"<?php }?>><?php echo $this->__($metric['label']);?></option>
+        <?php }?>
+    </select>
+</div>
+<div class="row">
+    <label for="bar-widget-title"><?php echo $this->__("Widget title:")?></label>
+    <input type="text" id="bar-widget-title" name="name" value="<?php echo $this->getWidgetName();?>" class="required-entry widget-title" />
+</div>

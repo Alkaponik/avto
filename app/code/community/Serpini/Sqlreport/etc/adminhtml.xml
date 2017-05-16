@@ -1,0 +1,41 @@
+<?xml version="1.0" ?>
+<config>
+    <menu>
+		<report>
+			<children>
+				<sqlreport_viewform translate="title" module="sqlreport">
+					<title>Sql2Report</title>
+					<action>adminhtml/sqlreport/viewReport</action>
+				</sqlreport_viewform>
+			</children>
+			<children>
+				<sqlreport_admin translate="title" module="sqlreport">
+					<title>Sql2Report Manager</title>
+					<action>adminhtml/sqlreport/admin</action>
+				</sqlreport_admin>
+			</children>
+		</report>
+	</menu>
+    <acl>
+        <resources>
+            <admin>
+                <children>
+					<report>
+						<children>
+							<sqlreport_viewform translate="title" module="sqlreport">
+								<title>Sql2report</title>
+								<sort_order>10</sort_order>
+							</sqlreport_viewform>
+						</children>
+						<children>
+							<sqlreport_admin translate="title" module="sqlreport">
+								<title>Sql2report Manager</title>
+								<sort_order>11</sort_order>
+							</sqlreport_admin>
+						</children>
+					</report>
+                </children>
+            </admin>
+        </resources>
+    </acl>
+</config>

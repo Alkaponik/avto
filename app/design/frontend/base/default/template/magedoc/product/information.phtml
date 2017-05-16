@@ -1,0 +1,30 @@
+<?php $helper = Mage::helper('magedoc/price');?>
+<?php $product = $this->getProductInformation();?>
+<h2><?php echo $product->getName();?></h2>
+<h3><?php echo $product->getSupplierName();?></h3>
+<h3><?php echo $product->getArtArticleNr();?></h3>
+<h3><?php echo $product->getAdditionalInfo();?></h3>
+<?php if($product->getSku() !== null):?>
+<div class="product-info-table-wrapper rnd">
+    <table class="product-information product-info-table">
+        <thead>
+            <tr>
+                <th><?php echo $this->__('Sku')?></th>
+                <th><?php echo $this->__('Cost')?></th>
+                <th><?php echo $this->__('Price')?></th>
+                <th><?php echo $this->__('Margin')?></th>
+                <th><?php echo $this->__('Final price')?></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><?php echo $product->getSku();?></td>
+                <td><?php echo $product->getCost();?></td>
+                <td><?php echo $product->getPrice();?></td>
+                <td><?php echo $helper->getMargin($product->getCost());?></td>
+                <td><?php echo $product->getFinalPrice();?></td>
+            </tr>
+        </tbody>
+    </table>
+</div>    
+<?php endif;?>

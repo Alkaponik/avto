@@ -1,0 +1,43 @@
+<?php $order = $this->getShipment()->getOrder()?>
+<?php $_vehicles = $order->getVehiclesCollection() ?>
+<?php foreach ($_vehicles as $vehicle): ?>
+    <div class="entry-edit">
+        <div class="entry-edit-head">
+            <h4 class="icon-head head-products">
+                <?php echo $vehicle->getManufacturer() 
+                    . ' ' . $vehicle->getModel()
+                    . ' ' . $vehicle->getType()
+                    . ' (' . $vehicle->getProductionStartYear() . ')';?>
+            </h4>
+        </div>
+
+        <div class="grid np">
+            <div class="hor-scroll">
+                <table cellspacing="0" class="data order-tables">
+                    <col width="200"/>
+                    <col width="200" />
+                    <col />
+                    <col />
+                    <col width="80" />
+                    <thead>
+                        <tr class="headings">
+                            <th><?php echo $this->helper('magedoc')->__('Category') ?></th>
+                            <th><?php echo $this->helper('magedoc')->__('Supplier') ?></th>
+                            <th><?php echo $this->helper('magedoc')->__('Name') ?></th>
+                            <th><?php echo $this->helper('magedoc')->__('Sku') ?></th>
+                            <th class="a-center"><?php echo $this->helper('magedoc')->__('Qty') ?></th>
+                        </tr>
+                    </thead>
+                    <tbody class="even">
+                        <?php $_inquiries = $this->getShipment()->getInquiriesByVehicleId($vehicle->getId()) ?>
+                        <?php foreach ($_inquiries as $_inquiry): ?>
+                            <?php echo $this->getInquiryHtml($_inquiry) ?>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <br />
+<?php endforeach; ?>
+<div class="clear"></div>

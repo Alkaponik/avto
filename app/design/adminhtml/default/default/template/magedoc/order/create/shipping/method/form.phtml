@@ -1,0 +1,114 @@
+<?php
+
+?>
+<?php /** @var $this Testimonial_MageDoc_Block_Adminhtml_Order_Create_Shipping_Method_Form */ ?>
+<?php $_shippingRateGroups = $this->getShippingRates(); ?>
+<div id="order_shipping_date_wrapper" style="margin-bottom:10px;position: relative">
+    <label for="shipping_date"><?php echo $this->__('Shipping date')?></label>
+    <div id="order_shipping_date_container" >
+        <div id="order_shipping_date_text"><?php echo $this->getShippingDate();?></div>
+    </div>
+    <div id="blcg-column-editor-overlay-shipping_date" class="blcg-column-editor-overlay" style="position: absolute; top: 20px; left: 200px; display: none"></div>
+    <div id="order_shipping_date_edit" hidden>
+        <input type="text" name="shipping_date_edit" id="shipping_date" class="date validate-date required-entry" disabled="disabled"/>
+        <img src="<?php echo $this->getSkinUrl('images/grid-cal.gif') ?>" alt="" class="v-middle" id="shipping_date_trig" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Date selector')) ?>" />
+        <br />
+    </div>
+</div>
+<?php if ($_shippingRateGroups): ?>
+    <div id="order-shipping-method-choose" style="display:none">
+    <dl class="shipment-methods">
+    <?php foreach ($_shippingRateGroups as $code => $_rates): ?>
+        <dt><strong><?php echo $this->escapeHtml($this->getCarrierName($code)) ?></strong></dt>
+        <dd>
+            <ul>
+            <?php foreach ($_rates as $_rate): ?>
+                <?php $_radioProperty = 'name="order[shipping_method]" type="radio" onclick="order.setShippingMethod(this.value)"' ?>
+                <?php $_code=$_rate->getCode() ?>
+                <li>
+                   <?php if ($_rate->getErrorMessage()): ?>
+                        <ul class="messages">
+                            <li class="error-msg"><?php echo $this->escapeHtml($_rate->getErrorMessage()) ?></li>
+                        </ul>
+                   <?php else: ?>
+                        <?php $_checked = $this->isMethodActive($_code) ? 'checked="checked"' : '' ?>
+                        <input <?php echo $_radioProperty ?> value="<?php echo $_code ?>" id="s_method_<?php echo $_code ?>" <?php echo $_checked ?>/>
+                        <label class="normal" for="s_method_<?php echo $_code ?>">
+                            <?php echo $this->escapeHtml($_rate->getMethodTitle() ? $_rate->getMethodTitle() : $_rate->getMethodDescription()) ?> -
+                            <strong>
+                                <?php $_excl = $this->getShippingPrice($_rate->getPrice(), $this->helper('tax')->displayShippingPriceIncludingTax()); ?>
+                                <?php $_incl = $this->getShippingPrice($_rate->getPrice(), true); ?>
+
+                                <?php echo $_excl; ?>
+                                <?php if ($this->helper('tax')->displayShippingBothPrices() && $_incl != $_excl): ?>
+                                    (<?php echo $this->__('Incl. Tax'); ?> <?php echo $_incl; ?>)
+                                <?php endif; ?>
+                            </strong>
+                        </label>
+                   <?php endif ?>
+                </li>
+            <?php endforeach; ?>
+            </ul>
+        </dd>
+    <?php endforeach; ?>
+    </dl>
+    </div>
+    <?php if ($_rate = $this->getActiveMethodRate()): ?>
+        <div id="order-shipping-method-info">
+            <strong><?php echo $this->escapeHtml($this->getCarrierName($_rate->getCarrier())) ?></strong><br/>
+            <?php echo $this->escapeHtml($_rate->getMethodTitle() ? $_rate->getMethodTitle() : $_rate->getMethodDescription()) ?> -
+            <strong>
+                <?php $_excl = $this->getShippingPrice($_rate->getPrice(), $this->helper('tax')->displayShippingPriceIncludingTax()); ?>
+                <?php $_incl = $this->getShippingPrice($_rate->getPrice(), true); ?>
+
+                <?php echo $_excl; ?>
+                <?php if ($this->helper('tax')->displayShippingBothPrices() && $_incl != $_excl): ?>
+                    (<?php echo $this->__('Incl. Tax'); ?> <?php echo $_incl; ?>)
+                <?php endif; ?>
+            </strong>
+            <!--input type="text" class="input-text" style="width:70px"/-->
+            <br/>
+            <a href="#" onclick="$('order-shipping-method-info').hide();$('order-shipping-method-choose').show();return false">
+                <?php echo Mage::helper('sales')->__('Click to change shipping method') ?>
+            </a>
+        </div>
+    <?php else: ?>
+        <script type="text/javascript">$('order-shipping-method-choose').show();</script>
+    <?php endif; ?>
+<?php elseif($this->getIsRateRequest()): ?>
+    <strong><?php echo Mage::helper('sales')->__('Sorry, no quotes are available for this order at this time.') ?></strong>
+<?php else: ?>
+    <div id="order-shipping-method-summary">
+        <a href="#" onclick="order.loadShippingRates();return false">
+            <?php echo Mage::helper('sales')->__('Get shipping methods and rates') ?>
+        </a>
+        <input type="hidden" name="order[has_shipping]" value="" class="required-entry" />
+    </div>
+<?php endif; ?>
+<div style="display:none;" id="shipping-method-overlay" class="overlay"><span><?php echo $this->__('Shipping method selection is not applicable') ?></span></div>
+<script type="text/javascript">
+order.overlay('shipping-method-overlay', <?php if ($this->getQuote()->isVirtual()): ?>false<?php else: ?>true<?php endif; ?>);
+order.overlay('address-shipping-overlay', <?php if ($this->getQuote()->isVirtual()): ?>false<?php else: ?>true<?php endif; ?>);
+
+AdminOrder.prototype.setShippingMethod = function(method){
+    debugger;
+    var data = {};
+    data['order[shipping_method]'] = method;
+    this.loadArea(['shipping_method', 'totals', 'billing_method'], true, data);
+    var currentDate = $('order_shipping_date_text').select('strong')[0].innerHTML;
+    if(currentDate && shippingDateEditor) {
+        shippingDateEditor.saveOrderShippingDate(currentDate);
+    }
+}
+
+ShippingDateEditor.prototype.saveOrderShippingDate = function(value){
+    var data = {};
+    data['order[shipping_date]'] = value;
+    order.loadArea(false, false, data);
+}
+
+var shippingDateEditor = new ShippingDateEditor('order_shipping_date_container','order_shipping_date_edit', '<?php echo $this->getShippingDateFormat();?>');
+
+
+</script>
+<?php $test = $this->getQuote();?>

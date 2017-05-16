@@ -1,0 +1,145 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Magento - AjaxNav
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to license that is bundled with
+ * this package in the file LICENSE.txt.
+ *
+ * @category   Phoenix
+ * @package    Phoenix_AjaxNav
+ * @copyright  Copyright (c) 2011 Phoenix Medien GmbH & Co. KG (http://www.phoenix-medien.de)
+ */
+-->
+<config>
+    <modules>
+        <Phoenix_AjaxNav>
+            <version>0.1.0</version>
+        </Phoenix_AjaxNav>
+    </modules>
+
+    <global>
+        <models>
+            <ajaxnav>
+                <class>Phoenix_AjaxNav_Model</class>
+            </ajaxnav>
+        </models>
+        <blocks>
+            <ajaxnav>
+                <class>Phoenix_AjaxNav_Block</class>
+            </ajaxnav>
+        </blocks>
+        <resources>
+            <ajaxnav_setup>
+                <setup>
+                    <module>Phoenix_AjaxNav</module>
+                </setup>
+                <connection>
+                    <use>core_setup</use>
+                </connection>
+            </ajaxnav_setup>
+            <ajaxnav_write>
+                <connection>
+                    <use>core_write</use>
+                </connection>
+            </ajaxnav_write>
+            <ajaxnav_read>
+                <connection>
+                    <use>core_read</use>
+                </connection>
+            </ajaxnav_read>
+        </resources>
+        <helpers>
+            <ajaxnav>
+                <class>Phoenix_AjaxNav_Helper</class>
+            </ajaxnav>
+        </helpers>
+
+        <events>
+            <controller_action_layout_load_before>
+                <observers>
+                    <ajaxnav>
+                        <class>ajaxnav/observer</class>
+                        <method>controller_action_layout_load_before</method>
+                    </ajaxnav>
+                </observers>
+            </controller_action_layout_load_before>
+        </events>
+
+    </global>
+
+    <frontend>
+        <routers>
+            <ajaxnav>
+                <use>standard</use>
+                <args>
+                    <module>Phoenix_AjaxNav</module>
+                    <frontName>ajaxnav</frontName>
+                </args>
+            </ajaxnav>
+            <checkout>
+                <use>standard</use>
+                <args>
+                    <modules>
+                        <ajaxnav before="Mage_Checkout,Phoenix_FixedShipping">Phoenix_AjaxNav</ajaxnav>
+                    </modules>
+                </args>
+            </checkout>
+        </routers>
+        <layout>
+            <updates>
+                <ajaxnav>
+                    <file>ajaxnav.xml</file>
+                </ajaxnav>
+            </updates>
+        </layout>
+        <translate>
+            <modules>
+                <Phoenix_AjaxNav>
+                    <files>
+                        <default>Phoenix_AjaxNav.csv</default>
+                    </files>
+                </Phoenix_AjaxNav>
+            </modules>
+        </translate>
+    </frontend>
+
+    <adminhtml>
+        <acl>
+            <resources>
+                <admin>
+                    <children>
+                        <system>
+                            <children>
+                                <config>
+                                    <children>
+                                        <ajaxnav>
+                                            <title>Phoenix Checkout AjaxNav Configuration</title>
+                                        </ajaxnav>
+                                    </children>
+                                </config>
+                            </children>
+                        </system>
+                    </children>
+                </admin>
+            </resources>
+        </acl>
+        <layout>
+            <updates>
+                <ajaxnav>
+                    <file>ajaxnav.xml</file>
+                </ajaxnav>
+            </updates>
+        </layout>
+    </adminhtml>
+
+    <default>
+        <ajaxnav>
+            <settings>
+                <enabled>0</enabled>
+            </settings>
+        </ajaxnav>
+    </default>
+</config>

@@ -1,0 +1,555 @@
+﻿<config>
+    <tabs>
+        <testimonial translate="label" module="magedoc">
+            <label>Testimonial</label>
+            <sort_order>100</sort_order>
+        </testimonial>
+    </tabs> 
+    <sections>
+        <magedoc>
+            <label>MageDoc</label>
+            <tab>testimonial</tab>
+            <frontend_type>text</frontend_type>
+            <sort_order>10</sort_order>
+            <show_in_default>1</show_in_default>
+            <show_in_website>1</show_in_website>
+            <show_in_store>1</show_in_store>
+            <groups>
+                <general translate="label">
+                    <label>General Settings</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>10</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <search_tree_root_category_id translate="label comment">
+                            <label>Import Root Category</label>
+                            <comment>Specify the category which contains all directory categories and products being imported</comment>
+                            <frontend_type>select</frontend_type>
+                            <source_model>magedoc/adminhtml_system_config_source_category</source_model>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </search_tree_root_category_id>
+                        <production_start_year translate="label comment">
+                            <label>Min vehicle production start year</label>
+                            <comment>Specify the min vehicle production start year displayed in the shop</comment>
+                            <frontend_type>select</frontend_type>
+                            <source_model>magedoc/adminhtml_system_config_source_date_start</source_model>
+                            <sort_order>20</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </production_start_year>
+                        <tecdoc_directory_version translate="label comment">
+                            <label>TecDoc directory version</label>
+                            <comment>Current TecDoc directory version</comment>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>30</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </tecdoc_directory_version>
+                        <tecdoc_table_prefix translate="label comment">
+                            <label>TecDoc table prefix</label>
+                            <comment>Table prefix or database in following format 'db_name.'</comment>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>40</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </tecdoc_table_prefix>
+                        <tecdoc_table_suffix translate="label comment">
+                            <label>TecDoc table suffix</label>
+                            <comment>Table postfix</comment>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>50</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </tecdoc_table_suffix>
+                        <type_top_categories translate="label comment">
+                            <label>Top Vehicle Type Page Categories</label>
+                            <comment>Specify top categories to display on vehicle type page</comment>
+                            <frontend_type>multiselect</frontend_type>
+                            <source_model>magedoc/adminhtml_system_config_source_category</source_model>
+                            <sort_order>60</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </type_top_categories>
+                        <type_top_category_level translate="label comment">
+                            <label>Vehicle Type Top Categories' Level</label>
+                            <frontend_type>text</frontend_type>
+                            <validate>validate-number validate-greater-than-zero</validate>
+                            <sort_order>70</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </type_top_category_level>
+                    </fields>
+                </general>
+                <import translate="label">
+                    <label>Price Import</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>20</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>                        
+                        <price_import_error_limit translate="label comment">
+                            <label>Error limit count</label>
+                            <comment>Error limit count for import products/prices</comment>
+                            <frontend_type>text</frontend_type>
+                            <validate>validate-digits validate-one-required</validate>
+                            <sort_order>20</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </price_import_error_limit>
+                        <price_import_to_website translate="label comment">
+                            <label>Import to website</label>
+                            <comment>The website where the products/prices are imported</comment>
+                            <frontend_type>multiselect</frontend_type>
+                            <source_model>adminhtml/system_config_source_website</source_model>
+                            <sort_order>30</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </price_import_to_website>
+                        <price_import_to_store translate="label comment">
+                            <label>Import to store</label>
+                            <comment>The store where the products/prices are imported</comment>
+                            <frontend_type>multiselect</frontend_type>
+                            <source_model>adminhtml/system_config_source_store</source_model>
+                            <sort_order>40</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </price_import_to_store>
+                        <valid_price_term translate="label comment">
+                            <label>Price validity term</label>
+                            <comment>The period, after which price must be updated(in hours).</comment>
+                            <frontend_type>text</frontend_type>
+                            <validate>validate-digits validate-one-required</validate>
+                            <sort_order>50</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </valid_price_term>
+                        <price_validity_notification_term translate="label comment">
+                            <label>Price Validity Notification Term</label>
+                            <comment>(hours before expiration)</comment>
+                            <frontend_type>text</frontend_type>
+                            <validate>validate-digits validate-one-required</validate>
+                            <sort_order>60</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </price_validity_notification_term>
+                        <price_margin_ratio translate="label comment">
+                            <label>Margin ratio</label>
+                            <comment>Multiplier that is using for price generation.</comment>
+                            <frontend_type>text</frontend_type>
+                            <validate>validate-number validate-one-required</validate>
+                            <sort_order>70</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </price_margin_ratio>
+                        <significant_deviation_percent translate="label comment">
+                            <label>Significant value deviation percent</label>
+                            <comment>Used to indicate significant price or cost changes</comment>
+                            <frontend_type>text</frontend_type>
+                            <validate>validate-number validate-greater-than-zero</validate>
+                            <sort_order>75</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </significant_deviation_percent>
+                        <price_source_errors_limit translate="label comment">
+                            <label>Price source errors limit</label>
+                            <comment>Limit of not valid records in the price before error is appeared.</comment>
+                            <frontend_type>text</frontend_type>
+                            <validate>validate-digits validate-one-required</validate>
+                            <sort_order>80</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </price_source_errors_limit>
+                        <flush_limit translate="label comment">
+                            <label>Flush Import Limit</label>
+                            <comment>Don't use temporarily tables for small imports. Warning: Import tables are locked when no temporarily tables used. Set 0 to disabled tmp tables' usage completely.</comment>
+                            <frontend_type>text</frontend_type>
+                            <validate>required-entry validate-not-negative-number</validate>
+                            <sort_order>85</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </flush_limit>
+                        <price_discount_table translate="comment">
+                            <label>Default Discount Table</label>
+                            <frontend_model>magedoc/adminhtml_widget_form_renderer_discountTable</frontend_model>
+                            <backend_model>adminhtml/system_config_backend_serialized_array</backend_model>
+                            <sort_order>90</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </price_discount_table>
+                        <price_margin_table translate="comment">
+                            <label>Default Margin Table</label>
+                            <frontend_model>magedoc/adminhtml_widget_form_renderer_discountTable</frontend_model>
+                            <backend_model>adminhtml/system_config_backend_serialized_array</backend_model>
+                            <sort_order>100</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </price_margin_table>
+                        <administrative_contact_identity translate="label comment">
+                            <label>Price Import Administrative Contact</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_email_identity</source_model>
+                            <sort_order>110</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>Person responsible for price import</comment>
+                        </administrative_contact_identity>
+                    </fields>
+                </import>
+                <order_management translate="label">
+                    <label>Order Management</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>30</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <default_admin_user_id translate="label comment">
+                            <label>Default Admin User</label>
+                            <comment>Default admin user for order mangment</comment>
+                            <frontend_type>select</frontend_type>
+                            <source_model>magedoc/adminhtml_system_config_source_admin_user</source_model>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </default_admin_user_id>
+                    </fields>
+                </order_management>
+                <supply_management translate="label">
+                    <label>Supply Management</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>40</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>    
+                        <defult_supplied_retention translate="label comment">
+                            <label>Default supply time delay</label>
+                            <comment>Default supply delay in days</comment>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>20</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </defult_supplied_retention>
+                        <supply_order_statuses translate="label comment">
+                            <label>Order statuses to supply</label>
+                            <frontend_type>multiselect</frontend_type>
+                            <source_model>magedoc/adminhtml_system_config_source_order_status</source_model>
+                            <sort_order>30</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </supply_order_statuses>
+                        <visible_order_supply_statuses translate="label comment">
+                            <label>Visible supply order statuses</label>
+                            <comment>Visible items where order supply status is selected</comment>
+                            <frontend_type>multiselect</frontend_type>
+                            <source_model>magedoc/source_order_supply_status</source_model>
+                            <sort_order>40</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </visible_order_supply_statuses>
+                        <assemble_order_statuses translate="label comment">
+                            <label>Order statuses to assemble</label>
+                            <comment>Order statuses the assembly printing is available for</comment>
+                            <frontend_type>multiselect</frontend_type>
+                            <source_model>magedoc/adminhtml_system_config_source_order_status</source_model>
+                            <sort_order>50</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </assemble_order_statuses>
+                        <assemble_order_supply_statuses translate="label comment">
+                            <label>Orders to assemble supply statuses</label>
+                            <comment>Order supply statuses the assembly printing is available for</comment>
+                            <frontend_type>multiselect</frontend_type>
+                            <source_model>magedoc/source_order_supply_status</source_model>
+                            <sort_order>60</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </assemble_order_supply_statuses>
+                    </fields>
+                </supply_management>
+                <generic_article translate="label">
+                    <label>Generic article map</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>20</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <product_names_count_assign translate="label comment">
+                            <label>Product names count to assign with generic article</label>
+                            <comment>Product names count to assign with generic article on generic article map auto filling.</comment>
+                            <frontend_type>text</frontend_type>
+                            <validate>validate-digits</validate>
+                            <validate>validate-one-required</validate>
+                            <sort_order>70</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </product_names_count_assign>
+                    </fields>
+                </generic_article>
+                <layered_navigation_rules translate="label">
+                    <label>Layered Navigation Rules</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>50</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>    
+                        <vehicle_save_rules translate="label comment">
+                            <label>Saving rules for vehicle</label>
+                            <comment>Customer rule for saving vehicle from layerd navigation</comment>
+                            <frontend_type>select</frontend_type>
+                            <source_model>magedoc/adminhtml_system_config_source_vehicleSaveRules</source_model>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </vehicle_save_rules>
+                        <dispalyed_types_count translate="label comment">
+                            <label>Max displayed vehicle count</label>
+                            <comment>Max displayed vehicle count in Layered Navigation</comment>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>20</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </dispalyed_types_count>
+                    </fields>
+                </layered_navigation_rules>
+                <product_field_templates translate="label">
+                    <label>Product Defaults</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>60</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <name translate="label comment">
+                            <label>Name</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </name>
+                        <short_description translate="label comment">
+                            <label>Short Description</label>
+                            <frontend_type>textarea</frontend_type>
+                            <sort_order>11</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </short_description>
+                        <meta_title translate="label comment">
+                            <label>Title</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>20</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </meta_title>
+                        <meta_keyword translate="label comment">
+                            <label>Meta Keywords</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>30</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </meta_keyword>
+                        <meta_description translate="label comment">
+                            <label>Meta Description</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>40</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </meta_description>
+                        <status>
+                            <label>Status</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>magedoc/source_product_status</source_model>
+                            <sort_order>60</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </status>
+                        <visibility>
+                            <label>Visibility</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>magedoc/source_product_visibility</source_model>
+                            <sort_order>70</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </visibility>
+                        <manage_stock>
+                            <label>Manage Stock</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>80</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </manage_stock>
+                    </fields>
+                </product_field_templates>
+                <category_field_templates translate="label">
+                    <label>Category Defaults</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>70</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <name translate="label comment">
+                            <label>Name</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </name>
+                        <meta_title translate="label comment">
+                            <label>Title</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>20</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </meta_title>
+                        <description translate="label comment">
+                            <label>Description</label>
+                            <frontend_type>textarea</frontend_type>
+                            <sort_order>30</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </description>
+                        <meta_keywords translate="label comment">
+                            <label>Meta Keywords</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>40</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </meta_keywords>
+                        <meta_description translate="label comment">
+                            <label>Meta Description</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>50</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </meta_description>
+                        <is_anchor>
+                            <label>Is Anchor</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>60</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </is_anchor>
+                    </fields>
+                </category_field_templates>
+                <manufacturer_field_templates translate="label">
+                    <label>Manufacturer Defaults</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>80</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <name translate="label comment">
+                            <label>Name</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </name>
+                        <title translate="label comment">
+                            <label>Title</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>12</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </title>
+                        <description translate="label comment">
+                            <label>Description</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>14</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </description>
+                        <url_key>
+                            <label>Url Key</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>20</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </url_key>
+                        <meta_title translate="label comment">
+                            <label>Meta Title</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>30</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </meta_title>
+                        <meta_keywords translate="label comment">
+                            <label>Meta Keywords</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>40</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </meta_keywords>
+                        <meta_description translate="label comment">
+                            <label>Meta Description</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>50</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </meta_description>
+                    </fields>
+                </manufacturer_field_templates>
+            </groups>
+        </magedoc>
+    </sections>
+</config>

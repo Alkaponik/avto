@@ -1,0 +1,294 @@
+<?php
+/**
+ * {magecore_license_notice}
+ *
+ * @category   MageCore
+ * @package    Dashboard
+ * @copyright  {magecore_copyright}
+ * @license    {magecore_license}
+ */
+
+/**
+ * @var $this Oro_Dashboard_Block_Adminhtml_Userdashboard
+ */
+?>
+<?php
+$dashboards = $this->getDashboards();
+$currentDashboard = $this->getCurrentDashboard();
+$dateRanges = $this->getDateRanges();
+?>
+<div class="clearfix-print">
+    <h1 class="print-title">Print Page</h1>
+    <div class="print-actions">
+        <button onclick="window.close()" class="button delete"><span><span><?php echo $this->__('Close'); ?></span></span></button>
+        <button onClick="window.print()" class="button"><span><span><?php echo $this->__('Print Page'); ?></span></span></button>
+    </div>
+</div>
+<?php if ($currentDashboard->getDescription()) { ?>
+<div class="dashboard-description">
+    <?php echo $currentDashboard->getDescription();?>
+</div>
+<?php } ?>
+<div class="dashboard-container">
+    <div class="switcher">
+        <?php echo $this->getChildHtml("store_switcher");?>
+        <div class="dashboard-calendar">
+            <script>
+                var plotArr = [];
+                jQuery(function () {
+                    jQuery("#from").datepicker({
+                        changeMonth:true,
+                        showOn:"button",
+                        buttonImage:"<?php echo $this->getSkinUrl('oro_dashboard/images/calendar.gif') ?>",
+                        buttonImageOnly:true,
+                        numberOfMonths:1,
+                        dateFormat:'<?php echo Mage::helper("oro_dashboard")->getLocaleFormatForJqueryDatepicker();?>',
+                        onSelect:function (selectedDate) {
+                            jQuery("#to").datepicker("option", "minDate", selectedDate);
+                        }
+                    });
+                    jQuery("#to").datepicker({
+                        showOn:"button",
+                        buttonImage:"<?php echo $this->getSkinUrl('oro_dashboard/images/calendar.gif') ?>",
+                        buttonImageOnly:true,
+                        changeMonth:true,
+                        numberOfMonths:1,
+                        dateFormat:'<?php echo Mage::helper("oro_dashboard")->getLocaleFormatForJqueryDatepicker();?>',
+                        onSelect:function (selectedDate) {
+                            jQuery("#from").datepicker("option", "maxDate", selectedDate);
+                        }
+                    });
+                    /*  jQuery( "#from2" ).datepicker({
+                          defaultDate: "+1w",
+                          showOn: "button",
+                          buttonImage: "<?php echo $this->getSkinUrl('oro_dashboard/images/calendar.gif') ?>",
+                    buttonImageOnly: true,
+                    changeMonth: true,
+                    numberOfMonths: 1,
+                    dateFormat: 'dd.mm.yy',
+                    onSelect: function( selectedDate ) {
+                        jQuery( "#to" ).datepicker( "option", "minDate", selectedDate );
+                    }
+                });
+                jQuery( "#to2" ).datepicker({
+                    defaultDate: "+1w",
+                    showOn: "button",
+                    buttonImage: "<?php echo $this->getSkinUrl('oro_dashboard/images/calendar.gif') ?>",
+                    buttonImageOnly: true,
+                    changeMonth: true,
+                    numberOfMonths: 1,
+                    dateFormat: 'dd.mm.yy',
+                    onSelect: function( selectedDate ) {
+                        jQuery( "#from" ).datepicker( "option", "maxDate", selectedDate );
+                    }
+                }); */
+                });
+            </script>
+            <form action="<?php echo $this->getDateSubmitUrl($currentDashboard->getId())?>" method="post">
+                <?php echo $this->getBlockHtml('formkey');?>
+                <div class="datebar">
+                    <label class="date-range-label" for="date-range"><?php echo $this->__("Date Range");?></label>
+                <span id="date-range" class="date-range"
+                      rel="#detebar-drop"><?php echo Mage::helper("oro_dashboard")->getDateFrom();?>
+                    -<?php echo Mage::helper("oro_dashboard")->getDateTo();?></span>
+                </div>
+            </form>
+        </div>
+        <a href="http://www.magecore.com/dashboard-help.html" target="_blank" class="page-help-link"><?php echo $this->__("Get help for dashboard");?></a>
+    </div>
+
+    <div class="drop-zone three-colunm-layout">
+        <?php
+        $hasWidgets = false;
+        $columnsCount = 3;
+        for ($i = 1; $i <= $columnsCount; $i++) {
+            ?>
+            <?php $widgets = $this->getWidgets($i); ?>
+            <div id="sortable<?php echo $i;?>">
+                <ul class='droptrue'>
+                    <?php foreach ($widgets as $widget) {
+                    $hasWidgets = true;
+                    ?>
+                    <li id="widget-<?php echo $widget->getId();?>" class="ui-state-default">
+                        <?php echo $this->getLayout()->createBlock('oro_dashboard/adminhtml_userdashboard_widget_' . $widget->getRawWidgetConfig()->getType())
+                        ->setWidget($widget)->toHtml();
+                        ?>
+                    </li>
+                    <?php }?>
+                </ul>
+            </div>
+            <?php }?>
+        <p id="please-add-widget" <?php if ($hasWidgets){?>style="display:none;"<?php }?>><?php echo $this->__('Please <a href="javascript:%s">add widget</a> to dashboard.',"addWidget()")?></p>
+        <br clear="both" />
+    </div>
+    <div class="clearfix">
+        <p class="magecore-copyright"><img src="<?php echo $this->getSkinUrl('')?>oro_dashboard/images/logo-small.png" alt="magerore">Created by MageCore</p>
+    </div>
+</div>
+
+<div id="jqplot-print-container" style="display: none;">
+    <div class="image-header">
+        <?php echo $this->__("Right Click to Save Image As... or click at button to print");?>
+    </div>
+    <div id="jqplot-image-container"></div>
+    <div class="jqplot-print-actions">
+        <button id="print-image-now" class="button"><span><span><?php echo $this->__("Print");?></span></span></button>
+        <button id="print-image-cancel" class="button back"><span><span><?php echo $this->__("Cancel");?></span></span></button>
+    </div>
+</div>
+<div id="metric-print-container" style="display: none;">
+    <div id="metric-image-container"></div>
+    <div class="settings-action">
+        <button id="print-metric-now" class="button fr"><span><span><?php echo $this->__("Print");?></span></span></button>
+        <button id="print-metric-cancel" class="button back fr"><span><span><?php echo $this->__("Cancel");?></span></span></button>
+    </div>
+</div>
+<script type="text/javascript">
+    var currentTab;
+    var widgetId;
+    var inprocess = '';
+    var formKey;
+    var widgetTypes = ["metric", "pie", "bar", "timeline", "table"];
+    jQuery(document).ready(function () {
+        formKey = jQuery("input[name=form_key]").val();
+        jQuery('.customPrintThisPage').live("click", function(){
+            window.print();
+        });
+    <?php if ($this->canEdit()) { ?>
+        jQuery("ul.droptrue").sortable({
+            connectWith:"ul",
+            placeholder:'ui-sortable-placeholder',
+            cancel:'.entry-edit-content, .nav-tools',
+            start:function (event, ui) {
+
+            },
+            beforeStop:function (event, ui) {
+                jQuery(this).children('div.jqplot-target').css({
+                    'width':'100%',
+                    'height':'auto'
+                });
+                jQuery(this).children('canvas.jqplot-base-canvas').css({
+                    'width':'100%',
+                    'height':'auto'
+                });
+            },
+            stop:function (event, ui) {
+                var wId = jQuery(ui.item).attr("id").replace("widget-", "");
+                if (plotArr[wId]) {
+                    plotArr[wId].replot(true, true);
+                    if (plotArr[wId].resetZoom != undefined) {
+                        plotArr[wId].resetZoom();
+                    }
+                }
+            }
+        });
+        jQuery("#sortable1  .entry-edit-head, #sortable2 .entry-edit-head, #sortable3 .entry-edit-head").disableSelection();
+        jQuery(".settings")
+                .button()
+                .die("click")
+                .live("click", function () {
+                    widgetId = jQuery(this).parents("li").attr("id").replace("widget-", '');
+                    jQuery("#save-widget span span span").html('<?php echo $this->__("Save");?>');
+                    jQuery("#delete-widget").show();
+                    loadTabContent();
+                });
+        <?php } else { ?>
+        jQuery(".settings").hide();
+        <?php }?>
+        jQuery("#save-widget").unbind("click").click(function (e) {
+            var widgetType = widgetTypes[jQuery("#tabs").tabs("option", "selected")];
+            var widgetTitle = jQuery("#tabs-" + widgetType + " input[name=name]").val();
+            var widgetMetric = jQuery("#tabs-" + widgetType + " select[name=metric]").val();
+            var widgetMetricCompare = jQuery("#tabs-" + widgetType + " select[name=metric_compare]").val();
+            var widgetGroupedBy = jQuery("#tabs-" + widgetType + " select[name=grouped_by]").val();
+            var tableLinesNumber = jQuery("#tabs-" + widgetType + " select[name=lines_number]").val();
+            var pieSectorsNumber = jQuery("#tabs-" + widgetType + " select[name=sectors_number]").val();
+            var filters = new Array();
+            jQuery("#tabs-" + widgetType + " .filter").each(function () {
+                filters.push(jQuery(this).find("input,select").serialize());
+            })
+            var validateFields = jQuery("#tabs-" + widgetType + " .required-entry");
+            var isValid = true;
+            validateFields.each(function () {
+                if (!Validation.validate(this)) {
+                    isValid = false;
+                }
+            })
+
+            if (isValid) {
+                jQuery.ajax({
+                            url:"<?php echo $this->getSaveWidgetUrl();?>",
+                            type:"POST",
+                            data:({type:widgetType, name:widgetTitle, widget_id:widgetId, metric:widgetMetric, metric_compare:widgetMetricCompare, lines_number:tableLinesNumber,
+                                sectors_number:pieSectorsNumber, grouped_by:widgetGroupedBy, filters:filters, form_key:formKey}),
+                            dataType:"json",
+                            success:function (response) {
+                                if (response.error == false) {
+                                    jQuery("#please-add-widget").hide();
+                                    if (response.widget_id) { //adding new widget
+                                        jQuery("#sortable1 .droptrue").prepend("<li id='widget-" + response.widget_id + "'>" + response.html + "</li>");
+                                    } else { //updating widget
+                                        jQuery("li#widget-" + widgetId).html(response.html);
+                                    }
+                                    printImageGraff()
+                                } else {
+                                    alert(response.message);
+                                }
+                            }
+                        }
+                );
+                jQuery('.settings-detailse').dialog("close");
+            }
+
+        })
+        jQuery("#delete-widget").unbind("click").click(function (e) {
+            jQuery.ajax({
+                        url:"<?php echo $this->getDeleteWidgetUrl();?>",
+                        type:"POST",
+                        data:({widget_id:widgetId, form_key:formKey}),
+                        dataType:"json",
+                        success:function (response) {
+                            if (response.error == false) {
+                                jQuery("li#widget-" + widgetId).remove();
+                            }
+                            if (!jQuery(".droptrue li").size()) {
+                                jQuery("#please-add-widget").show();
+                            }
+                            jQuery('.settings-detailse').dialog("close");
+                        }
+                    }
+            );
+        })
+    });
+    function loadTabContent(tab, openDialog) {
+        jQuery.ajax({
+                    url:"<?php echo $this->getWidgetTabContentUrl();?>",
+                    type:"POST",
+                    data:({widget_id:widgetId, tab:tab, form_key:formKey}),
+                    dataType:"json",
+                    success:function (response) {
+                        if (response.error == false) {
+                            jQuery("#tabs-" + response.tab).html(response.html);
+                            jQuery("#tabs .widget-title").val(jQuery("#tabs-" + response.tab + ' .widget-title').val()); //set current widget title to all tabs
+                            if (!(openDialog == false)) {
+                                var tabIndex = widgetTypes.indexOf(response.tab);
+                                jQuery("#tabs").tabs("select", tabIndex);
+                                jQuery(".settings-detailse").dialog("open");
+                            }
+                        }
+                    }
+                }
+        );
+    }
+
+    function deleteDashboard() {
+        if (confirm("<?php echo $this->__('Are you sure?') ?>")) {
+            setLocation('<?php echo $this->getDeleteUrl();?>');
+        }
+    }
+    function replot() {
+        plotArr.forEach(function (e) {
+            e.replot(true, true);
+        })
+    }
+</script>

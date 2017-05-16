@@ -1,0 +1,21 @@
+<?php if ($cartInfo = $this->getCartInfo()): ?>
+<table>
+    <tbody>
+        <?php foreach ($cartInfo as $item): ?>
+        <?php $item = new Varien_Object($item); ?>
+        <tr>
+            <td>
+                <a href="<?php echo $this->escapeHtml($item->getProductUrl()) ?>"><?php echo $this->escapeHtml($item->getName()) ?></a>
+            </td>
+            <td><?php echo $this->escapeHtml($item->getPrice()) ?></td>
+            <td><?php echo $this->escapeHtml($item->getQuantity()) ?></td>
+            <td class="last"><?php echo $this->escapeHtml($item->getCost()) ?></td>
+        </tr>
+        <?php endforeach; ?>
+        <tr>
+            <td colspan="3"></td>
+            <td class="last"><?php echo $this->getTotal() ?></td>
+        </tr>
+    </tbody>
+</table>
+<?php endif; ?>

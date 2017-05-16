@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Vinagento_Oscheckout>
+            <active>true</active>
+            <codePool>local</codePool>
+        </Vinagento_Oscheckout>
+    </modules>
+</config> 

@@ -1,0 +1,42 @@
+<?php $_element = $this->getElement() ?>
+<?php if ($_element->getFieldsetContainerId()): ?>
+<div id="<?php echo $_element->getFieldsetContainerId(); ?>" style="display:<?php echo $_element->getVisibility(); ?>" class="inquiry-container">
+<?php endif; ?>
+<?php if ($_element->getLegend()): ?>
+<div class="entry-edit-head">
+    <h4 class="icon-head head-edit-form fieldset-legend"><?php echo $_element->getLegend() ?></h4>
+    <div class="form-buttons"><?php echo $_element->getHeaderBar() ?>
+        <button type="button" id="delete-vehicle" class="button"><span><span><?php echo $this->__('Delete Vehicle') ?></span></span></button>
+        <button type="button" id="add-product" class="button"><span><span><?php echo $this->__('Add product') ?></span></span></button>
+    </div>
+</div>
+<?php endif; ?>
+<?php if (!$_element->getNoContainer()): ?>
+    <div class="fieldset <?php echo $_element->getClass() ?>" id="<?php echo $_element->getHtmlId() ?>">
+<?php endif; ?>
+        <?php if ($_element->hasHtmlContent()): ?>
+            <?php echo $_element->getHtmlContent(); ?>
+        <?php else: ?>
+            <?php foreach($_element->getElements() as $subElement): ?>
+                <?php if($subElement->getType() == 'checkbox' || $subElement->getType() == 'text'): ?>
+                    <div class="inline"><?php echo $subElement->toHtml(); ?></div>
+                <?php else: ?>
+                    <?php echo $subElement->toHtml(); ?>
+                <?php endif;?>
+             <?php endforeach; ?>
+        <?php endif; ?>    
+    <?php echo $_element->getSubFieldsetHtml() ?>
+<?php if (!$_element->getNoContainer()): ?>
+    </div>
+<?php endif; ?>
+<?php if ($_element->getFieldsetContainerId()): ?>
+</div>
+<?php endif; ?>
+<script>
+    var elems = $$('[id^="customer_vehicle"');
+    elems.forEach(function(item){
+        item.up().addClassName('order-choose-address');
+        item.setStyle('width: 20%');
+    });
+</script>
+ 

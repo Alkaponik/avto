@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+
+<config>
+    <modules>
+        <MageDoc_AdminMessenger>
+            <active>true</active>
+            <codePool>community</codePool>
+        </MageDoc_AdminMessenger>
+    </modules>
+</config>

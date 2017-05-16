@@ -1,0 +1,8 @@
+<config>
+    <modules>
+        <Serpini_Sqlreport>
+            <active>true</active>
+            <codePool>community</codePool>
+        </Serpini_Sqlreport>
+    </modules>
+</config>

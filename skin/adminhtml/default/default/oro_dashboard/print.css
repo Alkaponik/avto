@@ -1,0 +1,93 @@
+/**
+ * {magecore_license_notice}
+ *
+ * @category   MageCore
+ * @package    Dashboard
+ * @copyright  {magecore_copyright}
+ * @license    {magecore_license}
+ */
+
+*     { background:none !important; text-align:left !important; }
+html  { margin:0 !important; padding:0 !important; }
+body  { background:#fff !important; font-size:9pt !important; padding:0 !important; margin:0 !important; }
+a     { color:#2976c9 !important; }
+
+.middle { padding:0; }
+
+.clearfix-print,
+.jqplot-image-button,
+.page-help-link,
+.dashboard-container p.switcher,
+.content-header,
+.header,
+.notification-global,
+.actions,
+.massaction,
+#sales_order_grid_massaction,
+.content-header-floating,
+.content-header .form-buttons,
+.footer { display:none !important; }
+
+.box,
+.entry-edit fieldset,
+.entry-edit .fieldset,
+.dashboard-container {
+    border: 0;
+}
+.dashboard-container .dashboard-calendar{
+    float:none;
+}
+/* three-colunm-layout */
+.three-colunm-layout #sortable2{
+    float:none;
+}
+.three-colunm-layout #sortable3{
+    float:none;
+}
+table.jqplot-table-legend{
+    white-space: nowrap;
+    background: #fff9e9 !important;
+}
+.pie-graff table.jqplot-table-legend{
+    position: absolute !important;
+    left: auto !important;
+    right: 0 !important;
+}
+.entry-edit-content > .jqplot-target{
+    width: 500px;
+}
+#jqplot-print-container .nav-tools,
+#metric-image-container .nav-tools{
+    display: none !important;
+}
+#jqplot-print-container .entry-edit-head h4,
+#metric-image-container .entry-edit-head h4,
+#jqplot-print-container .entry-edit-head h3,
+#metric-image-container .entry-edit-head h3{
+    margin: 0;
+    background: none;
+    color: #000;
+    text-align: left;
+}
+.grid table th,
+.ui-dialog  .grid table td{
+    border:  1px solid #ededed !important;
+}
+.data table,
+.data table,
+.data table tr,
+.data table td,
+.data table th{
+    border-collapse: collapse;
+    border: 1px solid #dadfe0;
+    white-space: normal;
+    font: 13px/18px Arial, Helvetica, sans-serif;
+}
+.entry-edit .entry-edit-head h4{
+    color: #fff !important;
+    border: 0 !important;
+    padding: 0 10px;
+}
+.entry-edit .entry-edit-head{
+    padding: 0 !important;
+}

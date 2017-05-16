@@ -1,0 +1,7 @@
+<div class="element">
+<?php $_element = $this->getElement();?>
+<?php if($_element->getLabelHtml()):?>
+    <?php echo trim($_element->getLabelHtml());?><br/>
+<?php endif; ?>
+<?php echo trim($_element->getElementHtml());?>
+</div>      

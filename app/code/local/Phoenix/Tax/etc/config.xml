@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Magento 
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to license that is bundled with
+ * this package in the file LICENSE.txt.
+ *
+ * @category   Phoenix
+ * @package    Phoenix_Tax
+ * @copyright  Copyright (c) 2009 Phoenix Medien GmbH & Co. KG (http://www.phoenix-medien.de)
+ */
+-->
+<config>
+    <modules>
+        <Phoenix_Tax>
+            <version>0.0.1</version>
+        </Phoenix_Tax>
+    </modules>
+
+    <global>
+        <helpers>
+            <phoenixtax>
+                <class>Phoenix_Tax_Helper</class>
+            </phoenixtax>
+        </helpers>
+    </global>
+
+    <frontend>
+        <layout>
+            <updates>
+                <phoenixtax>
+                    <file>phoenixtax.xml</file>
+                </phoenixtax>
+            </updates>
+        </layout>
+        <translate>
+            <modules>
+                <Phoenix_Tax>
+                     <files>
+                          <default>Phoenix_Tax.csv</default>
+                     </files>
+                </Phoenix_Tax>
+            </modules>
+        </translate>
+    </frontend>
+ 
+</config>

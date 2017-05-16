@@ -1,0 +1,11 @@
+.recommended-brands li{border:1px solid #ccc;float:left;height:50px;margin:0 5px 5px 0;padding:5px;width:125px}
+.recommended-brands li img{height:50px;width:125px}
+.recommended-brands:after,.recommended-brands .box-content:after{display:block;content:".";clear:both;font-size:0;line-height:0;height:0;overflow:hidden}
+.all-brands-list{border-top:1px solid #ddd;margin:20px 0;padding:0 10px}
+.all-brands-list .annotation{margin:20px 0 0}
+.all-brands-list .annotation li{display:inline;font-size:1.2em;padding:0 10px 0 0}
+.all-brands-list .dictionary dt{font-size:2em;padding:20px 0 10px}
+.all-brands-list .dictionary dt a{color:#000;text-decoration:none}
+.block-brands .block-content{padding:2px 9px}
+.brand-logo-sidebar{margin:0 0 15px}
+.brand-logo-sidebar img{width:100%}

@@ -1,0 +1,44 @@
+<?php
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE_AFL.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magentocommerce.com for more information.
+ *
+ * @category    design
+ * @package     base_default
+ * @copyright   Copyright (c) 2009 Irubin Consulting Inc. DBA Varien (http://www.varien.com)
+ * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ */
+?>
+<div class="block block-green skip-content" id="block-login">
+	<h4><?php echo $this->__('My Account') ?></h4>
+	<form id="mini-login-form" action="<?php echo $this->getUrl('', array('_direct' => 'index.php')) ?>" method="post">
+		<fieldset class="inputs">
+			<input type="text" name="user_login" id="mini-login" class="ti" value="<?php echo $this->__('Email:') ?>" title="<?php echo $this->__('Email:') ?>" />
+			<input type="password" name="user_pw" id="mini-password" class="ti" title="<?php echo $this->__('Password:') ?>" value="<?php echo $this->__('Password:') ?>" />
+		</fieldset>
+		<fieldset>
+			<a href="<?php echo $this->getUrl('', array('_direct' => 'index.php?register=yes')) ?>" title="<?php echo $this->__('Create an Account') ?>" id="link-create-account" class="link" rel="nofollow"><?php echo $this->__('Register') ?></a>
+			<button type="submit" class="btn" title="<?php echo $this->__('Login now') ?>"><span><?php echo $this->__('OK') ?></span></button>
+			<a href="<?php echo $this->getUrl('', array('_direct' => 'index.php?logging=yes')) ?>" title="<?php echo $this->__('Forgot Your Password?') ?>"  id="link-lost-pw" rel="nofollow"><?php echo $this->__('Forgot Your Password?') ?></a>
+		</fieldset>
+	</form>
+	<script type="text/javascript">//<![CDATA[
+		new Varien.searchForm('mini-login-form', 'mini-login', '<?php echo $this->__('Email:') ?>');
+		new Varien.searchForm('mini-login-form', 'mini-password', '<?php echo $this->__('Password:') ?>');
+	//]]></script>
+</div>

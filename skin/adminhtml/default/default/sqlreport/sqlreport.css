@@ -1,0 +1,70 @@
+.dialog {
+  position: absolute;
+  display: block;
+  background-color: white;
+  border: 1px solid #555;
+  background: #fafafa url(content_bg.gif) 0 29px repeat-x;
+  min-height: 313px;
+  
+}
+
+.magento_close {
+  width: 16px;
+  height: 16px;
+  background: url(window_close.png) no-repeat 0 0;
+  position: absolute;
+  top: 5px;
+  right: 7px;
+  cursor: pointer;
+  z-index: 1000;
+}
+
+.dialog table.table_window {
+  border-collapse: collapse;
+  border-spacing: 0;
+  width: 100%;
+  margin: 0px;
+  padding: 0px;
+}
+
+.magento_nw {
+  width: 6px;
+  height: 28px;
+}
+
+.top_draggable, .bottom_draggable {
+  cursor: move;
+}
+
+.top.table_window {
+  border-bottom: 1px solid #e6e6e6;
+  background: #6a838b url(top_bg.gif) 0 100% repeat-x;
+}
+
+.magento_title {
+  float: left;
+  width: 100%;
+  font: bold 12px/28px Arial, Helvetica, sans-serif;
+  color: #fff;
+  text-align: left;
+}
+
+.overlay_magento {
+  background-color: #000;
+  filter: alpha(opacity=60);
+  -moz-opacity: .6;
+  opacity: .6;
+  -webkit-opacity: .6;
+}
+
+.overlay_content {
+	background: #fafafa url(content_bg.gif) 0 0 repeat-x;
+}
+.grid thead td{
+  padding-top: 5px;
+  padding-bottom: 5px;
+  border: 1px solid #bdbdbd;
+  border-width: 0 1px 1px 0;
+  white-space: normal;
+  font-weight: bold;
+}

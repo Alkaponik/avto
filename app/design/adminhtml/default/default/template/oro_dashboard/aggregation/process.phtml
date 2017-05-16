@@ -1,0 +1,62 @@
+<?php
+/**
+ * {magecore_license_notice}
+ *
+ * @category   MageCore
+ * @package    Dashboard
+ * @copyright  {magecore_copyright}
+ * @license    {magecore_license}
+ */
+
+/**
+ * @var $this Oro_Dashboard_Block_Adminhtml_Userdashboard_Aggregation
+ */
+?>
+<?php echo $this->getBlockHtml('formkey');?>
+<?php $daysCount = $this->getDaysCount(); ?>
+<?php if ($daysCount > 0) { ?>
+<div id="loading">
+    <?php echo $this->__("Please, do not close the page while aggregation is running")?>
+</div>
+<div id="progress">
+    <div id="finished-cont">
+        <div id="finished">&nbsp;</div>
+    </div>
+    <div id="count"></div>
+</div>
+<script type="text/javascript">
+var formKey = jQuery("input[name=form_key]").val();
+var records = 0;
+var isFinished = false;
+function makeRequest() {
+    jQuery.ajax({
+            url:"<?php echo $this->getAggregationProcessUrl();?>",
+            type:"POST",
+            data:({form_key:formKey}),
+            dataType:"json",
+            success:function (response) {
+                if (response.records > 0){
+                    records += response.records;
+                    var percent = parseInt((records / <?php echo $daysCount;?>) * 100) + '%';
+                    jQuery("#count").html(percent);
+                    jQuery("#finished").css("width",percent);
+                    makeRequest();
+                } else {
+                    isFinished = true;
+                    jQuery("#count").html('100%');
+                    jQuery("#finished").css("width",'100%');
+                }
+            }
+    });
+}
+makeRequest();
+jQuery(window).bind('beforeunload', function(e) {
+    if (!isFinished) {
+        return confirm('<?php echo
+        $this->__('Data aggregation is not finished, please click "stay on the page" in the next window to keep aggregation process running')?>');
+    }
+})
+</script>
+<?php } else {?>
+    <?php echo $this->__("There is no data for daily aggregation")?>
+<?php } ?>

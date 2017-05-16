@@ -1,0 +1,144 @@
+<?php
+/**
+ * Magento Enterprise Edition
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Magento Enterprise Edition License
+ * that is bundled with this package in the file LICENSE_EE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://www.magentocommerce.com/license/enterprise-edition
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magentocommerce.com for more information.
+ *
+ * @category	design
+ * @package	 enterprise_default
+ * @copyright   Copyright (c) 2009 Irubin Consulting Inc. DBA Varien (http://www.varien.com)
+ * @license	 http://www.magentocommerce.com/license/enterprise-edition
+ */
+?>
+<?php
+/**
+ * Edit customer address template
+ *
+ * @see Mage_Customer_Block_Address_Edit
+ */
+?>
+<?php if($this->getTitle()): ?>
+<h1><?php echo $this->getTitle() ?></h1>
+<?php endif; ?>
+
+<?php echo $this->getMessagesBlock()->getGroupedHtml() ?>
+<form action="<?php echo $this->getSaveUrl() ?>" method="post" id="form-validate" class="form">
+	<fieldset>
+        <h2><?php echo $this->__('Contact Information') ?></h2>
+		<div class="fieldset">
+			<?php echo $this->getBlockHtml('formkey')?>
+			<input type="hidden" name="success_url" value="<?php echo $this->getSuccessUrl() ?>" />
+			<input type="hidden" name="error_url" value="<?php echo $this->getErrorUrl() ?>" />
+
+			<?php echo $this->getLayout()->createBlock('customer/widget_name')->setObject($this->getAddress()->getFirstname() ? $this->getAddress() : $this->getCustomer())->toHtml() ?>
+		</div>
+
+		<div>
+			<label for="company"><?php echo $this->__('Company') ?></label>
+			<input type="text" name="company" id="company" title="<?php echo $this->__('Company') ?>" value="<?php echo $this->htmlEscape($this->getAddress()->getCompany()) ?>" class="ti" />
+		</div>
+
+		<div>
+			<label for="telephone" class="required"><?php echo $this->__('Telephone') ?><em>*</em></label>
+			<input type="text" name="telephone" value="<?php echo $this->htmlEscape($this->getAddress()->getTelephone()) ?>" title="<?php echo $this->__('Telephone') ?>" class="ti required-entry" id="telephone" maxlength="16" />
+		</div>
+
+		<div>
+			<label for="fax"><?php echo $this->__('Fax') ?></label>
+			<input type="text" name="fax" id="fax" title="<?php echo $this->__('Fax') ?>" value="<?php echo $this->htmlEscape($this->getAddress()->getFax()) ?>" class="ti"  maxlength="16" />
+		</div>
+	</fieldset>
+
+	<fieldset>
+		<h2><?php echo $this->__('Address') ?></h2>
+
+		<div>
+			<label for="street_1" class="required"><?php echo $this->__('Street Address') ?><em>*</em></label>
+			<input type="text" name="street[]" value="<?php echo $this->htmlEscape($this->getAddress()->getStreet(1)) ?>" title="<?php echo $this->__('Street Address') ?>" id="street_1" class="ti required-entry" maxlength="24" />
+		</div>
+
+		<?php for ($_i=2, $_n=$this->helper('customer/address')->getStreetLines(); $_i<=$_n; $_i++): ?>
+		<div>
+			<label for="street_<?php echo $_i?>">&nbsp;</label>
+			<input type="text" name="street[]" value="<?php echo $this->htmlEscape($this->getAddress()->getStreet($_i)) ?>" title="<?php echo $this->__('Street Address '.$_i) ?>" id="street_<?php echo $_i?>" class="ti" maxlength="24" />
+		</div>
+		<?php endfor ?>
+
+		<div>
+			<label for="city" class="required"><?php echo $this->__('City') ?><em>*</em></label>
+			<input type="text" name="city" value="<?php echo $this->htmlEscape($this->getAddress()->getCity()) ?>" title="<?php echo $this->__('City') ?>" class="ti required-entry" id="city" />
+		</div>
+
+        <?php if (!Mage::helper('noregion')->isEnabled()):?>
+                <div>
+                    <label for="region_id" class="required"><em>*</em><?php echo $this->__('State/Province') ?></label>
+                    <select id="region_id" name="region_id" title="<?php echo $this->__('State/Province') ?>" class="validate-select" style="display:none;">
+                        <option value=""><?php echo $this->__('Please select region, state or province') ?></option>
+                    </select>
+                    <script type="text/javascript">
+                        $('region_id').setAttribute('defaultValue',  "<?php echo $this->getAddress()->getRegionId() ?>");
+                    </script>
+                    <input type="text" id="region" name="region" value="<?php echo $this->htmlEscape($this->getAddress()->getRegion()) ?>"  title="<?php echo $this->__('State/Province') ?>" class="input-text required-entry" style="display:none;" />
+                </div>
+       <?php endif;?>
+
+		<div>
+			<label for="zip" class="required"><?php echo $this->__('Zip/Postal Code') ?><em>*</em></label>
+			<input type="text" name="postcode" value="<?php echo $this->htmlEscape($this->getAddress()->getPostcode()) ?>" title="<?php echo $this->__('Zip/Postal Code') ?>" id="zip" class="ti validate-zip-international required-entry" />
+		</div>
+
+		<div>
+			<label for="country" class="required"><?php echo $this->__('Country') ?><em>*</em></label>
+			<?php echo $this->getCountryHtmlSelect() ?>
+		</div>
+
+		<div>
+			<?php if($this->isDefaultBilling()): ?>
+			<p><?php echo $this->__('Default Billing Address') ?></p>
+			<?php elseif($this->canSetAsDefaultBilling()): ?>
+			<input type="checkbox" id="primary_billing" name="default_billing" value="1" class="cb" />
+			<label for="primary_billing" class="radiolabel"><?php echo $this->__('Use as my default billing address') ?></label>
+			<?php else: ?>
+			<input type="hidden" name="default_billing" value="1" />
+			<?php endif; ?>
+		</div>
+
+		<div>
+			<?php if($this->isDefaultShipping()): ?>
+			<p><?php echo $this->__('Default Shipping Address') ?></p>
+			<?php elseif($this->canSetAsDefaultShipping()): ?>
+			<input type="checkbox" id="primary_shipping" name="default_shipping" value="1" class="cb" />
+			<label for="primary_shipping" class="radiolabel"><?php echo $this->__('Use as my default shipping address') ?></label>
+			<?php else: ?>
+			<input type="hidden" name="default_shipping" value="1" />
+			<?php endif; ?>
+		</div>
+	</fieldset>
+	<fieldset class="formnavi">
+		<button type="submit" class="btn" title="<?php echo $this->__('Save Address') ?>"><span><?php echo $this->__('Save Address') ?></span></button>
+		<p class="hint"><?php echo $this->__('* Required Fields') ?></p>
+	</fieldset>
+</form>
+
+<p class="bottom-links"><a href="<?php echo $this->escapeUrl($this->getBackUrl()) ?>" title="<?php echo $this->__('Go back') ?>" class="link"><?php echo $this->__('Go back') ?></a></p>
+
+<script type="text/javascript">
+//<![CDATA[
+	var dataForm = new VarienForm('form-validate', true);
+	new RegionUpdater('country', 'region', 'region_id', <?php echo $this->helper('directory')->getRegionJson() ?>, undefined, 'zip');
+//]]>
+</script>

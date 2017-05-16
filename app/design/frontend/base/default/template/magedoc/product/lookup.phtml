@@ -1,0 +1,27 @@
+<?php
+$lookupCollection = $this->getLookupCollection();
+$i = 0;
+?>
+<?php if ($count = count($lookupCollection)): ?>
+<h2><?php echo Mage::helper('magedoc')->__('Spare part replacements:') ?></h2>
+    <div class="product-info-table-wrapper rnd">
+        <table class="data-table product-lookup product-info-table">
+            <tbody>
+                <?php foreach ($lookupCollection as $lookup): ?>
+                    <tr class="<?php echo $i++ % 2 == 0 ? 'even' : 'odd'; echo $i == 1 ? ' first' : ($i == $count ? ' last' : '')?>">
+                        <td>
+                            <?php echo $lookup->getBrand() ?>
+                        </td>
+                        <td class="tr">
+                            <?php if ($lookup->getEntityId() && $url=$lookup->getProductUrl()): ?>
+                            <a href="<?php echo $url?>"><?php echo $lookup->getNumber() ?></a>
+                            <?php else: ?>
+                            <?php echo $lookup->getNumber() ?>
+                            <?php endif; ?>
+                        </td>
+                    </tr>
+                <?php endforeach;?>
+            </tbody>
+        </table>
+    </div>
+<?php endif; ?>

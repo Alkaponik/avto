@@ -1,0 +1,9 @@
+.retailerMinCost {color: #f00; font-weight: bold;}
+
+.instock-info { position: fixed; }
+
+.reatilers-popup { border: 1px solid black; width: 800px; background-color: #fff;}
+
+.reatilers-popup td {text-align:center; padding: 0px 1px;}
+
+.reatilers-popup tr.loading td {background: url(../../img/opc-ajax-loader.gif) center center no-repeat transparent;}

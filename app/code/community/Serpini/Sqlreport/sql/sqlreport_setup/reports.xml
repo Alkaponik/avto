@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<sql2report>
+	<sqlrpt_combo_type><TYPE_CODE>sql</TYPE_CODE><TYPE>text</TYPE></sqlrpt_combo_type>
+	<sqlrpt_combo_type><TYPE_CODE>set</TYPE_CODE><TYPE>text</TYPE></sqlrpt_combo_type>
+	
+	<sqlrpt_report_type><TYPE_CODE>order</TYPE_CODE><TYPE>int</TYPE></sqlrpt_report_type>
+	<sqlrpt_report_type><TYPE_CODE>chart_type</TYPE_CODE><TYPE>varchar</TYPE></sqlrpt_report_type>
+	<sqlrpt_report_type><TYPE_CODE>chartXValue</TYPE_CODE><TYPE>int</TYPE></sqlrpt_report_type>
+	<sqlrpt_report_type><TYPE_CODE>chart_height</TYPE_CODE><TYPE>int</TYPE></sqlrpt_report_type>
+
+	<sqlrpt_setup><NAME>prefix_parameter</NAME><VALUE>:</VALUE></sqlrpt_setup>
+	<sqlrpt_setup><NAME>prefix_table</NAME><VALUE>@</VALUE></sqlrpt_setup>
+	<sqlrpt_setup><NAME>date_mask</NAME><VALUE>%m/%e/%y</VALUE></sqlrpt_setup>
+	<sqlrpt_setup><NAME>exp_col_delimiter</NAME><VALUE>;</VALUE></sqlrpt_setup>
+	<sqlrpt_setup><NAME>exp_dec_separator</NAME><VALUE>.</VALUE></sqlrpt_setup>
+	<sqlrpt_setup><NAME>svn_print_header</NAME><VALUE>true</VALUE></sqlrpt_setup>
+	<sqlrpt_setup><NAME>chart_height_default</NAME><VALUE>400</VALUE></sqlrpt_setup>
+	
+</sql2report>

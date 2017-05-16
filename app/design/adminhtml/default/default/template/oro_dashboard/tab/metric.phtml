@@ -1,0 +1,27 @@
+<?php
+/**
+ * {magecore_license_notice}
+ *
+ * @category   MageCore
+ * @package    Dashboard
+ * @copyright  {magecore_copyright}
+ * @license    {magecore_license}
+ */
+
+/**
+ * @var $this Oro_Dashboard_Block_Adminhtml_Userdashboard_Widget_Metric
+ */
+ ?>
+<?php $metrics = Mage::helper("oro_dashboard")->getMetrics()?>
+<div class="row">
+    <label for="simple-add-metric"><?php echo $this->__("Show the following metric:")?></label>
+    <select name="metric" id="simple-add-metric" class="required-entry">
+        <?php foreach ($metrics as $code=>$metric) {?>
+            <option value="<?php echo $code;?>" <?php if ($this->getMetric() == $code){?>selected="selected"<?php }?>><?php echo $this->__($metric['label']);?></option>
+        <?php }?>
+    </select>
+</div>
+<div class="row">
+    <label for="simple-widget-title"><?php echo $this->__("Widget title:")?></label>
+    <input type="text" id="simple-widget-title" name="name" value="<?php echo $this->getWidgetName();?>" class="required-entry widget-title" />
+</div>

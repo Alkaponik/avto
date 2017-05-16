@@ -1,0 +1,87 @@
+<?php
+/**
+ * Description of Articles
+ *
+ * @author Oleg
+ */
+class Testimonial_MageDoc_Model_Mysql4_Tecdoc_Model extends Testimonial_MageDoc_Model_Mysql4_Abstract
+{
+    protected function _construct()
+    {
+        $this->_init('magedoc/tecdoc_model', 'mod_id');
+    }
+
+    protected function _prepareFullSelect($select, $mainTableAlias = null)
+    {
+        if (is_null($mainTableAlias)){
+            $mainTableAlias = $this->getMainTable();
+        }
+
+        $this->joinCountryDesignation($select, $mainTableAlias , 'MOD_CDS_ID', 'MOD_CDS_TEXT');
+        $this->joinManufacturers($select, $mainTableAlias);
+        $this->joinModels($select, $mainTableAlias);
+
+        return $select;
+    }
+
+    public function joinManufacturers($select, $mainTableAlias = null)
+    {
+        if (is_null($mainTableAlias)){
+            $mainTableAlias = $this->getMainTable();
+        }
+        $select->joinInner(
+            array('manufacturer' => $this->getTable('magedoc/tecdoc_manufacturer')),
+            "{$mainTableAlias}.MOD_MFA_ID = manufacturer.MFA_ID",
+            array('mfa_brand' => 'MFA_BRAND')
+        )->joinLeft(
+            array('md_manufacturer' => $this->getTable('magedoc/manufacturer')),
+            "{$mainTableAlias}.MOD_MFA_ID = md_manufacturer.td_mfa_id",
+            array('manufacturer_enabled' => 'IFNULL(md_manufacturer.enabled, 1)',
+                'mfa_title' => 'IFNULL(md_manufacturer.title, MFA_BRAND)')
+        );
+
+        return $this;
+    }
+
+    public function joinModels($select, $mainTableAlias = null, $columns = array())
+    {
+        if (!is_array($columns)){
+            array(
+                'enabled'     => new Zend_Db_Expr('IFNULL(md_model.enabled, 1)'),
+                'visible'     => new Zend_Db_Expr('IFNULL(md_model.visible, 0)'),
+                'title'       => new Zend_Db_Expr('IFNULL(md_model.title, CONCAT(MFA_BRAND, \' \', td_desText.TEX_TEXT))'),
+                'meta_title'  => new Zend_Db_Expr('IFNULL(md_model.title, CONCAT(MFA_BRAND, \' \', td_desText.TEX_TEXT))'),
+                'name'        => new Zend_Db_Expr('IFNULL(md_model.name, td_desText.TEX_TEXT)'),
+                'td_mfa_id'   => new Zend_Db_Expr('IFNULL(md_model.td_mod_id, MOD_ID)'),
+                'description',
+                'url_key',
+                'url_path',
+            );
+        }
+        if (is_null($mainTableAlias)){
+            $mainTableAlias = $this->getMainTable();
+        }
+
+        $select
+            ->joinLeft(array('md_model' => $this->getTable('magedoc/model')),
+            "{$mainTableAlias}.MOD_ID = md_model.td_mod_id",
+            $columns
+            );
+        return $this;
+    }
+
+    public function joinTypes($select, $mainTableAlias = null)
+    {
+        if (is_null($mainTableAlias)) {
+            $mainTableAlias = $this->getMainTable();
+        }
+
+        $select->joinLeft(
+            array('td_type' => $this->getTable('magedoc/tecdoc_type')),
+            "{$mainTableAlias}.MOD_ID = td_type.TYP_MOD_ID"
+        );
+
+        return $this;
+    }
+
+}

@@ -1,0 +1,21 @@
+<ul class="vehicle-changer form-list" id="<?php echo $this->getContainerId();?>">
+    <li class="fields">
+    <?php foreach($this->getComboboxes() as $comboBox): ?>
+        <div class="field" style="margin: 5px 0px;">
+            <?php echo $comboBox->toHtml(); ?>
+        </div>
+    <?php endforeach;?>
+    </li>
+</ul>
+
+<script type='text/javascript'>        
+    var vehicleChooserObject = 
+        new VehicleChooser('<?php echo $this->getContainerId()?>', 
+                    '<?php echo $this->getEditUrl()?>',
+                    <? echo $this->getControlsJson() ?>,
+                    <? echo $this->getCurrentValuesJson()?>);
+    vehicleChooserObject.clearChildren('date');                        
+</script>
+    
+    
+    

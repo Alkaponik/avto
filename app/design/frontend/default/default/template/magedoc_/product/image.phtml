@@ -1,0 +1,11 @@
+<?php if(count($this->getProductImages())):?>
+<ul>
+    <?php foreach($this->getProductImages() as $image):?>
+        <li>    
+            <a href="<?php echo $this->getImageUrl($image) ?>" target="_blank">
+                <img width="<?php echo $this->getWidth() ?>px" src="<?php echo $this->getImageUrl($image) ?>"/>
+            </a>
+        </li>
+   <?php endforeach;?>
+</ul>
+<?endif;?>

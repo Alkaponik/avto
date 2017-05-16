@@ -1,0 +1,167 @@
+<?xml version="1.0"?>
+<layout version="0.1.0">
+    <default>
+        <reference name="head">
+            <action method="addItem">
+                <type>skin_css</type>
+                <name>css/magedoc.css</name>
+            </action>
+        </reference>
+    </default>
+
+    <magedoc_make_index>
+        <reference name="head">
+            <action method="addItem">
+                <type>skin_js</type>
+                <name>js/magedoc/folder.js</name>
+            </action>
+        </reference>
+        <reference name="content">
+            <block type="magedoc/manufacturer" name="manufacturer.view" as="manufacturer_view" template="magedoc/manufacturer.phtml">
+                <block type="magedoc/model_list" name="magedoc.model.list" as="model_list" template="magedoc/model/list.phtml"/>
+            </block>
+        </reference>
+    </magedoc_make_index>
+
+    <magedoc_vehicle_index>
+        <reference name="head">
+            <action method="addCss">
+                <stylesheet>css/magedoc.css</stylesheet>
+            </action>
+        </reference>
+        <update handle="customer_account"/>
+        <reference name="head">
+            <action method="addJs">
+                <script>varien/form.js</script>
+            </action>
+            <action method="addJs">
+                <script>magedoc/combobox.js</script>
+            </action>
+            <action method="addJs">
+                <script>magedoc/chooser_abstract.js</script>
+            </action>
+            <action method="addJs">
+                <script>magedoc/vehicle_chooser.js</script>
+            </action>
+            <action method="addItem">
+                <type>skin_js</type>
+                <name>js/magedoc/folder.js</name>
+            </action>
+        </reference>
+        <reference name="content">
+            <block type="magedoc/vehicle" name="magedoc.vehicle" as="vehicle" template="magedoc/vehicle/vehicle.phtml"/>
+        </reference>
+    </magedoc_vehicle_index>
+
+
+    <customer_account>
+        <reference name="customer_account_navigation">
+            <action method="addLink" translate="label" module="magedoc">
+                <name>magedoc</name>
+                <path>magedoc/vehicle/</path>
+                <label>Выбор марки атомобиля</label>
+            </action>
+        </reference>
+    </customer_account>
+
+    <PRODUCT_TYPE_spare>
+        <reference name="head">
+            <action method="addJs">
+                <script>magedoc/tabs.js</script>
+            </action>
+        </reference>
+        <reference name="product.info">
+            <!--<action method="setTemplate"><template>magedoc/product/view.phtml</template></action>-->
+            <block name="magedoc.spare.criteria" type="magedoc/criteria" template="magedoc/product/criteria.phtml" as="criteria">
+                <action method="addToParentGroup"><group>detailed_info</group></action>
+                <action method="setTitle" translate="value"><value>Criteria</value></action>
+            </block>
+            <block name="magedoc.spare.lookup" type="magedoc/artLookup" template="magedoc/product/lookup.phtml" as="lookup">
+                <action method="addToParentGroup"><group>detailed_info</group></action>
+                <action method="setTitle" translate="value"><value>Spare part replacements</value></action>
+            </block>
+            <block name="magedoc.spare.usedincars" type="magedoc/linkArt" template="magedoc/product/usedincars.phtml" as="usedincars">
+                <action method="addToParentGroup"><group>detailed_info</group></action>
+                <action method="setTitle" translate="value"><value>Used in cars</value></action>
+                <action method="setJoinEngines">
+                    <join_engines>1</join_engines>
+                </action>
+            </block>
+        </reference>
+    </PRODUCT_TYPE_spare>
+
+    <catalog_category_layered>
+        <reference name="head">
+            <action method="addJs">
+                <script>varien/form.js</script>
+            </action>
+            <action method="addJs">
+                <script>magedoc/combobox.js</script>
+            </action>
+            <action method="addJs">
+                <script>magedoc/chooser_abstract.js</script>
+            </action>
+            <action method="addJs">
+                <script>magedoc/vehicle_chooser.js</script>
+            </action>
+        </reference>
+        <reference name="catalog.leftnav">
+            <!--<action method="setTemplate">
+                <template>magedoc/catalog/layer/view.phtml</template>
+            </action>-->
+        </reference>
+    </catalog_category_layered>
+
+    <catalogsearch_result_index>
+        <reference name="head">
+            <action method="addJs">
+                <script>varien/form.js</script>
+            </action>
+            <action method="addJs">
+                <script>magedoc/combobox.js</script>
+            </action>
+            <action method="addJs">
+                <script>magedoc/chooser_abstract.js</script>
+            </action>
+            <action method="addJs">
+                <script>magedoc/vehicle_chooser.js</script>
+            </action>
+            <action method="addItem">
+                <type>skin_css</type>
+                <name>css/magedoc.css</name>
+            </action>
+        </reference>
+        <reference name="catalogsearch.leftnav">
+            <action method="setTemplate">
+                <template>magedoc/catalog/layer/view.phtml</template>
+            </action>
+        </reference>
+    </catalogsearch_result_index>
+
+    <magedoc_model_view>
+        <reference name="content">
+            <block name="magedoc.model.view" type="magedoc/model" template="magedoc/model.phtml" as="model_view">
+                <block name="magedoc.type.list" type="core/template" template="magedoc/type/list.phtml" as="type_list"/>
+            </block>
+        </reference>
+    </magedoc_model_view>
+
+    <magedoc_type_view>
+        <update handle="page_one_column"/>
+        <reference name="head">
+            <action method="addItem">
+                <type>skin_js</type>
+                <name>js/magedoc/megamenu.js</name>
+            </action>
+            <action method="addCss">
+                <stylesheet>css/magedoc/widgets.css</stylesheet>
+            </action>
+        </reference>
+        <reference name="content">
+            <block name="magedoc.type.view" type="magedoc/type" template="magedoc/type.phtml" as="type_view">
+                <block name="magedoc.type.categories" type="magedoc/type_categories" template="magedoc/type/categories.phtml" as="type_categories"/>
+            </block>
+        </reference>
+    </magedoc_type_view>
+</layout>
+

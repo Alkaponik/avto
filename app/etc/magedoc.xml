@@ -1,0 +1,13 @@
+<config>
+    <global>
+        <magedoc>
+            <directory>
+                <tecdoc>
+                    <directory_version>2013_4q</directory_version>
+                    <table_prefix>tecdoc_2013_4q.</table_prefix>
+                    <table_suffix></table_suffix>
+                </tecdoc>
+            </directory>
+        </magedoc>
+    </global>
+</config>

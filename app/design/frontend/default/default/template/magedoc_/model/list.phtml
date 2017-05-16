@@ -1,0 +1,45 @@
+<?php
+/**
+ * @category   design
+ * @package    default_default
+ * @author     Frolov Oleg (Testimonial company)
+ */
+?>
+<?php $helper = Mage::helper('magedoc')?>
+<?php $modelCollection = $this->getModelCollection(); ?>
+<?php $manufacturerId = Mage::registry('manufacturer'); ?>
+<?php $manufacturerId = $manufacturerId->getTdMfaId(); ?>
+<?php $td_manufacturer = Mage::getModel('magedoc/tecdoc_manufacturer')->load($manufacturerId)?>
+<h1><?php echo Mage::helper('magedoc')->__('Spare parts for').' '.$td_manufacturer->getMfaBrand();?></h1>
+<ul id="car-models-list">
+    <?php foreach($modelCollection as $model): ?>
+
+			<?php $label = $td_manufacturer->getMfaBrand()." ".$model->getModCdsText() ?>
+            <li class="model">
+               <span class="expand-button"></span>
+               <a class="model-title" title="<?php echo $label ?>" href="model" onclick="return false;"><?php echo "{$label}&nbsp;&nbsp;&nbsp;" ?>
+                   <span class="start-date"><?php echo '('.$helper->getModelPeriod($model).')' ?></span>
+               </a>
+								
+               <div style="display:none;">
+                 <ul class="car-types-list">
+                
+                   <?php $modelId = $model->getModId() ?>
+                   <?php $typeCollection = $this->getTypesByModelId($modelId) ?>
+                   <?php foreach($typeCollection as $type): ?>
+                      <?php $engineLabel = $this->getTypeEngineLabel($type); ?>
+                      <?php $veng=number_format(round($type->getTypCcm()/1000,1),1);?>                           
+                      <?php $engineLabel = $veng.' '.$type->getTypFuelDesText().' '.$type->getTypHpFrom().' '.$this->__('h.p.').' ('.$type->getEngCode().')' ?>
+                      <li>
+                          <a title="<?php echo$label.' '.$engineLabel ?>" href="url">
+                              <span class="body-type"><?php echo $type->getTypBodyDesText() ?></span>
+                              <span class="start-date"><?php echo $helper->getTypePeriod($type) ?></span>
+                              <span class="engine-description"><?php echo $engineLabel ?></span>
+                          </a>
+                      </li>	
+                    <?php endforeach;?>
+               </ul>
+             </div>
+           </li>
+    <?php endforeach;?>		
+</ul>

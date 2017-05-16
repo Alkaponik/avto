@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+
+<layout>
+    <adminhtml_bookkeeping_account_edit>
+        <reference name="head">
+            <action method="addCss"><name>magedoc/bookkeeping.css</name></action>
+        </reference>
+        <reference name="content">
+            <block type="bookkeeping/adminhtml_account_edit" name="account_edit"></block>
+        </reference>
+        <reference name="left">
+            <block type="bookkeeping/adminhtml_account_edit_tabs" name="account_edit_tabs">
+            </block>
+        </reference>
+    </adminhtml_bookkeeping_account_edit>
+</layout>

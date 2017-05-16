@@ -1,0 +1,17 @@
+<?php
+    $_hlp = Mage::helper('ajaxnav');
+    if (!$_hlp->isEnabled()) return;
+?>
+<div id="phoenix-ajax-layer" style="display:none;">
+    <div class="loading"></div>
+</div>
+<div id="phoenix-ajax-popup-container"  style="display:none;">
+</div>
+<script type="text/javascript">
+    Event.observe(window, 'load', function(){
+        var ajaxnavHandler = new AjaxUpdateHandler('phoenix-ajax-layer',
+            'phoenix-ajax-popup-container',
+            <?php echo $_hlp->getHandleSelector($this->getHandles()) ?>);
+        }
+    );
+</script>

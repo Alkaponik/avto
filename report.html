@@ -1,0 +1,317 @@
+<html><script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script><script type="text/javascript">
+            $(function () {
+                $("pre.diff").before("<a class=\"diff-toggle\">[Toggle]</a>").hide();
+                $(".diff-toggle").click(function () {
+                    $(this).next().toggle();
+                    return false;
+                });
+            })
+        </script><style type="text/css">
+            body { font-family: Arial, sans-serif; font-size: 10pt; padding: 20px; }
+            a, a:visited, a:hover { color: #E26912; text-decoration: underline; }
+            table { background-color: whiteSmoke;  border-collapse: collapse; border-spacing: 0; margin-bottom: 10px; margin-top: 3px; border: 1px solid #fff; }
+            table td, table th { padding: 0 20px; line-height: 20px; color: #0084B4; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 14px; border-bottom: 1px solid #fff; border-top: 1px solid #fff; text-align: left; }
+            table td:hover { background-color: #fff; }
+            table th { background-color: #ccc; color: #333; font-weight: bold; }
+            pre.diff { color: black; font-size: smaller; line-height: normal; }
+            .invalid { background-color: white; }
+            .ok { text-align: center; }
+        </style><h1 >Magento Project Mess Detector: Core Hacks Report</h1><p >Comparing <strong>/storage/software/development/web/magento/magento-1.7.0.2</strong> to <strong>/storage/www/avtoto/html/branches/2.0</strong></p><h2 >Summary</h2><table><thead><tr><th>Type</th><th>Count</th></thead></tr><tbody><tr><td><a href="#differentFileContent">differentFileContent</a></td><td>14</td></tr><tr><td><a href="#identicalFiles">identicalFiles</a></td><td>11897</td></tr><tr><td><a href="#fileMissingInB">fileMissingInB</a></td><td>1</td></tr><tr><td><a href="#sameFileButComments">sameFileButComments</a></td><td>0</td></tr><tr><td><a href="#sameFileButWhitespace">sameFileButWhitespace</a></td><td>0</td></tr></tbody></table><h3 id="fileMissingInB">Missing files in project</h3><table><thead><tr><th>File</th></thead></tr><tbody><tr><td>/mage</td></tr></tbody></table><h3 id="differentFileContent">Changed files (differentFileContent)</h3><table><thead><tr><th>File</th><th>Diff</th></thead></tr><tbody><tr><td>/lib/Varien/Db/Adapter/Pdo/Mysql.php</td><td><pre class="diff">--- /storage/software/development/web/magento/magento-1.7.0.2/lib/Varien/Db/Adapter/Pdo/Mysql.php	2012-07-05 12:49:56.000000000 +0200
++++ /storage/www/avtoto/html/branches/2.0/lib/Varien/Db/Adapter/Pdo/Mysql.php	2015-04-27 15:10:08.085530163 +0200
+@@ -2672,10 +2672,6 @@
+ 
+         $query = '';
+         if (is_array($condition)) {
+-            if (isset($condition['field_expr'])) {
+-                $fieldName = str_replace('#?', $this-&gt;quoteIdentifier($fieldName), $condition['field_expr']);
+-                unset($condition['field_expr']);
+-            }
+             $key = key(array_intersect_key($condition, $conditionKeyMap));
+ 
+             if (isset($condition['from']) || isset($condition['to'])) {
+</pre></td></tr><tr><td>/lib/Zend/Http/Client/Adapter/Socket.php</td><td><pre class="diff">--- /storage/software/development/web/magento/magento-1.7.0.2/lib/Zend/Http/Client/Adapter/Socket.php	2012-07-05 12:48:28.000000000 +0200
++++ /storage/www/avtoto/html/branches/2.0/lib/Zend/Http/Client/Adapter/Socket.php	2015-03-05 12:15:13.152213826 +0100
+@@ -364,11 +364,13 @@
+ 
+                     // Figure out the next chunk size
+                     $chunksize = trim($line);
++		    Mage::helper('novaposhta')-&gt;log($chunksize);
+                     if (! ctype_xdigit($chunksize)) {
+-                        $this-&gt;close();
++			$chunksize = 0;
++                        //$this-&gt;close();
+                         #require_once 'Zend/Http/Client/Adapter/Exception.php';
+-                        throw new Zend_Http_Client_Adapter_Exception('Invalid chunk size &quot;' .
+-                            $chunksize . '&quot; unable to read chunked body');
++                        /*throw new Zend_Http_Client_Adapter_Exception('Invalid chunk size &quot;' .
++                            $chunksize . '&quot; unable to read chunked body');*/
+                     }
+ 
+                     // Convert the hexadecimal value to plain integer
+</pre></td></tr><tr><td>/app/Mage.php</td><td><pre class="diff">--- /storage/software/development/web/magento/magento-1.7.0.2/app/Mage.php	2012-07-05 12:49:09.000000000 +0200
++++ /storage/www/avtoto/html/branches/2.0/app/Mage.php	2016-03-19 00:58:08.784044344 +0100
+@@ -52,6 +52,14 @@
+ 
+ Varien_Autoload::register();
+ 
++/** AUTOLOADER PATCH **/
++if (file_exists($autoloaderPath = BP . DS . '../vendor/autoload.php') ||
++    file_exists($autoloaderPath = BP . DS . 'vendor/autoload.php')
++) {
++    require $autoloaderPath;
++}
++/** AUTOLOADER PATCH **/
++
+ /**
+  * Main Mage hub class
+  *
+</pre></td></tr><tr><td>/app/code/core/Mage/Sales/Block/Adminhtml/Report/Filter/Form.php</td><td><pre class="diff">--- /storage/software/development/web/magento/magento-1.7.0.2/app/code/core/Mage/Sales/Block/Adminhtml/Report/Filter/Form.php	2012-07-05 12:49:42.000000000 +0200
++++ /storage/www/avtoto/html/branches/2.0/app/code/core/Mage/Sales/Block/Adminhtml/Report/Filter/Form.php	2013-12-03 19:19:24.393808313 +0100
+@@ -51,7 +51,7 @@
+             $statuses = Mage::getModel('sales/order_config')-&gt;getStatuses();
+             $values = array();
+             foreach ($statuses as $code =&gt; $label) {
+-                if (false === strpos($code, 'pending')) {
++                if (1 || false === strpos($code, 'pending')) {
+                     $values[] = array(
+                         'label' =&gt; Mage::helper('reports')-&gt;__($label),
+                         'value' =&gt; $code
+</pre></td></tr><tr><td>/app/code/core/Mage/Admin/Model/Observer.php</td><td><pre class="diff">--- /storage/software/development/web/magento/magento-1.7.0.2/app/code/core/Mage/Admin/Model/Observer.php	2012-07-05 12:49:10.000000000 +0200
++++ /storage/www/avtoto/html/branches/2.0/app/code/core/Mage/Admin/Model/Observer.php	2015-04-27 15:10:08.081530163 +0200
+@@ -44,6 +44,10 @@
+     {
+         $session = Mage::getSingleton('admin/session');
+         /** @var $session Mage_Admin_Model_Session */
++
++        /**
++         * @var $request Mage_Core_Controller_Request_Http
++         */
+         $request = Mage::app()-&gt;getRequest();
+         $user = $session-&gt;getUser();
+ 
+@@ -69,7 +73,8 @@
+                     $session-&gt;login($username, $password, $request);
+                     $request-&gt;setPost('login', null);
+                 }
+-                if (!$request-&gt;getParam('forwarded')) {
++                if (!$request-&gt;getInternallyForwarded()) {
++                    $request-&gt;setInternallyForwarded();
+                     if ($request-&gt;getParam('isIframe')) {
+                         $request-&gt;setParam('forwarded', true)
+                             -&gt;setControllerName('index')
+</pre></td></tr><tr><td>/app/code/core/Mage/Oauth/controllers/Adminhtml/Oauth/AuthorizeController.php</td><td><pre class="diff">--- /storage/software/development/web/magento/magento-1.7.0.2/app/code/core/Mage/Oauth/controllers/Adminhtml/Oauth/AuthorizeController.php	2012-07-05 12:49:36.000000000 +0200
++++ /storage/www/avtoto/html/branches/2.0/app/code/core/Mage/Oauth/controllers/Adminhtml/Oauth/AuthorizeController.php	2015-04-27 15:10:08.085530163 +0200
+@@ -55,7 +55,7 @@
+      */
+     public function preDispatch()
+     {
+-        $this-&gt;getRequest()-&gt;setParam('forwarded', true);
++        Mage::app()-&gt;getRequest()-&gt;setInternallyForwarded();
+ 
+         // check login data before it set null in Mage_Admin_Model_Observer::actionPreDispatchAdmin
+         $loginError = $this-&gt;_checkLoginIsEmpty();
+</pre></td></tr><tr><td>/app/code/core/Mage/Core/Controller/Request/Http.php</td><td><pre class="diff">--- /storage/software/development/web/magento/magento-1.7.0.2/app/code/core/Mage/Core/Controller/Request/Http.php	2012-07-05 12:49:29.000000000 +0200
++++ /storage/www/avtoto/html/branches/2.0/app/code/core/Mage/Core/Controller/Request/Http.php	2015-04-27 15:10:08.085530163 +0200
+@@ -76,6 +76,13 @@
+     protected $_beforeForwardInfo = array();
+ 
+     /**
++     * Flag for recognizing if request internally forwarded
++     *
++     * @var bool
++     */
++    protected $_internallyForwarded = false;
++
++    /**
+      * Returns ORIGINAL_PATH_INFO.
+      * This value is calculated instead of reading PATH_INFO
+      * directly from $_SERVER due to cross-platform differences.
+@@ -530,4 +537,26 @@
+         }
+         return false;
+     }
++
++    /**
++     * Define that request was forwarded internally
++     *
++     * @param boolean $flag
++     * @return Mage_Core_Controller_Request_Http
++     */
++    public function setInternallyForwarded($flag = true)
++    {
++        $this-&gt;_internallyForwarded = (bool)$flag;
++        return $this;
++    }
++
++    /**
++     * Checks if request was forwarded internally
++     *
++     * @return bool
++     */
++    public function getInternallyForwarded()
++    {
++        return $this-&gt;_internallyForwarded;
++    }
+ }
+</pre></td></tr><tr><td>/app/code/core/Mage/Adminhtml/Block/Dashboard/Graph.php</td><td><pre class="diff">--- /storage/software/development/web/magento/magento-1.7.0.2/app/code/core/Mage/Adminhtml/Block/Dashboard/Graph.php	2012-07-05 12:49:12.000000000 +0200
++++ /storage/www/avtoto/html/branches/2.0/app/code/core/Mage/Adminhtml/Block/Dashboard/Graph.php	2015-04-27 18:06:18.457570075 +0200
+@@ -444,7 +444,7 @@
+             }
+             return self::API_URL . '?' . implode('&amp;', $p);
+         } else {
+-            $gaData = urlencode(base64_encode(serialize($params)));
++            $gaData = urlencode(base64_encode(json_encode($params)));
+             $gaHash = Mage::helper('adminhtml/dashboard_data')-&gt;getChartDataHash($gaData);
+             $params = array('ga' =&gt; $gaData, 'h' =&gt; $gaHash);
+             return $this-&gt;getUrl('*/*/tunnel', array('_query' =&gt; $params));
+</pre></td></tr><tr><td>/app/code/core/Mage/Adminhtml/controllers/DashboardController.php</td><td><pre class="diff">--- /storage/software/development/web/magento/magento-1.7.0.2/app/code/core/Mage/Adminhtml/controllers/DashboardController.php	2012-07-05 12:49:16.000000000 +0200
++++ /storage/www/avtoto/html/branches/2.0/app/code/core/Mage/Adminhtml/controllers/DashboardController.php	2015-04-27 18:06:18.457570075 +0200
+@@ -92,7 +92,8 @@
+         if ($gaData &amp;&amp; $gaHash) {
+             $newHash = Mage::helper('adminhtml/dashboard_data')-&gt;getChartDataHash($gaData);
+             if ($newHash == $gaHash) {
+-                if ($params = unserialize(base64_decode(urldecode($gaData)))) {
++                $params = json_decode(base64_decode(urldecode($gaData)), true);
++                if ($params) {
+                     $response = $httpClient-&gt;setUri(Mage_Adminhtml_Block_Dashboard_Graph::API_URL)
+                             -&gt;setParameterGet($params)
+                             -&gt;setConfig(array('timeout' =&gt; 5))
+</pre></td></tr><tr><td>/app/code/core/Mage/Adminhtml/controllers/Permissions/RoleController.php</td><td><pre class="diff">--- /storage/software/development/web/magento/magento-1.7.0.2/app/code/core/Mage/Adminhtml/controllers/Permissions/RoleController.php	2012-07-05 12:49:16.000000000 +0200
++++ /storage/www/avtoto/html/branches/2.0/app/code/core/Mage/Adminhtml/controllers/Permissions/RoleController.php	2015-09-21 18:45:34.693550791 +0200
+@@ -214,6 +214,7 @@
+         } catch (Mage_Core_Exception $e) {
+             Mage::getSingleton('adminhtml/session')-&gt;addError($e-&gt;getMessage());
+         } catch (Exception $e) {
++	    Mage::logException($e);
+             Mage::getSingleton('adminhtml/session')-&gt;addError($this-&gt;__('An error occurred while saving this role.'));
+         }
+ 
+</pre></td></tr><tr><td>/app/code/core/Mage/Adminhtml/etc/config.xml</td><td><pre class="diff">--- /storage/software/development/web/magento/magento-1.7.0.2/app/code/core/Mage/Adminhtml/etc/config.xml	2012-07-05 12:49:17.000000000 +0200
++++ /storage/www/avtoto/html/branches/2.0/app/code/core/Mage/Adminhtml/etc/config.xml	2016-03-18 13:14:01.631884826 +0100
+@@ -122,14 +122,14 @@
+                 &lt;class&gt;adminhtml/search_catalog&lt;/class&gt;
+                 &lt;acl&gt;catalog&lt;/acl&gt;
+             &lt;/products&gt;
+-            &lt;customers&gt;
++            &lt;!--&lt;customers&gt;
+                 &lt;class&gt;adminhtml/search_customer&lt;/class&gt;
+                 &lt;acl&gt;customer&lt;/acl&gt;
+             &lt;/customers&gt;
+             &lt;sales&gt;
+                 &lt;class&gt;adminhtml/search_order&lt;/class&gt;
+                 &lt;acl&gt;sales&lt;/acl&gt;
+-            &lt;/sales&gt;
++            &lt;/sales&gt;--&gt;
+         &lt;/global_search&gt;
+         &lt;translate&gt;
+             &lt;modules&gt;
+</pre></td></tr><tr><td>/index.php</td><td><pre class="diff">--- /storage/software/development/web/magento/magento-1.7.0.2/index.php	2012-07-05 12:48:27.000000000 +0200
++++ /storage/www/avtoto/html/branches/2.0/index.php	2016-01-10 14:44:26.909721525 +0100
+@@ -25,12 +25,7 @@
+  */
+ 
+ if (version_compare(phpversion(), '5.2.0', '&lt;')===true) {
+-    echo  '&lt;div style=&quot;font:12px/1.35em arial, helvetica, sans-serif;&quot;&gt;
+-&lt;div style=&quot;margin:0 0 25px 0; border-bottom:1px solid #ccc;&quot;&gt;
+-&lt;h3 style=&quot;margin:0; font-size:1.7em; font-weight:normal; text-transform:none; text-align:left; color:#2f2f2f;&quot;&gt;
+-Whoops, it looks like you have an invalid PHP version.&lt;/h3&gt;&lt;/div&gt;&lt;p&gt;Magento supports PHP 5.2.0 or newer.
+-&lt;a href=&quot;http://www.magentocommerce.com/install&quot; target=&quot;&quot;&gt;Find out&lt;/a&gt; how to install&lt;/a&gt;
+- Magento using PHP-CGI as a work-around.&lt;/p&gt;&lt;/div&gt;';
++    echo  '&lt;div style=&quot;font:12px/1.35em arial, helvetica, sans-serif;&quot;&gt;&lt;div style=&quot;margin:0 0 25px 0; border-bottom:1px solid #ccc;&quot;&gt;&lt;h3 style=&quot;margin:0; font-size:1.7em; font-weight:normal; text-transform:none; text-align:left; color:#2f2f2f;&quot;&gt;Whoops, it looks like you have an invalid PHP version.&lt;/h3&gt;&lt;/div&gt;&lt;p&gt;Magento supports PHP 5.2.0 or newer. &lt;a href=&quot;http://www.magentocommerce.com/install&quot; target=&quot;&quot;&gt;Find out&lt;/a&gt; how to install&lt;/a&gt; Magento using PHP-CGI as a work-around.&lt;/p&gt;&lt;/div&gt;';
+     exit;
+ }
+ 
+@@ -42,14 +37,12 @@
+ /**
+  * Compilation includes configuration file
+  */
+-define('MAGENTO_ROOT', getcwd());
+-
+-$compilerConfig = MAGENTO_ROOT . '/includes/config.php';
++$compilerConfig = 'includes/config.php';
+ if (file_exists($compilerConfig)) {
+     include $compilerConfig;
+ }
+ 
+-$mageFilename = MAGENTO_ROOT . '/app/Mage.php';
++$mageFilename = 'app/Mage.php';
+ $maintenanceFile = 'maintenance.flag';
+ 
+ if (!file_exists($mageFilename)) {
+@@ -68,20 +61,42 @@
+ 
+ require_once $mageFilename;
+ 
+-#Varien_Profiler::enable();
++Varien_Profiler::enable();
+ 
+-if (isset($_SERVER['MAGE_IS_DEVELOPER_MODE'])) {
++if (1 || isset($_SERVER['MAGE_IS_DEVELOPER_MODE'])) {
+     Mage::setIsDeveloperMode(true);
+ }
+ 
+-#ini_set('display_errors', 1);
++ini_set('display_errors', 1);
+ 
+ umask(0);
+ 
++//$_SERVER['SERVER_NAME'] = 'avtoto.ua';
++//$_SERVER['HTTP_HOST'] = 'avtoto.ua';
++
+ /* Store or website code */
+-$mageRunCode = isset($_SERVER['MAGE_RUN_CODE']) ? $_SERVER['MAGE_RUN_CODE'] : '';
++$type = $mageRunCode = isset($_SERVER['MAGE_RUN_CODE']) ? $_SERVER['MAGE_RUN_CODE'] : '';
+ 
+ /* Run store or run website */
+-$mageRunType = isset($_SERVER['MAGE_RUN_TYPE']) ? $_SERVER['MAGE_RUN_TYPE'] : 'store';
++$code = $mageRunType = isset($_SERVER['MAGE_RUN_TYPE']) ? $_SERVER['MAGE_RUN_TYPE'] : 'store';
+ 
+ Mage::run($mageRunCode, $mageRunType);
++die;
++$options = array();
++
++Varien_Profiler::start('mage');
++$_app = Mage::app($mageRunCode, $mageRunType);
++
++$_app-&gt;getStore()-&gt;setConfig('web/unsecure/base_url', 'http://avtoto.ua/');
++$_app-&gt;getStore()-&gt;setConfig('web/unsecure/base_link_url', 'http://avtoto.ua/');
++$_app-&gt;getStore()-&gt;setConfig('web/cookie/cookie_domain', 'avtoto.ua');
++
++$_app-&gt;getStore(0)-&gt;setConfig('web/unsecure/base_url', 'http://avtoto.ua/');
++$_app-&gt;getStore(0)-&gt;setConfig('web/unsecure/base_link_url', 'http://avtoto.ua/');
++$_app-&gt;getStore(0)-&gt;setConfig('web/cookie/cookie_domain', 'avtoto.ua');
++
++$_app-&gt;getFrontController()-&gt;dispatch();
++
++Varien_Profiler::stop('mage');
++
++
+</pre></td></tr><tr><td>/.htaccess</td><td><pre class="diff">--- /storage/software/development/web/magento/magento-1.7.0.2/.htaccess	2012-07-05 12:48:17.000000000 +0200
++++ /storage/www/avtoto/html/branches/2.0/.htaccess	2016-02-22 16:51:54.311778382 +0100
+@@ -32,7 +32,7 @@
+ ## adjust memory limit
+ 
+ #    php_value memory_limit 64M
+-    php_value memory_limit 256M
++    php_value memory_limit 3024M
+     php_value max_execution_time 18000
+ 
+ ############################################
+@@ -207,3 +207,14 @@
+ ## http://developer.yahoo.com/performance/rules.html#etags
+ 
+     #FileETag none
++
++#php_flag apc.cache_by_default 0
++
++#Order deny,allow
++#AuthType Basic
++#AuthName &quot;Go away&quot;
++#AuthUserFile /storage/www/avtoto/html/.htpass
++#Require user superadmin
++php_value opcache.enable 0
++php_value upload_max_filesize 40M
++php_value post_max_size 40M
+\ No newline at end of file
+</pre></td></tr><tr><td>/skin/frontend/default/default/images/logo_email.gif</td><td><pre class="diff">Binary files /storage/software/development/web/magento/magento-1.7.0.2/skin/frontend/default/default/images/logo_email.gif and /storage/www/avtoto/html/branches/2.0/skin/frontend/default/default/images/logo_email.gif differ
+</pre></td></tr></tbody></table></html>

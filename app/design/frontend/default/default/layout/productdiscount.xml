@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<layout version="0.1.0">
+<!--
+Product view
+-->
+
+    <catalog_product_view translate="label">
+        <label>Catalog Product View (Any)</label>
+        <reference name="product.info">
+            <block type="productdiscount/catalog_product_cheapest" name="catalog.product.cheapset" as="cheapsetProducts" template="productdiscount/cheapest.phtml">
+                <action method="setColumnCount"><columns>4</columns></action>
+            </block>
+        </reference>
+    </catalog_product_view>
+</layout>

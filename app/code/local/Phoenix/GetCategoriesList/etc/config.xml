@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<config>
+	<modules>
+		<Phoenix_GetCategoriesList>
+			<version>0.1.2</version>
+		</Phoenix_GetCategoriesList>
+	</modules>
+	<global>
+	   <resources>
+            <getcategorieslist_setup>
+                <setup>
+                    <module>Phoenix_GetCategoriesList</module>
+                </setup>
+                <connection>
+                    <use>core_setup</use>
+                </connection>
+            </getcategorieslist_setup>
+        </resources>
+		<helpers>
+			<getcategorieslist>
+				<class>Phoenix_GetCategoriesList_Helper</class>
+			</getcategorieslist>
+		</helpers>
+		<blocks>
+			<getcategorieslist>
+				<class>Phoenix_GetCategoriesList_Block</class>
+			</getcategorieslist>
+		</blocks>
+		<models>
+			<getcategorieslist>
+				<class>Phoenix_GetCategoriesList_Model</class>
+			</getcategorieslist>
+		</models>
+	</global>
+
+	<admin>
+		<routers>
+			<adminhtml>
+				<use>admin</use>
+				<args>
+					<modules>
+						<getcategorieslist before="Mage_Adminhtml">Phoenix_GetCategoriesList</getcategorieslist>
+					</modules>
+				</args>
+			</adminhtml>
+		</routers>
+	</admin>
+</config>

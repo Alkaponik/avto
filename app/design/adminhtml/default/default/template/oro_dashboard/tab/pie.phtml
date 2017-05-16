@@ -1,0 +1,50 @@
+<?php
+/**
+ * {magecore_license_notice}
+ *
+ * @category   MageCore
+ * @package    Dashboard
+ * @copyright  {magecore_copyright}
+ * @license    {magecore_license}
+ */
+
+/**
+ * @var $this Oro_Dashboard_Block_Adminhtml_Userdashboard_Widget_Pie
+ */
+ ?>
+<?php
+    $metrics = Mage::helper("oro_dashboard")->getMetrics();
+    $groupedAttributes = Mage::helper("oro_dashboard")->getGroupByAttributes();
+?>
+<div class="row">
+    <label for="pie-add-metric"><?php echo $this->__("Show the following metric:")?></label>
+    <select name="metric" id="pie-add-metric" class="required-entry">
+        <?php foreach ($metrics as $code=>$metric) {?>
+        <option value="<?php echo $code;?>" <?php if ($this->getMetric() == $code){?>selected="selected"<?php }?>><?php echo $this->__($metric['label']);?></option>
+        <?php }?>
+    </select>
+    <label for="pie-grouped-by"><?php echo $this->__("Group By:")?></label>
+    <select name="grouped_by" id="pie-grouped-by" class="required-entry">
+        <option value=""><?php echo $this->__("Please Choose")?></option>
+        <optgroup label="<?php echo $this->__("Billing") ?>"></optgroup>
+        <?php foreach ($groupedAttributes as $attribute) {?>
+            <option value="billing-<?php echo $attribute->getAttributeCode();?>" <?php if ($this->getGroupedByAttribute() == "billing-".$attribute->getAttributeCode()){?>selected="selected"<?php }?>>&nbsp;&nbsp;<?php echo $this->__($attribute->getStoreLabel());?></option>
+        <?php }?>
+        <optgroup label="<?php echo $this->__("Shipping") ?>"></optgroup>
+        <?php foreach ($groupedAttributes as $attribute) {?>
+            <option value="shipping-<?php echo $attribute->getAttributeCode();?>" <?php if ($this->getGroupedByAttribute() == "shipping-".$attribute->getAttributeCode()){?>selected="selected"<?php }?>>&nbsp;&nbsp;<?php echo $this->__($attribute->getStoreLabel());?></option>
+        <?php }?>
+    </select>
+</div>
+<div class="row">
+    <label for="sectors-number"><?php echo $this->__("Sectors Number:")?></label>
+    <select id="sectors-number" name="sectors_number">
+        <?php for ($i = 3; $i <= Oro_Dashboard_Block_Adminhtml_Userdashboard_Widget_Pie::SECTORS_LIMIT; $i++){?>
+        <option value="<?php echo $i;?>" <?php if ($i == $this->getSectorsNumber()){?>selected="selected"<?php }?>><?php echo $i;?></option>
+        <?php }?>
+    </select>
+</div>
+<div class="row">
+    <label for="pie-widget-title"><?php echo $this->__("Widget title:")?></label>
+    <input type="text" id="pie-widget-title" name="name" value="<?php echo $this->getWidgetName();?>" class="required-entry widget-title" />
+</div>

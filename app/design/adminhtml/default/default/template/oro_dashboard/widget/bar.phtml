@@ -1,0 +1,108 @@
+<?php
+/**
+ * {magecore_license_notice}
+ *
+ * @category   MageCore
+ * @package    Dashboard
+ * @copyright  {magecore_copyright}
+ * @license    {magecore_license}
+ */
+
+/**
+ * @var $this Oro_Dashboard_Block_Adminhtml_Userdashboard_Widget_Bar
+ */
+?>
+<?php
+    $widgetId = $this->getWidget()->getId();
+    $widgetData = $this->getWidgetData();
+    $isShowZoomedYMeasure = $this->isShowZoomedYMeasure();
+?>
+<div class="entry-edit">
+    <div class="entry-edit-head">
+        <div class="nav-tools">
+            <span id="revert_<?php echo $widgetId;?>" class="revert">reset</span>
+            <span class="settings">settings</span>
+        </div>
+        <h4><?php echo $this->getWidgetName();?></h4>
+    </div>
+    <fieldset  class="entry-edit-content">
+        <div id="chart-<?php echo $widgetId;?>"></div>
+        <?php if (!$widgetData){?>
+            <p><?php echo $this->__("No data available");?></p>
+        <?php }?>
+    </fieldset>
+</div>
+<?php if ($widgetData){?>
+<script type="text/javascript">
+    jQuery(document).ready(function(){
+        var plot_<?php echo $widgetId;?> = jQuery.jqplot('chart-<?php echo $widgetId;?>', [<?php echo $widgetData;?>], {
+            seriesColors: ["rgba(0, 168, 240, 0.8)", "rgba(69, 166, 35, 0.8)", "rgb(236, 150, 73)", "rgb(236, 222, 73)", "rgba(69, 166, 35, 0.8)", "rgb(203, 215, 87)", "rgb(60, 179, 190)", "rgb(1, 137, 137)", "rgb(52, 163, 193)", "rgb(196, 61, 57)", "rgb(226, 136, 40)"],
+       /* title:'<?php echo Mage::helper("oro_dashboard")->getMetricLabel($this->getMetric())?><?php echo $this->getMetricCompare() ? ", " . Mage::helper("oro_dashboard")->getMetricLabel($this->getMetricCompare()) : "";?>',*/
+            series:[
+                {}
+                <?php if ($isShowZoomedYMeasure): ?>,{yaxis:'y2axis'}<?php endif; ?>
+            ],
+            legend: {
+            show: true,
+            placement: 'inside',
+            renderer: jQuery.jqplot.EnhancedLegendRenderer,
+            marginTop: '5px',
+            background: "#fff9e9",
+            location: 'n',
+            labels: ['<?php echo Mage::helper("oro_dashboard")->getMetricLabel($this->getMetric())?>',<?php if ($this->getMetricCompare()){  echo "'" . Mage::helper("oro_dashboard")->getMetricLabel($this->getMetricCompare()) . "'"; }?>]
+        },
+        axes:{
+            <?php if ($this->isMonthlyPlot()) {?>
+            xaxis:{
+                renderer: jQuery.jqplot.CategoryAxisRenderer,
+                ticks: [<?php echo $this->getTicks();?>]
+            },
+            <?php } else {?>
+             xaxis:{
+                renderer: jQuery.jqplot.DateAxisRenderer,
+                tickOptions:{
+                    formatString: '<?php echo Mage::helper("oro_dashboard")->getDateFormatForPlot();?>'
+                },
+                min: '<?php echo Mage::helper("oro_dashboard")->getDateFrom(false, true, true);?>',
+                max: '<?php echo Mage::helper("oro_dashboard")->getDateTo(false, true, true);?>'
+            },
+            <?php }?>
+            yaxis:{
+                <?php if ($isShowZoomedYMeasure): ?>
+                    label : '<?php echo Mage::helper("oro_dashboard")->getMetricLabel($this->getMetric()); ?>',
+                    labelRenderer: jQuery.jqplot.CanvasAxisLabelRenderer,
+                <?php endif; ?>
+                padMax: 1.2,
+                /*min : 0*/ 
+            }
+            <?php if ($isShowZoomedYMeasure): ?>
+            ,y2axis:{
+                label : '<?php echo Mage::helper("oro_dashboard")->getMetricLabel($this->getMetricCompare()); ?>',
+                labelRenderer: jQuery.jqplot.CanvasAxisLabelRenderer,
+                /*min:0,*/
+                padMax: 1.2,
+                numberTicks:17,
+                tickOptions:{
+                    showGridline:false
+                }
+            }
+            <?php endif; ?>
+        },
+        highlighter: {
+            show: false,
+            sizeAdjust: 7.5
+        },
+        cursor: {
+            show: true,
+            zoom: true
+        },
+        seriesDefaults: {
+            renderer:jQuery.jqplot.BarRenderer,
+            rendererOptions: {fillToZero: true, barWidth: 10,	barPadding : 0}
+        }
+        })
+        plotArr[<?php echo $widgetId;?>] = plot_<?php echo $widgetId;?>;
+        jQuery('#revert_<?php echo $widgetId;?>').live("click",function() { plot_<?php echo $widgetId;?>.resetZoom() });
+    });
+</script>
+<?php }?>

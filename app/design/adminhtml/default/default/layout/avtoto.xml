@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layout version="0.0.1">
+    <default>
+        <reference name="head">
+            <action method="addCss"><stylesheet>avtoto.css</stylesheet></action>
+            <action method="addJs"><script>fancybox/source/jquery.fancybox.pack.js</script></action>
+            <action method="addJs"><script>jquery/jquery-noconflict.js</script></action>
+        </reference>
+        <reference name="content">
+            <block name="avtoto_admin_messages" type="avtoto/adminhtml_messages" template="avtoto/admin_messages.phtml" after="-"/>
+        </reference>
+    </default>
+    <magedoc_sales_order_create_index>
+    </magedoc_sales_order_create_index>
+    <magedoc_sales_order_index>
+        <reference name="content">
+            <block name="avtoto_order_js" type="core/template" template="avtoto/sales/order/js.phtml" after="-"/>
+        </reference>
+    </magedoc_sales_order_index>
+    <magedoc_adminhtml_supply_index>
+        <reference name="content">
+            <block name="avtoto_admin_messages" type="core/template" template="avtoto/admin_messages.phtml" after="-"/>
+        </reference>
+    </magedoc_adminhtml_supply_index>
+    <adminhtml_avtoto_price_status>
+        <reference name="content">
+            <block type="avtoto/adminhtml_autopricing_process_status" name="retailer"></block>
+        </reference>
+    </adminhtml_avtoto_price_status>
+</layout>

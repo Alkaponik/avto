@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @category Phoenix
+ * @package Phoenix_NoRegion
+ * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)                 
+ */
+ -->
+<config>	
+    <sections>
+         <customer translate="label" module="core">
+            <frontend_type>text</frontend_type>
+            <sort_order>920</sort_order>
+            <show_in_default>1</show_in_default>
+            <show_in_website>1</show_in_website>
+            <show_in_store>1</show_in_store>
+            <groups>
+                <noregion translate="label">
+                    <label>Phoenix_NoRegion - NoRegion</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>1000</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <enabled translate="label">
+                            <label>Enabled</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>20</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </enabled>
+                    </fields>					
+                </noregion>				
+			</groups>
+		</customer>
+    </sections>
+</config>

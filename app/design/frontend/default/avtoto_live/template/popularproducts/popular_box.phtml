@@ -1,0 +1,36 @@
+<?php
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+?>
+<?php if (($_products = $this->getProductCollection()) && $_products->getSize()): ?>
+<?php
+    $_product_discounts = $_product_info = array();
+    foreach ($_products->getItems() as $_product){
+        $_product_discounts[$_product->getId()] = Mage::helper('productdiscount')->getDiscountPercent($_product);
+        $_product_info[$_product->getId()] = array('discount' => Mage::helper('productdiscount')->getDiscountPercent($_product),
+                                                    'name' => $this->htmlEscape($_product->getName()),
+                                                    'url' => $_product->getProductUrl()
+                                                     );
+     }
+    arsort($_product_discounts);
+?>
+
+<div class="block" id="block-popular-products">
+    <h4><?php echo $this->__('Most Popular') ?></h4>
+    <p class="b tr"><?php echo $this->__('You save');?></p>
+
+    <table class="info-table">
+    	<tbody>
+	    <?php foreach($_product_discounts as $sku => $_discount) : ?>
+	        <tr>
+        		<td><a href="<?php echo $_product_info[$sku]['url'] ?>" title="<?php echo $_product_info[$sku]['name'] ?>"><?php echo $this->htmlEscape($_product_info[$sku]['name']) ?></a></td>
+        		<td class="b"><?php if($_discount) echo $_discount . '%';?></td>
+	        </tr>
+	    <?php endforeach; ?>
+    	</tbody>
+    </table>
+</div>
+<?php endif; ?>
+

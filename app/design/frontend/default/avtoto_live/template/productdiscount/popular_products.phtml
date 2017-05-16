@@ -1,0 +1,55 @@
+<?php
+/**
+ * Bestseller template
+ *
+ * outputs a list of products, defined in a content block in the backend cms
+ *
+ *	@author Phoenix Medien
+ *
+ *
+ *	@see Mage_Catalog_Model_Product for list of available getter methods
+ *  @see Mage_Core_Block_Template
+ *
+ */
+
+// check if bestsellers variable has been set in admin backend
+
+if($this->getBestsellers()):
+// product-id list is comma separated
+    $bestseller_products = array_unique(explode(',', $this->getBestsellers()));
+    $_taxHelper  = $this->helper('tax');
+    $_coreHelper = $this->helper('core');
+    ?>
+
+<h2><?php echo $this->__('Die beliebtesten Produkte dieser Kategorie:') ?></h2>
+<p class="product-grid">
+<?php $_columnCount = $this->getColumnCount(); ?>
+<?php $i=0; foreach($bestseller_products as $_productId):
+        $_product = Mage::getModel('catalog/product')
+                ->setStoreId(Mage::app()->getStore()->getId())
+                ->load($_productId);
+?>
+<?php if($_product && $_product->getId() && $_product->isVisibleInSiteVisibility() && $_product->isSaleable()):?>
+	<a class="p<?php if (++$i%$_columnCount==0): ?> p-last<?php endif; ?><?php if (($i-1)%$_columnCount==0): ?> p-first<?php endif; ?>" href="<?php echo $_product->getProductUrl() ?>" title="<?php echo $this->htmlEscape($_product->getName()) ?>">
+		<img src="<?php echo $this->helper('catalog/image')->init($_product, 'small_image')->resize(110) ?>" alt="<?php echo $this->htmlEscape($_product->getName()) ?>" />
+		<span class="p-info rnd">
+			<strong><?php echo $this->htmlEscape($_product->getName()) ?></strong>
+			<?php echo $this->getContentsInformationHtml($_product)?>
+	        <?php echo $this->getPriceHtml($_product, true, '-widget-new-grid') ?>
+	        <?php if (Mage::helper('productdiscount')->getCost($_product)):?>
+			<span class="p-msrp-saved">
+				<span class="p-msrp-label"><?php echo $this->__('UVP*')?></span>
+				<span class="p-msrp-value"><?php echo Mage::helper('productdiscount')->getCost($_product);?></span>
+				<span class="p-saved-amount"><?php echo Mage::helper('core')->currency( Mage::helper('productdiscount')->getDiscountValue($_product), true, false);?> <?php echo $this->__('saved')?></span>
+			</span>
+			<?php endif; ?>
+		</span>
+		<?php echo $this->getDiscountHtml($_product);?>
+	</a>
+<?php endif; ?>
+<?php if ($i%3==0 || $i==count($bestseller_products)): ?>
+    </ul>
+<?php endif; ?>
+<?php endforeach; ?>
+</p>
+<?php endif; ?>

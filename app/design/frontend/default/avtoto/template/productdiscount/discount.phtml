@@ -1,0 +1,36 @@
+<?php
+/*
+1. If the price saving is >= 5 EUR the amount in EUR should be displayed instead of the percentage.
+2. Till 39% price saving the icon should be small, from 40% the icon should be bigger.
+3. „VfG Spartipp“ should be displayed if no value for "cost" is saved in the backend (http://www.vfg.ag/buecherundcds-r4.html )
+*/
+
+?>
+
+<?php
+$_product = $this->getProduct();
+$post_text = '';
+$classname = ' d-big';
+$value = Mage::helper('productdiscount')->getDiscountPercent($_product);
+$sign  = '%';
+
+if (!Mage::helper('productdiscount')->getCost($_product)) {
+	$classname = $classname . ' d-tip';
+	$post_text = 'VfG Spartipp';
+	$value = '';
+	$sign = '';
+} else if (Mage::helper('productdiscount')->getDiscountValue($_product) > Mage::helper('productdiscount')->getEuroLimitDiscount()) {
+	$value = number_format(Mage::helper('productdiscount')->getDiscountValue($_product),2,',','');
+	$sign = Mage::app()->getLocale()->currency($this->getCode())->getSymbol();
+	$classname = $classname . ' d-euro';
+} else if (Mage::helper('productdiscount')->getDiscountPercent($_product) >= Mage::helper('productdiscount')->getPercentLimitDiscount()) {
+	$value = Mage::helper('productdiscount')->getDiscountPercent($_product);
+} else {
+	$classname = '';
+}
+?>
+
+<span class="d-box <?php echo $classname?>">
+	<?php if ($value):?><span class="d-value">&ndash;<span><?php echo $value; ?></span><?php echo $sign; ?></span><?php endif;?>
+	<?php if(!empty($post_text)) : ?><span class="d-label"><?php echo $post_text; ?></span><?php endif;?>
+</span>

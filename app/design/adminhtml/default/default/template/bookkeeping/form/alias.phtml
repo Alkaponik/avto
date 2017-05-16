@@ -1,0 +1,22 @@
+<script type="text/javascript">
+    if (editForm && $(editForm.formId))
+    {
+        var formElements = $(editForm.formId).getElements();
+        for (var key in formElements){
+            if (formElements[key].type != 'hidden'){
+                formElements[key].focus();
+                break;
+            }
+        }
+    }
+    Event.observe(window, 'load', function(){
+        var saveButton = $$('.save_and_continue').first();
+        if (saveButton){
+            document.observe('keydown', function(saveButton, event){
+                if (event.ctrlKey && event.keyCode == 13){
+                    saveButton.onclick();
+                }
+            }.curry(saveButton));
+        }
+    });
+</script>

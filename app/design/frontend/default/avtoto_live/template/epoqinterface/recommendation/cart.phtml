@@ -1,0 +1,54 @@
+<?php
+/*                                                                       *
+* This script is part of the epoq Recommendation Service project         *
+*                                                                        *
+* TypoGento is free software; you can redistribute it and/or modify it   *
+* under the terms of the GNU General Public License version 2 as         *
+* published by the Free Software Foundation.                             *
+*                                                                        *
+* This script is distributed in the hope that it will be useful, but     *
+* WITHOUT ANY WARRANTY; without even the implied warranty of MERCHAN-    *
+* TABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General      *
+* Public License for more details.                                       *
+*                                                                        *
+* @version $Id: cart.phtml 487 2010-08-05 12:32:57Z weller $
+* @license http://opensource.org/licenses/gpl-license.php GNU Public License, version 2
+*/
+?>
+
+<?php if(count($this->getItemCollection()->getItems())): ?>
+<h2><?php echo $this->__('Kunden kauften auch diese Artikel') ?></h2>
+<p class="product-grid p-grid-small">
+<?php $this->setColumnCount(4); // uncomment this line if you want to have another number of columns. also can be changed in layout ?>
+<?php $this->resetItemsIterator() ?>
+<?php for($_i=0;$_i<1;$_i++): ?>
+	<?php for($_j=0;$_j<$this->getColumnCount();$_j++): ?>
+		<?php if($_link=$this->getIterableItem()): ?>
+	<a href="<?php echo $_link->getProductUrl() ?>" class="epoq-recommentation-link p<?php if($_j === 0) : ?> p-first<?php endif; ?><?php if($_j === ($this->getColumnCount() - 1)) : ?> p-last<?php endif; ?>">
+		<img src="<?php echo $this->helper('catalog/image')->init($_link, 'small_image')->resize(110) ?>" width="110" height="110" alt="<?php echo $this->htmlEscape($_link->getName()) ?>" />
+		<span class="p-info rnd">
+			<strong><?php echo $this->htmlEscape($_link->getName()) ?></strong>
+			<?php echo $this->getPriceHtml($_link, true) ?>
+			<?php echo $this->getReviewsSummaryHtml($_link) ?>
+		</span>
+	</a>
+		<?php endif; ?>
+	<?php endfor; ?>
+<?php endfor; ?>
+</p>
+<script type="text/javascript">
+$$('a.epoq-recommentation-link').each(function(elem, index){
+	var newParam = 'recommentation_id=<?php echo $this->getSession()->getLastRecommentationId();?>',
+	params = '?' + newParam;
+	params = elem.href.replace(new RegExp('[\?&]' + 'recommentation_id' + '[^&]*'), '$1' + newParam);
+	if (params === elem.href) {
+		if(elem.href.indexOf('?') == '-1'){
+			params += '?' + newParam;
+		}else{
+			params += '&' + newParam;
+		}
+	}
+	elem.href = params;
+});
+</script>
+<?php endif ?>

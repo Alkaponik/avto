@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Testimonial_CategoryUrlKeyFix>
+            <version>0.1.0</version>
+        </Testimonial_CategoryUrlKeyFix>
+    </modules>
+    <global>
+        <models>
+            <catalog>
+                <rewrite>
+                    <category>Testimonial_CategoryUrlKeyFix_Model_Category</category>
+                </rewrite>
+            </catalog>
+            <categoryurlkeyfix>
+                <class>Testimonial_CategoryUrlKeyFix_Model</class>
+            </categoryurlkeyfix>
+        </models>
+    </global>
+</config>

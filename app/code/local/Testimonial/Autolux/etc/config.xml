@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Testimonial_Autolux>
+            <version>0.1.0</version>
+        </Testimonial_Autolux>
+    </modules>
+    <global>
+        <models>
+            <autolux>
+                <class>Testimonial_Autolux_Model</class>
+            </autolux>
+        </models>
+        <helpers>
+            <autolux>
+                <class>Testimonial_Autolux_Helper</class>
+            </autolux>
+        </helpers>
+    </global>
+    <default>
+        <carriers>
+            <autolux>
+                <!-- disabled by default not to propose unconfigured shipping method to customer -->
+                <active>0</active>
+                <!-- allow only for specific countries flag -->
+                <sallowspecific>1</sallowspecific>
+                <!-- allow only for Ukraine -->
+                <specificcountry>UA</specificcountry>
+                <!-- carrier model -->
+                <model>autolux/shipping_carrier_autolux</model>
+                <!-- carrier title -->
+                <title>Автолюкс</title>
+                <!-- error message -->
+                <specificerrmsg>Этот способ доставки на текущий момент не доступен. Если вы желаете, чтобы мы доставили заказ Автолюксом, обратитесь к менеджеру интернет-магазина.</specificerrmsg>
+            </autolux>
+        </carriers>
+    </default>
+</config>

@@ -1,0 +1,22 @@
+<?php $_inquiry = $this->getInquiry() ?>
+<tr class="border">
+    <td><?php echo $_inquiry->getCategory(); ?></td>
+    <td><?php echo $_inquiry->getSupplier(); ?></td>
+    <td><?php echo $_inquiry->getName(); ?></td>
+    <td><?php echo $_inquiry->getSku(); ?></td>
+    <td><?php echo $this->getColumnHtml($_inquiry, 'inquiry_qty') ?></td>
+
+    <td class="<?php if ($this->isShipmentRegular()): ?>last<?php endif; ?> a-center">
+        <?php if ($this->canShipPartiallyItem()): ?>
+            <input type="text" class="input-text" name="shipment[inquiries][<?php echo $_inquiry->getOrderInquiryId() ?>]" value="<?php echo $_inquiry->getQty()*1 ?>" />
+        <?php else: ?>
+            <?php echo $_inquiry->getQty()*1 ?>
+        <?php endif; ?>
+    </td>
+    <?php if (!$this->canShipPartiallyItem()): ?>
+    <td class="a-center last">
+        <input type="hidden" name="shipment[inquiries][<?php echo $_inquiry->getOrderInquiryId() ?>]" value="0" />
+        <input type="checkbox" name="shipment[inquiries][<?php echo $_inquiry->getOrderInquiryId() ?>]" value="<?php echo $_inquiry->getQty()*1 ?>" checked />
+    </td>
+    <?php endif; ?>
+</tr>

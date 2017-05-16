@@ -1,0 +1,33 @@
+<script type="text/javascript">
+    Event.observe(window, 'load', function(){
+        var referenceInput = $('reference');
+        var customerInput = $('customer_name');
+        var form = editForm ? $(editForm.formId) : null;
+        if (referenceInput && customerInput && form){
+            document.observe('change', function(customerInput, form, event){
+                var referenceInput = event.findElement();
+                if (referenceInput.value.match(/^<?php echo Mage::helper('bookkeeping')->getCustomerRecordsReferenceRegexp()?>$/)){
+                    new Ajax.Request('<?php echo $this->getUrl('*/bookkeeping_journal/source')?>',
+                        {
+                            method: 'post',
+                            parameters: Form.serialize(form),
+                            onSuccess: function (transport){
+                                if (transport && transport.responseText){
+                                    try{
+                                        response = eval('(' + transport.responseText + ')');
+                                    }
+                                    catch (e) {
+                                        response = {};
+                                    }
+                                }
+                                if (response && typeof response.customer_name != 'undefined'){
+                                    customerInput.value = response.customer_name;
+                                }
+                            }
+                        }
+                    );
+                }
+            }.curry(customerInput, form));
+        }
+    });
+</script>

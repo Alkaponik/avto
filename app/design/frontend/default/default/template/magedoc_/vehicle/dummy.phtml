@@ -1,0 +1,14 @@
+<div class="fieldset">
+    <h2 class="legend">Choose vehicle</h2>
+    <ul class="vehicle-changer form-list" id="<?php echo $this->getContainerId();?>">
+        <li class="fields">
+            <?php foreach($this->getComboboxes() as $comboBox): ?>
+                <div class="field">
+                    <?php echo $comboBox->toHtml(); ?>
+                </div>
+            <?php endforeach;?>
+        </li>
+    </ul>
+    <button type="button" id="delete" class="button"><span><span><?php echo $this->__('Delete this vehicle') ?></span></span></button>
+</div>
+

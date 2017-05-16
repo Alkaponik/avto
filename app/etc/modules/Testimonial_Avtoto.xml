@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+
+<config>
+    <modules>
+        <Testimonial_Avtoto>
+            <active>true</active>
+            <codePool>local</codePool>
+            <depends>
+                <Mage_Admin/>
+                <Mage_Catalog/>
+                <Mage_Customer/>
+                <Mage_Sales/>
+                <Mage_Checkout/>
+                <Mage_Payment/>
+                <MageDoc_System/>
+                <MageDoc_NovaPoshta/>
+                <MageDoc_Bookkeeping/>
+                <Testimonial_MageDoc/>
+                <Testimonial_Intime/>
+                <Testimonial_System/>
+                <Testimonial_SugarCRM/>
+            </depends>
+        </Testimonial_Avtoto>
+    </modules>
+</config>

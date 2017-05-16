@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+
+<config>
+    <menu>
+        <catalog>
+            <children>
+                <flatproducts translate="title" module="flatcatalog">
+                    <title>Manage Flat Products</title>
+                    <action>adminhtml/flatcatalog_product/</action>
+                    <sort_order>5</sort_order>
+                </flatproducts>
+            </children>
+        </catalog>
+    </menu>
+    <acl>
+        <resources>
+            <admin>
+                <children>
+                    <catalog>
+                        <children>
+                            <flatproducts translate="title">
+                                <title>Manage Flat Products</title>
+                            </flatproducts>
+                        </children>
+                    </catalog>
+                </children>
+            </admin>
+        </resources>
+    </acl>
+</config>

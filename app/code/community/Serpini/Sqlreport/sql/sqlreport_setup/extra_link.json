@@ -1,0 +1,7 @@
+[
+{"type_message":"success-msg","object_type":"link","type":"TR","id":"LK_TR_CUSTOMER_EDIT","description":"Link to customer edit","url":"adminhtml\/customer\/edit\/id\/<CUSTOMER_ID>","variables":[],"column":null},
+{"type_message":"success-msg","object_type":"link","type":"TR","id":"LK_TR_ORDER_EDIT","description":"Link to order edit","url":"adminhtml\/sales_order\/view\/order_id\/<ORDER_ID>","variables":[],"column":null},
+{"type_message":"success-msg","object_type":"link","type":"TR","id":"LK_TR_PRODUCT_EDIT","description":"Link to edit <PRODUCT_NAME>","url":"adminhtml\/catalog_product\/edit\/id\/<PRODUCT_ID>","variables":[],"column":null},
+{"type_message":"success-msg","object_type":"link","type":"TD","id":"LK_TD_CUSTOMER","description":"Link to customer","url":"adminhtml\/customer\/edit\/id\/<ID>","variables":[],"column":"0"},
+{"type_message":"success-msg","object_type":"link","type":"TD","id":"LK_TD_PRODUCT","description":"Link to product","url":"adminhtml\/catalog_product\/edit\/id\/<ID>","variables":[],"column":"0"}
+]

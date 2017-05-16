@@ -1,0 +1,106 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Magento - FlatCatalog
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to license that is bundled with
+ * this package in the file LICENSE.txt.
+ *
+ * @category   Testimonial
+ * @package    Testimonial_FlatCatalog
+ * @copyright  Copyright (c) 2014 MageDoc LTD (http://www.magedoc.net)
+ */
+-->
+<config>
+    <modules>
+        <Testimonial_FlatCatalog>
+            <version>0.0.1</version>
+        </Testimonial_FlatCatalog>
+    </modules>
+    <global>        
+        <models>
+            <flatcatalog>
+                <class>Testimonial_FlatCatalog_Model</class>
+                <resourceModel>flatcatalog_resource</resourceModel>
+            </flatcatalog>
+            <flatcatalog_resource>
+                <class>Testimonial_FlatCatalog_Model_Resource</class>
+                <entities>
+                    <product>
+                        <table>import_retailer_data</table>
+                    </product>
+                    <product_tmp>
+                        <table>import_retailer_data_tmp</table>
+                    </product_tmp>
+                </entities>
+            </flatcatalog_resource>
+        </models>
+        <resources>
+            <flatcatalog_setup>
+                <setup>
+                    <module>Testimonial_FlatCatalog</module>
+                    <class>Mage_Catalog_Model_Resource_Setup</class>
+                </setup>
+            </flatcatalog_setup>
+        </resources>
+        <blocks>
+            <flatcatalog>
+                <class>Testimonial_FlatCatalog_Block</class>
+            </flatcatalog>
+        </blocks>
+        <helpers>
+            <flatcatalog>
+                <class>Testimonial_FlatCatalog_Helper</class>
+            </flatcatalog>
+        </helpers>
+    </global>
+    <frontend>
+        <routers>
+            <flatcatalog>
+                <use>standard</use>
+                <args>
+                    <module>Testimonial_FlatCatalog</module>
+                    <frontName>flatcatalog</frontName>
+                </args>
+            </flatcatalog>
+        </routers>
+        <layout>
+            <updates>
+                <flatcatalog module="Testimonial_FlatCatalog">
+                    <file>flatcatalog.xml</file>
+                </flatcatalog>
+            </updates>
+        </layout>
+        <translate>
+            <modules>
+                <flatcatalog>
+                    <files>
+                        <default>Testimonial_FlatCatalog.csv</default>
+                    </files>
+                </flatcatalog>
+            </modules>
+        </translate>
+    </frontend>
+    <adminhtml>
+        <layout>
+            <updates>
+                <flatcatalog module="Testimonial_FlatCatalog">
+                    <file>flatcatalog.xml</file>
+                </flatcatalog>
+            </updates>
+        </layout>
+    </adminhtml>
+    <admin>
+        <routers>
+            <adminhtml>
+                <args>
+                    <modules>
+                        <Testimonial_FlatCatalog before="Mage_Adminhtml">Testimonial_FlatCatalog_Adminhtml</Testimonial_FlatCatalog>
+                    </modules>
+                </args>
+            </adminhtml>
+        </routers>
+    </admin>
+</config>

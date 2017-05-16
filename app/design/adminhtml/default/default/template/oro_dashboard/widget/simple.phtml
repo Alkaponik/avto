@@ -1,0 +1,45 @@
+<?php
+/**
+ * {magecore_license_notice}
+ *
+ * @category   MageCore
+ * @package    Dashboard
+ * @copyright  {magecore_copyright}
+ * @license    {magecore_license}
+ */
+
+/**
+ * @var $this Oro_Dashboard_Block_Adminhtml_Userdashboard_Widget_Metric
+ */
+?>
+<?php
+$widgetId = $this->getWidget()->getId();
+?>
+<div class="entry-edit">
+    <div class="entry-edit-head">
+        <div class="nav-tools">
+            <span id="print-<?php echo $widgetId ?>" class="print-btn">print</span>
+            <span class="settings">settings</span>
+        </div>
+        <h4><?php echo $this->getWidgetName();?></h4>
+
+    </div>
+    <fieldset>
+        <div class="left-column">
+            <p class="info"><?php echo Mage::helper("oro_dashboard")->getMetricLabel($this->getMetric())?>: <strong><?php echo $this->getWidgetData();?></strong></p>
+            <p class="info"><sup><?php echo Mage::helper("oro_dashboard")->getMetricLabelAvg($this->getMetric())?>: <strong><?php echo $this->getAvgWidgetData();?></strong>
+                <?php echo $this->getAvgIsPerDay()?$this->__("per day"):$this->__("per hour")?>
+            </sup></p>
+        </div>
+    </fieldset>
+</div>
+<script type="text/javascript">
+    jQuery(document).ready(function() {
+        jQuery('#print-<?php echo $widgetId ?>').click(function(){
+            jQuery('#metric-image-container').empty();
+            jQuery(this).parents('.entry-edit').clone().appendTo(jQuery('#metric-image-container'));
+            jQuery('#metric-print-container').dialog('open');
+
+        });
+    });
+</script>

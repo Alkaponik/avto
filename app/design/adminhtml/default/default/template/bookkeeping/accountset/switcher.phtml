@@ -1,0 +1,32 @@
+<?php /* @var $this Testimonial_Bookkeeping_Block_Adminhtml_AccountSet_Switcher */ ?>
+
+<?php if ($accountSets = $this->getAccountSets()): ?>
+<p class="switcher"><label for="account_set_switcher"><?php echo $this->__('Account Chart:') ?></label>
+<?php // var_dump($this->getSelectedDirectory()); die;?>
+<select name="store_switcher" id="account_set_switcher" onchange="return window.switchAccountSet(this);">
+    <?php foreach ($accountSets as $id => $accountSet): ?>
+        <?php $selected = ($this->getSelectedAccountSet() == $id) ? 'selected' : '' ; ?>
+        <option value="<?php echo $id ?>" <?php echo $selected ?>><?php echo $accountSet ?></option>
+    <?php endforeach; ?>
+</select>
+
+</p>
+<script type="text/javascript">
+    window.switchAccountSet = function (obj) {
+        try {
+            activeTab = $$('ul.tabs>li>a.active')[0].id;
+        } catch(e) {
+            activeTab = undefined;
+        }
+
+        var url = '<?php echo $this->getSwitchUrl() ?>'.replace('{account_set_id}',obj.value) ;
+        <?php if($this->getIsIntoTab()) : ?>
+        url = '<?php echo $this->getSwitchUrl() ?>'.replace('{tab}',activeTab) ;
+        <?php endif; ?>
+        url = url.replace(/&?(is)?ajax=true/i,'')
+        url = url.replace(/\?$/, '');
+        setLocation(url.replace('{account_set_id}',obj.value));
+    }
+
+</script>
+<?php endif; ?>
