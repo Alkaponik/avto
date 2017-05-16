@@ -1,0 +1,223 @@
+<?xml version="1.0"?>
+
+<config>
+    <tabs>
+        <magedoc translate="label" module="magedoc_orderexport">
+            <label>MageDoc</label>
+            <sort_order>700</sort_order>
+        </magedoc>
+    </tabs>
+    <sections>
+        <magedoc_orderexport translate="label" module="magedoc_orderexport">
+            <label>Order Export</label>
+            <tab>magedoc</tab>
+            <frontend_type>text</frontend_type>
+            <sort_order>920</sort_order>
+            <show_in_default>1</show_in_default>
+            <show_in_website>1</show_in_website>
+            <show_in_store>1</show_in_store>
+            <groups>
+                <settings translate="label">
+                    <label>General</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>10</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <enabled translate="label">
+                            <label>Enable Scheduled Order Export</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </enabled>
+                        <sandbox_mode translate="label">
+                            <label>Sandbox Mode</label>
+                            <comment>In sandbox mode order export statuses are not updated</comment>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>15</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </sandbox_mode>
+                        <path_prefix translate="label comment">
+                            <label>Data Directory</label>
+                            <comment>Relative path to data files placed in var/erp/ directory</comment>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>20</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </path_prefix>
+                        <order_export_filename translate="label">
+                            <label>Order File Name</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>30</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </order_export_filename>
+                        <use_current_date_as_filename translate="label">
+                            <label>Use current date as filename</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>40</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </use_current_date_as_filename>
+                        <append_to_existing_file translate="label">
+                            <label>Append to existing file</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>45</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </append_to_existing_file>
+                        <order_export_limit translate="label,comment">
+                            <label>Order export limit</label>
+                            <comment>Maximum number of orders to export within single request.</comment>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>50</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </order_export_limit>
+                        <order_address_export_limit translate="label,comment">
+                            <label>Order Address export limit</label>
+                            <comment>Maximum number of order address to be exported.</comment>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>60</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </order_address_export_limit>
+                        <create_shipment translate="label">
+                            <label>Create Shipment</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>45</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </create_shipment>
+                    </fields>
+                </settings>
+                <orders translate="label">
+                    <label>Orders</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>10</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <specific_payment_methods translate="label">
+                            <label>Specific Payment Methods Only</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </specific_payment_methods>
+                        <payment_methods translate="label">
+                            <label>Payment Methods</label>
+                            <frontend_type>multiselect</frontend_type>
+                            <depends><specific_payment_methods>1</specific_payment_methods></depends>
+                            <source_model>adminhtml/system_config_source_payment_allmethods</source_model>
+                            <sort_order>20</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </payment_methods>
+                        <specific_statuses translate="label">
+                            <label>Specific Statuses Only</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>30</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </specific_statuses>
+                        <statuses translate="label comment">
+                            <label>Order Statuses to Export</label>
+                            <frontend_type>multiselect</frontend_type>
+                            <depends><specific_statuses>1</specific_statuses></depends>
+                            <source_model>magedoc/adminhtml_system_config_source_order_status</source_model>
+                            <sort_order>40</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </statuses>
+                        <specific_supply_statuses translate="label">
+                            <label>Specific Supply Statuses Only</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>50</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </specific_supply_statuses>
+                        <supply_statuses translate="label comment">
+                            <label>Order Supply Statuses to Export</label>
+                            <frontend_type>multiselect</frontend_type>
+                            <depends><specific_supply_statuses>1</specific_supply_statuses></depends>
+                            <source_model>magedoc/source_order_supply_status</source_model>
+                            <sort_order>60</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </supply_statuses>
+                    </fields>
+                </orders>
+                <ftp translate="label">
+                    <label>Ftp Settings</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>20</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <hostname translate="label">
+                            <label>Hostname</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </hostname>
+                        <username translate="label">
+                            <label>Username</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>20</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </username>
+                        <password translate="label">
+                            <label>Password</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>30</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </password>
+                        <path translate="label">
+                            <label>File Path</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>40</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </path>
+                    </fields>
+                </ftp>
+            </groups>
+        </magedoc_orderexport>
+    </sections>
+</config>

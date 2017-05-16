@@ -1,0 +1,213 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Open Software License (OSL 3.0)
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/osl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * @category   Phoenix
+ * @package    Phoenix_Brands
+ * @copyright  Copyright (c) 2011 Phoenix Medien GmbH & Co. KG (http://www.phoenix-medien.de)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ */
+-->
+<config>
+    <modules>
+        <Phoenix_Brands>
+            <version>0.1.3</version>
+        </Phoenix_Brands>
+    </modules>
+
+    <global>
+        <models>
+            <phoenixbrands>
+                <class>Phoenix_Brands_Model</class>
+                <resourceModel>phoenixbrands_resource</resourceModel>
+            </phoenixbrands>
+            <phoenixbrands_resource>
+                <class>Phoenix_Brands_Model_Resource</class>
+            </phoenixbrands_resource>
+            <catalog>
+                <rewrite>
+                    <category>Phoenix_Brands_Model_Catalog_Category</category>
+                </rewrite>
+            </catalog>
+            <catalog_resource>
+                <entities>
+                    <category_product_idx>
+                        <table>catalog_category_product_idx</table>
+                    </category_product_idx>
+                </entities>
+            </catalog_resource>
+        </models>
+        <resources>
+            <phoenixbrands_setup>
+                <setup>
+                    <module>Phoenix_Brands</module>
+                </setup>
+                <connection>
+                    <use>core_setup</use>
+                </connection>
+            </phoenixbrands_setup>
+            <phoenixbrands_write>
+                <use>core_write</use>
+            </phoenixbrands_write>
+            <phoenixbrands_read>
+                <use>core_read</use>
+            </phoenixbrands_read>
+        </resources>
+        <helpers>
+            <phoenixbrands>
+                <class>Phoenix_Brands_Helper</class>
+            </phoenixbrands>
+        </helpers>
+        <blocks>
+            <phoenixbrands>
+                <class>Phoenix_Brands_Block</class>
+            </phoenixbrands>
+        </blocks>
+        <events>
+            <catalog_category_change_products>
+                <observers>
+                    <phoenixbrands>
+                        <class>phoenixbrands/observer</class>
+                        <method>catalog_category_change_products</method>
+                        <type>singleton</type>
+                    </phoenixbrands>
+                </observers>
+            </catalog_category_change_products>
+            <catalog_product_save_before>
+                <observers>
+                    <phoenixbrands>
+                        <class>phoenixbrands/observer</class>
+                        <method>catalog_product_save_before</method>
+                        <type>singleton</type>
+                    </phoenixbrands>
+                </observers>
+            </catalog_product_save_before>
+            <catalog_product_save_after>
+                <observers>
+                    <phoenixbrands>
+                        <class>phoenixbrands/observer</class>
+                        <method>catalog_product_save_after</method>
+                        <type>singleton</type>
+                    </phoenixbrands>
+                </observers>
+            </catalog_product_save_after>
+            <catalog_category_delete_after>
+                <observers>
+                    <phoenixbrands>
+                        <class>phoenixbrands/observer</class>
+                        <method>catalog_category_delete_after</method>
+                        <type>singleton</type>
+                    </phoenixbrands>
+                </observers>
+            </catalog_category_delete_after>
+        </events>
+        <index>
+            <indexer>
+                <brand_category_product>
+                    <model>phoenixbrands/catalog_category_indexer_product_brand</model>
+                </brand_category_product>
+            </indexer>
+        </index>
+    </global>
+
+    <adminhtml>
+        <translate>
+            <modules>
+                <Phoenix_Brands>
+                    <files>
+                        <default>Phoenix_Brands.csv</default>
+                    </files>
+                </Phoenix_Brands>
+            </modules>
+        </translate>
+        <layout>
+            <updates>
+                <phoenixbrands>
+                    <file>phoenixbrands.xml</file>
+                </phoenixbrands>
+            </updates>
+        </layout>
+    </adminhtml>
+
+    <frontend>
+        <layout>
+            <updates>
+                <phoenixbrands>
+                    <file>phoenixbrands.xml</file>
+                </phoenixbrands>
+            </updates>
+        </layout>
+        <translate>
+            <modules>
+                <Phoenix_Brands>
+                    <files>
+                        <default>Phoenix_Brands.csv</default>
+                    </files>
+                </Phoenix_Brands>
+            </modules>
+        </translate>
+        <events>
+            <controller_action_layout_load_before>
+                <observers>
+                    <phoenixbrands>
+                        <class>phoenixbrands/observer</class>
+                        <method>addCategoryLayoutUpdate</method>
+                        <type>singleton</type>
+                    </phoenixbrands>
+                </observers>
+            </controller_action_layout_load_before>
+            <controller_action_layout_generate_xml_before>
+                <observers>
+                    <phoenixbrands>
+                        <class>phoenixbrands/observer</class>
+                        <method>changeLayoutUpdate</method>
+                        <type>singleton</type>
+                    </phoenixbrands>
+                </observers>
+            </controller_action_layout_generate_xml_before>
+            <controller_action_layout_generate_xml_before>
+                <observers>
+                    <phoenixbrands_update_brand_category_layout>
+                        <class>phoenixbrands/observer</class>
+                        <method>changeLayoutUpdateBrandCategory</method>
+                        <type>singleton</type>
+                    </phoenixbrands_update_brand_category_layout>
+                </observers>
+            </controller_action_layout_generate_xml_before>
+        </events>
+    </frontend>
+    
+    <admin>
+        <routers>
+            <phoenixbrands>
+                <use>admin</use>
+                <args>
+                    <module>Phoenix_Brands</module>
+                    <frontName>phoenixbrands</frontName>
+                </args>
+            </phoenixbrands>
+        </routers>
+    </admin>
+    
+    <default>
+        <catalog>
+            <phoenixbrands>
+                <brands_attribute>manufacturer</brands_attribute>
+                <brands_sidebar_num>15</brands_sidebar_num>
+                <brands_featured_num>3</brands_featured_num>
+                <brands_columns>4</brands_columns>
+            </phoenixbrands>
+        </catalog>
+    </default>
+</config>

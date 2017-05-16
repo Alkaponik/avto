@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Phoenix_GetCategoriesList>
+            <active>true</active>
+            <codePool>local</codePool>
+        </Phoenix_GetCategoriesList>
+    </modules>
+</config>

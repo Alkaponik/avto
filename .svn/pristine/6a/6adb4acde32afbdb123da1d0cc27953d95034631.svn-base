@@ -1,0 +1,34 @@
+<?php /* @var $this Testimonial_MageDoc_Block_Adminhtml_Directory_Switcher */ ?>
+<?php $label = $this->getLabel() ? : $this->__('Choose Directory:')?>
+<?php if ($directories = $this->getDirectories()): ?>
+<p class="switcher"><label for="directory_switcher"><?php echo $label ?></label>
+<?php // var_dump($this->getSelectedDirectory()); die;?>
+<select name="store_switcher" id="directory_switcher" onchange="return window.switchDirectory(this);" <?php echo $this->getElementName() ? "name=\"{$this->getElementName()}\"": ''; ?> data-switch-url="<?php echo $this->getSwitchUrl()?>">
+    <?php foreach ($directories as $id => $directory): ?>
+        <?php $selected = ($this->getSelectedDirectory() == $id) ? 'selected' : '' ; ?>
+        <option value="<?php echo $id ?>" <?php echo $selected ?>><?php echo $directory ?></option>
+    <?php endforeach; ?>
+</select>
+
+</p>
+<script type="text/javascript">
+    window.switchDirectory = function (obj) {
+        try {
+            activeTab = $$('ul.tabs>li>a.active')[0].id;
+        } catch(e) {
+            activeTab = undefined;
+        }
+
+        var url = obj.getAttribute('data-switch-url')
+            ? obj.getAttribute('data-switch-url')
+            : '<?php echo $this->getSwitchUrl() ?>'.replace('{directory}',obj.value) ;
+        <?php if($this->getIsIntoTab()) : ?>
+        url = '<?php echo $this->getSwitchUrl() ?>'.replace('{tab}',activeTab) ;
+        <?php endif; ?>
+        url = url.replace(/&?(is)?ajax=true/i,'')
+        url = url.replace(/\?$/, '');
+        setLocation(url.replace('{directory}',obj.value));
+    }
+
+</script>
+<?php endif; ?>

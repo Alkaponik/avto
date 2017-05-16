@@ -1,0 +1,29 @@
+<body style="background:#F6F6F6; font-family:Verdana, Arial, Helvetica, sans-serif; font-size:12px; margin:0; padding:0;">
+    <div class="content-header">
+        <table cellspacing="0">
+            <tr>
+                <td style="width:50%;">ID: <b>{{var call.getId()}}</b></td>
+            </tr>
+            <tr>
+                <td style="width:50%;">Created At: <b>{{var call.getCreatedAtDate()}}</b></td>
+            </tr>
+            <tr>
+                <td style="width:50%;">User name: <b>{{var call.getName()}}</b></td>
+            </tr>
+            <tr>
+                <td style="width:50%;">Phone: <b>{{var call.getTelephone()}}</b></td>
+            </tr>
+            <tr>
+                <td style="width:50%;">Comment:  <b>{{var call.getComment()}}</b></td>
+            </tr>
+            <tr>
+                <td style="width:50%;">
+                    <a href="{{var call.getUrl()}}" >For changing status of the request click here.</a>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div style="width: 100%; margin-top: 10px;">
+        {{var call.getCartContent()}}
+    </div>
+</body>

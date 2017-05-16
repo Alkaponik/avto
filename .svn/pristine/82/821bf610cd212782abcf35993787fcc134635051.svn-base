@@ -1,0 +1,23 @@
+<?php $collection = $this->getPriceCollection() ?>
+<?php if (count($collection)): ?>
+    <h2><?php echo Mage::helper('magedoc')->__('Retailer prices') ?></h2>
+<?php endif; ?>
+<div id="retailers-container" style="display: none;">
+    <div class="product-info-table-wrapper rnd">                
+        <table class="retailer-prices product-info-table">
+            <thead>
+                <tr>
+                    <th><?php echo $this->__('Retailer') ?></th>
+                    <th><?php echo $this->__('Cost') ?></th>
+                    <th><?php echo $this->__('Price') ?></th>
+                    <th><?php echo $this->__('Domestic Qty') ?></th>
+                    <th><?php echo $this->__('General Qty') ?></th>
+                    <th><?php echo $this->__('Total Qty') ?></th>
+                    <th><?php echo $this->__('Udated at') ?></th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+</div>

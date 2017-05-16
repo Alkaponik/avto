@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+
+<config>
+    <modules>
+        <Testimonial_MageDoc>
+            <active>true</active>
+            <codePool>local</codePool>
+            <depends>
+                <Mage_Adminhtml/>
+                <Mage_Catalog/>
+                <Mage_CatalogSearch/>
+                <Mage_Sales/>
+                <MageDoc_System/>
+                <MageDoc_Scheduler/>
+            </depends>
+        </Testimonial_MageDoc>
+    </modules>
+</config>

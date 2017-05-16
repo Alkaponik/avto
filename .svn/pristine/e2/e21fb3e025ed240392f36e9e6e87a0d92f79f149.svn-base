@@ -1,0 +1,24 @@
+<tr>
+    <td class="label""><?php echo $this->getLabel() ?></td>
+    <td class="value">
+        <div class="combo-container <?php echo $this->getClass(); ?>" id="<?php echo $this->getContainerId()?>">
+            <input type="text" class="combo-input form-combo-input" autocomplete="off" value="<?php echo $this->getTextValue()?>" name="<?php echo $this->getInputName()?>" <? echo $this->getDisabled() ?> />
+            <select class="combo-select" size="<?php echo $this->getSelectSize()?>" name="<?php echo $this->getSelectName()?>" <? echo $this->getDisabled() ?> tabindex="-1">
+                <?php foreach($this->getValues() as $key => $option):?>
+                    <? if($this->getValue() == $key):?>
+                        <option value="<?php echo $key?>" selected="selected"><?php echo $option?></option>
+                    <? else: ?>
+                        <option value="<?php echo $key?>"><?php echo $option?></option>                
+                    <? endif; ?>    
+                <?php endforeach;?>
+            </select>
+        </div>
+        <script type="text/javascript">
+            var <?php echo $this->getContainerId()?>_combobox = new Combobox('<?php echo $this->getContainerId()?>', '<?php echo $this->getSourceUrl()?>', '', {}, '<?php echo $this->getValue() ?>', <?php echo json_encode($this->getSettings(), JSON_FORCE_OBJECT)?>);
+            <?php if ($this->getData('settings/isAjax')):?>
+            <?php echo $this->getContainerId()?>_combobox.getRequestData();
+            <?php endif;?>
+        </script>    
+    </td>
+</tr>
+

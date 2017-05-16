@@ -1,0 +1,13 @@
+<?php $model = $this->getParentBlock()->getModel(); ?>
+<?php $typeCollection = $model->getTypeCollection(); ?>
+<ul class="car-types-list">
+    <?php while ($type = $typeCollection->fetchItem()): ?>
+    <li>
+        <a title="<?php echo $model->getFullName().' '.$type->getTypeText() ?>" href="<?php echo $type->getUrl()?>">
+            <span class="body-type"><?php echo $type->getTypBodyDesText() ?></span>
+            <span class="start-date"><?php echo $type->getProductionPeriod() ?></span>
+            <span class="engine-description"><?php echo $type->getTypeText() ?></span>
+        </a>
+    </li>
+    <?php endwhile;?>
+</ul>

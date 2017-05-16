@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+    <acl>
+        <resources>
+            <admin>
+                <children>
+                    <system>
+                        <children>
+                            <config>
+                                <children>
+                                    <callbackrequest translate="title" module="callbackrequest">
+                                        <title>Call Back Request</title>
+                                    </callbackrequest>
+                                </children>
+                            </config>
+                        </children>
+                    </system>
+                </children>
+                <children>
+                    <promo>
+                        <children>
+                            <callbackrequest translate="title" module="callbackrequest">
+                                <title>Call Back Request</title>
+                            </callbackrequest>
+                        </children>
+                    </promo>
+                </children>
+            </admin>
+        </resources>
+    </acl>
+
+    <menu>
+        <promo module="promo">
+            <children>
+                <callbackrequest module="callbackrequest">
+                    <title>Call Back Request</title>
+                    <sort_order>100</sort_order>
+                    <action>adminhtml/callbackrequest</action>
+                </callbackrequest>
+            </children>
+        </promo>
+    </menu>
+</config>

@@ -1,0 +1,14 @@
+<?php $brands = $this->getFeaturedBrands() ?>
+<?php if (count($brands)): ?>
+<div class="recommended-brands">
+    <ul>
+    <?php $i=0; foreach ($brands as $brand): ?>
+        <?php if ($_imgHtml = Mage::helper('phoenixbrands')->getBrandLogoHtml($brand)): ?>
+            <li><a href="<?php echo $brand->getUrl() ?>" title="<?php echo $this->htmlEscape($brand->getName()) ?>"><?php echo $_imgHtml ?></a></li>
+            <?php $i++ ?>
+        <?php endif ?>
+        <?php if ($this->getFeaturedBrandsCount() > 0 && $i == $this->getFeaturedBrandsCount()) break ?>
+    <?php endforeach ?>
+    </ul>
+</div>
+<?php endif ?>

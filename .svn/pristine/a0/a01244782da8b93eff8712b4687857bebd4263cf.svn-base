@@ -1,0 +1,74 @@
+<?php
+/**
+ * Bestseller template
+ *
+ * outputs a list of products, defined in a content block in the backend cms
+ *
+ *	@author Phoenix Medien
+ *
+ *
+ *	@see Mage_Catalog_Model_Product for list of available getter methods
+ *  @see Mage_Core_Block_Template
+ *
+ */
+
+// check if bestsellers variable has been set in admin backend
+
+if($this->getBestsellers()):
+// product-id list is comma separated
+    $bestseller_products = array_unique(explode(',', $this->getBestsellers()));
+    $_taxHelper  = $this->helper('tax');
+    $_coreHelper = $this->helper('core');
+    ?>
+
+<div class="widget widget-new-products">
+    <div class="page-title" style="display:block;margin:0;">
+        <h2 style="font-size:14px;"><?php echo $this->__('Die beliebtesten Produkte dieser Kategorie:') ?></h2>
+    </div>
+    <div class="category-view">
+        <?php $_columnCount = $this->getColumnCount(); ?>
+        <?php $i=0; foreach($bestseller_products as $_productId):
+                $_product = Mage::getModel('catalog/product')
+                        ->setStoreId(Mage::app()->getStore()->getId())
+                        ->load($_productId);
+        ?>
+        <?php if ($i++%3==0): ?>
+            <ul class="products-grid">
+        <?php endif; ?>
+        <?php if($_product && $_product->getId() && $_product->isVisibleInSiteVisibility() && $_product->isSaleable()):?>
+                <li class="item<?php if(($i-1)%$_columnCount==0): ?> first<?php elseif($i%$_columnCount==0): ?> last<?php endif; ?>" onclick="setLocation('<?php echo $_product->getProductUrl() ?>')">
+                    <a class="product-image" href="<?php echo $_product->getProductUrl() ?>" title="<?php echo $this->htmlEscape($_product->getName()) ?>"><img class="product-image" src="<?php echo $this->helper('catalog/image')->init($_product, 'small_image')->resize(110) ?>" width="110" alt="<?php echo $this->htmlEscape($_product->getName()) ?>" />
+                        <?php echo $this->getDiscountHtml($_product);?>
+                    </a>
+                    <h3 class="product-name"><a href="<?php echo $_product->getProductUrl() ?>" title="<?php echo $this->htmlEscape($_product->getName())?>"><?php echo $this->htmlEscape($_product->getName()) ?></a></h3>
+                    <?php echo $this->getReviewsSummaryHtml($_product, 'short') ?>
+                    <?php echo $this->getContentsInformationHtml($_product)?>
+
+                    <div class="price-info-box">
+                    <?php echo $this->getPriceHtml($_product, true, '-widget-new-grid') ?>
+                    <?php if (Mage::helper('productdiscount')->getCost($_product)):?>
+                        <div class="discount-add-info">
+                            <span class="suggested-retail-price"><span class="label"><?php echo $this->__('UVP*')?></span><span class="price-value"><?php echo Mage::helper('productdiscount')->getCost($_product);?></span></span>
+                            <span class="saved-amount"><?php echo Mage::helper('core')->currency( Mage::helper('productdiscount')->getDiscountValue($_product), true, false);?><span class="post-label"><?php echo $this->__('saved')?></span></span>
+                        </div>
+                   <?php endif; ?>
+                    </div>
+
+                   <?php if($_product->isSaleable()): ?>
+                        <button type="button" class="button btn-cart" onclick="setLocation('<?php echo $this->getAddToCartUrl($_product) ?>')"><span><span><?php echo $this->__('Add to Cart') ?></span></span></button>
+                    <?php else: ?>
+                        <?php if ($_product->getIsInStock()): ?>
+                            <p class="availability in-stock"><span><?php echo $this->__('In stock') ?></span></p>
+                        <?php else: ?>
+                            <p class="availability out-of-stock"><span><?php echo $this->__('Out of stock') ?></span></p>
+                        <?php endif; ?>
+                    <?php endif; ?>
+                </li>
+        <?php endif; ?>
+        <?php if ($i%3==0 || $i==count($bestseller_products)): ?>
+            </ul>
+        <?php endif; ?>
+        <?php endforeach; ?>
+    </div>
+</div>
+<?php endif; ?>

@@ -1,0 +1,8 @@
+"SugarCRM User Id","SugarCRM User Id"
+"Current order manager doesn\'t have related SugarCRM account defined","Current order manager doesn\'t have related SugarCRM account defined"
+"Unable to connect SugarCRM API %s","Unable to connect SugarCRM API %s"
+"Call","Call"
+"Scheduled","Scheduled"
+"Not Scheduled","Not Scheduled"
+"Unable to schedule call: %s","Unable to schedule call: %s"
+"Unable to create contact: %s","Unable to create contact: %s"

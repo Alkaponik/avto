@@ -1,0 +1,88 @@
+<?xml version="1.0"?>
+<config>
+    <sections>
+        <carriers>
+            <frontend_model>phoenix_multipletablerates/adminhtml_system_config_form</frontend_model>
+            <groups>
+                <multipletablerates>
+                    <fields>
+                        <export>
+                            <frontend_type>multipletablerates_export</frontend_type>
+                        </export>
+                        <condition_operator translate="label">
+                            <label>Condition Operator</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>phoenix_multipletablerates/rule_condition_rate</source_model>
+                            <sort_order>4</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </condition_operator>
+                        <product_special_attributeset translate="label">
+                            <label>Special product group attribute sets</label>
+                            <frontend_type>multiselect</frontend_type>
+                            <source_model>phoenix_multipletablerates/system_config_source_attributeset</source_model>
+                            <sort_order>120</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </product_special_attributeset>
+                        <product_special_taxclass translate="label">
+                            <label>Special product group tax classes</label>
+                            <frontend_type>multiselect</frontend_type>
+                            <source_model>phoenix_multipletablerates/system_config_source_producttaxclass</source_model>
+                            <sort_order>130</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </product_special_taxclass>
+                        <rate_additional_conditions translate="label">
+                            <label>Additional Rate Conditions</label>
+                            <frontend_type>multiselect</frontend_type>
+                            <source_model>phoenix_multipletablerates/source_shipping_rateCondition</source_model>
+                            <sort_order>140</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </rate_additional_conditions>
+                        <strict_countries translate="label">
+                            <label>Strict Shipping to Countries</label>
+                            <frontend_type>multiselect</frontend_type>
+                            <source_model>adminhtml/system_config_source_country</source_model>
+                            <comment>Shipping to the country requires the same country to be specified in billing and shipping addresses</comment>
+                            <sort_order>150</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </strict_countries>
+                        <strict_countries_message translate="label">
+                            <label>Strict Countries Shipping Restriction Message</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>160</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </strict_countries_message>
+                    </fields>
+                </multipletablerates>
+            </groups>
+        </carriers>
+        <shipping>
+            <groups>
+                <option>
+                    <fields>
+                        <rates_sort_method translate="label">
+                            <label>Shipping Rates Sorting Method</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>phoenix_multipletablerates/source_shipping_rateSort</source_model>
+                            <sort_order>30</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </rates_sort_method>
+                    </fields>
+                </option>
+            </groups>
+        </shipping>
+    </sections>
+</config>

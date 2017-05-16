@@ -1,0 +1,101 @@
+<script type="text/javascript">
+    window.isFormSubmitted = false;
+    Event.observe(window, 'load', function(){
+            document.observe('keydown', function(event){
+                if (event.ctrlKey && event.keyCode == 13){
+                    order.submit();
+                }
+            });
+
+        order.saveQuote = function(url)
+        {
+            $('order-billing_address_region_id').removeClassName('required-entry');
+            $('order-billing_address_region_id').removeClassName('validate-select');
+            $('order-shipping_address_region_id').removeClassName('required-entry');
+            $('order-shipping_address_region_id').removeClassName('validate-select');
+            if ($$('input[name="order[has_shipping]"]').first()){
+                $$('input[name="order[has_shipping]"]').first().removeClassName('required-entry');
+            }
+            if (this.orderItemChanged) {
+                if (confirm('You have item changes')) {
+                    if (editForm.submit(url)) {
+                        disableElements('save');
+                        disableElements('save_quote');
+                    } else {
+                        $('order-billing_address_region_id').addClassName('required-entry');
+                        $('order-billing_address_region_id').addClassName('validate-select');
+                        $('order-shipping_address_region_id').addClassName('required-entry');
+                        $('order-shipping_address_region_id').addClassName('validate-select');
+                        if ($$('input[name="order[has_shipping]"]').first()){
+                            $$('input[name="order[has_shipping]"]').first().addClassName('required-entry');
+                        }
+                    }
+                } else {
+                    this.itemsUpdate();
+                }
+            } else {
+                if (editForm.submit(url)) {
+                    disableElements('save');
+                    disableElements('save_quote');
+                } else {
+                    $('order-billing_address_region_id').addClassName('required-entry');
+                    $('order-billing_address_region_id').addClassName('validate-select');
+                    $('order-shipping_address_region_id').addClassName('required-entry');
+                    $('order-shipping_address_region_id').addClassName('validate-select');
+                    if ($$('input[name="order[has_shipping]"]').first()){
+                        $$('input[name="order[has_shipping]"]').first().addClassName('required-entry');
+                    }
+                }
+            }
+        };
+    });
+    
+    window.onbeforeunload = function (event) {
+        if (!window.isFormSubmitted && window === window.top){
+            var message = '<?php echo $this->__('Do you really want to leave the order without saving?'); ?>';
+            if (typeof event == "undefined") {
+                event = window.event;
+            }
+            if (event) {
+                event.returnValue = message;
+            }
+
+            return message;
+        }};
+
+    window.editForm.submit = function (url){
+        if (typeof varienGlobalEvents != "undefined") {
+            varienGlobalEvents.fireEvent('formSubmit', this.formId);
+        }
+        this.errorSections = $H({});
+        this.canShowError = true;
+        this.submitUrl = url;
+        if(this.validator && this.validator.validate()){
+            if(this.validationUrl){
+                this._validate();
+            }
+            else{
+                window.isFormSubmitted = true;
+                this._submit();
+            }
+            return true;
+        }
+        return false;
+    };
+
+    <?php
+    $filter = $this->getRequest()->getParam('filter');
+    if (is_string($filter)) {
+        $data = $this->helper('adminhtml')->prepareFilterString($filter);
+        if (!empty($data['Telephone'])){
+            ?>
+            if ($('order-billing_address_telephone') && ! $('order-billing_address_telephone').value){
+                $('order-billing_address_telephone').value = '<?php echo $data['Telephone']?>';
+            }
+            <?php
+        }
+    }
+    ?>
+
+    function setPostcodeOptional(zipElement, country) {};
+</script>

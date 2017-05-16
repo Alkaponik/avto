@@ -1,0 +1,347 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Ak_NovaPoshta>
+            <version>0.1.3</version>
+        </Ak_NovaPoshta>
+    </modules>
+    <global>
+        <models>
+            <novaposhta>
+                <class>Ak_NovaPoshta_Model</class>
+                <resourceModel>novaposhta_resource</resourceModel>
+            </novaposhta>
+            <novaposhta_resource>
+                <class>Ak_NovaPoshta_Model_Resource</class>
+                <entities>
+                    <city>
+                        <table>novaposhta_city</table>
+                    </city>
+                    <warehouse>
+                        <table>novaposhta_warehouse</table>
+                    </warehouse>
+                    <consignment>
+                        <table>novaposhta_consignment</table>
+                    </consignment>
+                </entities>
+            </novaposhta_resource>
+        </models>
+        <blocks>
+            <novaposhta>
+                <class>Ak_NovaPoshta_Block</class>
+            </novaposhta>
+        </blocks>
+        <helpers>
+            <novaposhta>
+                <class>Ak_NovaPoshta_Helper</class>
+            </novaposhta>
+        </helpers>
+        <resources>
+            <novaposhta_setup>
+                <setup>
+                    <module>Ak_NovaPoshta</module>
+                </setup>
+            </novaposhta_setup>
+        </resources>
+        <events>
+            <sales_order_shipment_track_save_after>
+                <observers>
+                    <ak_novaposhta_model_observer>
+                        <type>singleton</type>
+                        <class>novaposhta/observer</class>
+                        <method>sales_order_shipment_track_save_after</method>
+                    </ak_novaposhta_model_observer>
+                </observers>
+            </sales_order_shipment_track_save_after>
+            <sales_order_shipment_track_save_before>
+                <observers>
+                    <ak_novaposhta_model_observer>
+                        <type>singleton</type>
+                        <class>novaposhta/observer</class>
+                        <method>sales_order_shipment_track_save_before</method>
+                    </ak_novaposhta_model_observer>
+                </observers>
+            </sales_order_shipment_track_save_before>
+        </events>
+    </global>
+    <frontend>
+        <translate>
+            <modules>
+                <Ak_NovaPoshta>
+                    <files>
+                        <default>Ak_NovaPoshta.csv</default>
+                    </files>
+                </Ak_NovaPoshta>
+            </modules>
+        </translate>
+    </frontend>
+    <admin>
+        <routers>
+            <adminhtml>
+                <args>
+                    <modules>
+                        <novaposhta before="Mage_Adminhtml">Ak_NovaPoshta_Adminhtml</novaposhta>
+                    </modules>
+                </args>
+            </adminhtml>
+        </routers>
+    </admin>
+    <adminhtml>
+        <layout>
+            <updates>
+                <Ak_NovaPoshta>
+                    <file>NovaPoshta.xml</file>
+                </Ak_NovaPoshta>
+            </updates>
+        </layout>
+        <translate>
+            <modules>
+                <Ak_NovaPoshta>
+                    <files>
+                        <default>Ak_NovaPoshta.csv</default>
+                    </files>
+                </Ak_NovaPoshta>
+            </modules>
+        </translate>
+    </adminhtml>
+    <crontab>
+        <jobs>
+            <novaposhta_import_city_and_warehouse>
+                <schedule>
+                    <cron_expr>1 2 * * *</cron_expr>
+                </schedule>
+                <run>
+                    <model>novaposhta/import::runWarehouseAndCityMassImport</model>
+                </run>
+            </novaposhta_import_city_and_warehouse>
+            <novaposhta_import_check_status_consignment>
+                <schedule>
+                    <cron_expr>*/30 * * * *</cron_expr>
+                </schedule>
+                <run>
+                    <model>novaposhta/import::runCheckStatusConsignment</model>
+                </run>
+            </novaposhta_import_check_status_consignment>
+        </jobs>
+    </crontab>
+    <default>
+        <carriers>
+            <novaposhta>
+                <!-- disabled by default not to propose unconfigured shipping method to customer -->
+                <active>0</active>
+                <!-- allow only for specific countries flag -->
+                <sallowspecific>1</sallowspecific>
+                <!-- allow only for Ukraine -->
+                <specificcountry>UA</specificcountry>
+                <!-- carrier model -->
+                <model>novaposhta/carrier_novaPoshta</model>
+                <!-- carrier title -->
+                <title>Новая Почта</title>
+                <!-- error message -->
+                <specificerrmsg>Этот способ доставки на текущий момент не доступен. Если вы желаете, чтобы мы доставили заказ Новой Почтой, обратитесь к менеджеру интернет-магазина.</specificerrmsg>
+                <api_url>http://orders.novaposhta.ua/xml.php</api_url>
+                <enable_log>0</enable_log>
+                <pay_type>1</pay_type>
+                <payer>0</payer>
+                <min_update_timeout>5</min_update_timeout>
+                <free_shipment_amount>500</free_shipment_amount>
+                <tracking>
+                    <status>
+                        <status_invalid_number>
+                            <value>0</value>
+                            <label>Invalid consignment number</label>
+                        </status_invalid_number>
+                        <status_number_not_found>
+                            <value>1</value>
+                            <label>Number was not found</label>
+                        </status_number_not_found>
+                        <status_document_created_and_processing>
+                            <value>2</value>
+                            <label>Internet document is created and processing</label>
+                        </status_document_created_and_processing>
+                        <status_shipment_not_received>
+                            <value>3</value>
+                            <label>Shipment is not received yet</label>
+                        </status_shipment_not_received>
+                        <status_shipment_received>
+                            <value>4</value>
+                            <label>Shipment received</label>
+                        </status_shipment_received>
+                        <status_service_temporarily_unavailable>
+                            <value>505</value>
+                            <label>Service is temporarily unavailable</label>
+                        </status_service_temporarily_unavailable>
+                    </status>
+                    <stage>
+                        <stage_on_sender_transit>
+                            <value>0</value>
+                            <label>Shipment is in car on in transit</label>
+                        </stage_on_sender_transit>
+                        <stage_on_sender_warehouse_not_loaded>
+                            <value>1</value>
+                            <label>Shipment is not loaded yet</label>
+                        </stage_on_sender_warehouse_not_loaded>
+                        <stage_in_transit>
+                            <value>2</value>
+                            <label>Shipment is in transit</label>
+                        </stage_in_transit>
+                        <stage_on_destination_terminal>
+                            <value>3</value>
+                            <label>Shipment reached destination terminal</label>
+                        </stage_on_destination_terminal>
+                        <stage_on_destination_transit>
+                            <value>4</value>
+                            <label>Shipment is on destination transit</label>
+                        </stage_on_destination_transit>
+                        <stage_on_destination_warehouse>
+                            <value>5</value>
+                            <label>Shipment reached destination warehouse</label>
+                        </stage_on_destination_warehouse>
+                        <stage_registered_not_loaded>
+                            <value>6</value>
+                            <label>Shipment is registered but not loaded yet</label>
+                        </stage_registered_not_loaded>
+                        <stage_agent_pickup>
+                            <value>7</value>
+                            <label>Shipment is picked up by agent's car</label>
+                        </stage_agent_pickup>
+                    </stage>
+                    <state>
+                        <template>
+                            <value>0</value>
+                            <label>Шаблон</label>
+                        </template>
+                        <processing>
+                            <value>1</value>
+                            <label>Замовлення в обробці</label>
+                        </processing>
+                        <removed>
+                            <value>2</value>
+                            <label>Видалено</label>
+                        </removed>
+                        <not_found>
+                            <value>3</value>
+                            <label>Номер не знайдено</label>
+                        </not_found>
+                        <pending_shipment>
+                            <value>4</value>
+                            <label>Готується до відправлення</label>
+                        </pending_shipment>
+                        <shipped>
+                            <value>5</value>
+                            <label>Відправлено</label>
+                        </shipped>
+                        <on_destination_transit>
+                            <value>6</value>
+                            <label>Готується до видачі</label>
+                        </on_destination_transit>
+                        <on_destination_warehouse>
+                            <value>7</value>
+                            <label>Прибув у відділення</label>
+                        </on_destination_warehouse>
+                        <undetermined>
+                            <value>8</value>
+                            <label>Невизначено</label>
+                        </undetermined>
+                        <on_way_to_recipient>
+                            <value>9</value>
+                            <label>На шляху до Одержувача</label>
+                        </on_way_to_recipient>
+                        <received>
+                            <value>10</value>
+                            <label>Одержаний</label>
+                        </received>
+                        <recipient_denial>
+                            <value>11</value>
+                            <label>Відмова</label>
+                        </recipient_denial>
+                        <canceling>
+                            <value>12</value>
+                            <label>Відміняється</label>
+                        </canceling>
+                        <storage_termintaed>
+                            <value>13</value>
+                            <label>Припинено зберігання</label>
+                        </storage_termintaed>
+                        <address_chnaged>
+                            <value>14</value>
+                            <label>Змінено адресу</label>
+                        </address_chnaged>
+                        <back_delivery>
+                            <value>15</value>
+                            <label>Зворотна доставка</label>
+                        </back_delivery>
+                        <money_transfer_back_delivery>
+                            <value>16</value>
+                            <label>Зворотна доставка - грошовий переказ</label>
+                        </money_transfer_back_delivery>
+                        <redirect>
+                            <value>17</value>
+                            <label>Переадресування</label>
+                        </redirect>
+                        <return>
+                            <value>18</value>
+                            <label>Повернення</label>
+                        </return>
+                        <charging_storage_fee>
+                            <value>19</value>
+                            <label>Нараховується плата за зберігання</label>
+                        </charging_storage_fee>
+                        <retired_by_sender>
+                            <value>20</value>
+                            <label>Вилучено відправником</label>
+                        </retired_by_sender>
+                    </state>
+                    <payer>
+                        <payer_sender>
+                            <value>0</value>
+                            <label>Sender</label>
+                        </payer_sender>
+                        <payer_recipient>
+                            <value>1</value>
+                            <label>Recipient</label>
+                        </payer_recipient>
+                        <payer_third_party>
+                            <value>2</value>
+                            <label>Third party</label>
+                        </payer_third_party>
+                    </payer>
+                    <from_payment>
+                        <from_payment_bank_payment>
+                            <value>0</value>
+                            <label>Bank payment</label>
+                        </from_payment_bank_payment>
+                        <from_payment_cash>
+                            <value>1</value>
+                            <label>Cash</label>
+                        </from_payment_cash>
+                    </from_payment>
+                    <delivery_form>
+                        <delivery_to_warehouses>
+                            <value>1</value>
+                            <label>Delivery to the warehouse</label>
+                        </delivery_to_warehouses>
+                        <delivery_to_doors>
+                            <value>2</value>
+                            <label>Delivery to the doors</label>
+                        </delivery_to_doors>
+                    </delivery_form>
+                    <back_delivery>
+                        <back_delivery_no>
+                            <value>0</value>
+                            <label>No</label>
+                        </back_delivery_no>
+                        <back_delivery_yes>
+                            <value>1</value>
+                            <label>Yes</label>
+                        </back_delivery_yes>
+                        <back_delivery_none>
+                            <value>2</value>
+                            <label>None</label>
+                        </back_delivery_none>
+                    </back_delivery>
+                </tracking>
+            </novaposhta>
+        </carriers>
+    </default>
+</config>

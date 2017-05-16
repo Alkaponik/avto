@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+
+<layout>
+    <adminhtml_flatcatalog_product_index>
+        <referense name="head">
+            <action method="setTitle" translate="title"><title>Flat Catalog</title></action>
+        </referense>
+        <reference name="menu">
+            <action method="setActive"><menupath>flatcatalog/products</menupath></action>
+        </reference>
+        <reference name="content">
+            <block type="flatcatalog/adminhtml_product" name="flatcatalog_product.grid.container"></block>
+        </reference>
+    </adminhtml_flatcatalog_product_index>
+
+    <adminhtml_flatcatalog_product_grid>
+        <block type="core/text_list" name="root" output="toHtml">
+            <block type="flatcatalog/adminhtml_product_grid" name="admin.flatproduct.grid"/>
+        </block>
+    </adminhtml_flatcatalog_product_grid>
+</layout>

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+    <modules>
+        <MageDoc_CRM>
+            <version>0.1.0</version>
+        </MageDoc_CRM>
+    </modules>
+    <global>
+        <models>
+            <magedoc_crm>
+                <class>MageDoc_CRM_Model</class>
+                <resourceModel>magedoc_crm_resource</resourceModel>
+            </magedoc_crm>
+            <magedoc_crm_resource>
+                <class>MageDoc_CRM_Model_Resource</class>
+            </magedoc_crm_resource>
+        </models>
+        <helpers>
+            <magedoc_crm>
+                <class>MageDoc_CRM_Helper</class>
+            </magedoc_crm>
+        </helpers>
+        <events>
+            <customer_delete_before>
+                <observers>
+                    <magedoc_crm_model_observer>
+                        <type>singleton</type>
+                        <class>MageDoc_CRM_Model_Observer</class>
+                        <method>customer_delete_before</method>
+                    </magedoc_crm_model_observer>
+                </observers>
+            </customer_delete_before>
+        </events>
+        <magedoc>
+            <customer_related_entities module="magedoc_crm" translate="label">
+                <quote>
+                    <label>quotes</label>
+                    <table>sales/quote</table>
+                </quote>
+                <quote_address>
+                    <label>quote addresses</label>
+                    <table>sales/quote_address</table>
+                </quote_address>
+                <order>
+                    <label>order</label>
+                    <table>sales/order</table>
+                </order>
+                <order_grid>
+                    <label>order grid</label>
+                    <table>sales/order_grid</table>
+                </order_grid>
+                <order_address>
+                    <label>order addresses</label>
+                    <table>sales/quote_address</table>
+                </order_address>
+            </customer_related_entities>
+        </magedoc>
+    </global>
+    <admin>
+        <routers>
+            <adminhtml>
+                <args>
+                    <modules>
+                        <magedoc_crm before="Mage_Adminhtml">MageDoc_CRM_Adminhtml</magedoc_crm>
+                    </modules>
+                </args>
+            </adminhtml>
+        </routers>
+    </admin>
+    <adminhtml>
+        <translate>
+            <modules>
+                <MageDoc_CRM>
+                    <files>
+                        <default>MageDoc_CRM.csv</default>
+                    </files>
+                </MageDoc_CRM>
+            </modules>
+        </translate>
+    </adminhtml>
+</config>

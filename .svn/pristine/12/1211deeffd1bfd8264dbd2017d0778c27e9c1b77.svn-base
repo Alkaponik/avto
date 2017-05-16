@@ -1,0 +1,114 @@
+<?php
+$helper = Mage::helper('customer');
+$session = $this->getSessionToDisplay();
+
+$statuses = Mage::getSingleton('magedoc/source_retailer_data_import_session_status')
+    ->getAllOptions();
+
+
+?>
+<div class="entry-edit">
+    <div class="entry-edit-head">
+        <h4 class="icon-head head-customer-view">
+            <?php echo sprintf($helper->__('Import Session #%d'), $session->getId()) ?>
+        </h4>
+    </div>
+    <fieldset>
+        <table cellspacing="2" class="box-left">
+            <tr>
+                <td><strong><?php echo $helper->__('Total recodrs:') ?></strong></td>
+                <td><?php echo $session->getTotalRecords(); ?></td>
+            </tr>
+            <tr>
+                <td><strong>&nbsp</strong></td>
+                <td>&nbsp</td>
+            </tr>
+            <tr>
+                <td><strong>&nbsp</strong></td>
+                <td>&nbsp</td>
+            </tr>
+            <tr>
+                <td><strong>&nbsp</strong></td>
+                <td>&nbsp</td>
+            </tr>
+            <tr>
+                <td><strong><?php echo $helper->__('Total brands:') ?></strong></td>
+                <td><?php echo $session->getTotalBrands(); ?>
+                </td>
+            </tr>
+            <tr>
+                <td><strong>&nbsp</strong></td>
+                <td>&nbsp</td>
+            </tr>
+            <tr>
+                <td><strong>&nbsp</strong></td>
+                <td>&nbsp</td>
+            </tr>
+            <tr>
+                <td>&nbsp</td>
+                <td>&nbsp</td>
+            </tr>
+            <tr>
+                <td><strong><?php echo $helper->__('Price file:') ?></strong></td>
+                <td><?php echo $this->_getPriceFilesList(); ?></td>
+            </tr>
+            <tr>
+                <td><strong><?php echo $helper->__('Session status:') ?></strong></td>
+                <td><?php echo $statuses[$session->getStatusId()]; ?></td>
+            </tr>
+            <tr>
+                <td><strong><?php echo $helper->__('Created At:') ?></strong></td>
+                <td><?php echo $session->getCreatedAt(); ?></td>
+            </tr>
+        </table>
+        <table cellspacing="2" class="box-right">
+            <tr>
+                <td><strong><?php echo $helper->__('Valid records:') ?></strong></td>
+                <td><?php echo $session->getValidRecords(); ?></td>
+            </tr>
+            <tr>
+                <td><strong><?php echo $helper->__('Records linked to supplier:') ?></strong></td>
+                <td><?php echo $session->getRecordsWithOldBrands(); ?></td>
+            </tr>
+            <tr>
+                <td><strong><?php echo $helper->__('Records linked to directory:') ?></strong></td>
+                <td><?php echo $session->getRecordsLinkedToDirectory(); ?></td>
+            </tr>
+            <tr>
+                <td>&nbsp</td>
+                <td>&nbsp</td>
+            </tr>
+            <tr>
+                <td><strong><?php echo $helper->__('Linked brands:') ?></strong></td>
+                <td><?php echo $session->getOldBrands(); ?></td>
+            </tr>
+            <tr>
+                <td><strong><?php echo $helper->__('New brands:') ?></strong></td>
+                <td><?php echo $session->getNewBrands(); ?></td>
+            </tr>
+            <tr>
+                <td><strong><?php echo $helper->__('Imported brands:') ?></strong></td>
+                <td><?php echo $session->getImportedBrands(); ?></td>
+            </tr>
+
+            <tr>
+                <td><strong>&nbsp</strong></td>
+                <td>&nbsp</td>
+            </tr>
+            <tr>
+                <td><strong>&nbsp</strong></td>
+                <td>&nbsp</td>
+            </tr>
+            <tr>
+                <td><strong>&nbsp</strong></td>
+                <td>&nbsp</td>
+            </tr>
+            <tr>
+                <td><strong><?php echo $helper->__('Updated At:') ?></strong></td>
+                <td><?php echo $session->getUpdatedAt(); ?></td>
+            </tr>
+        </table>
+    </fieldset>
+</div>
+
+<?php echo $this->getChildHtml('', true, true); ?>

@@ -1,0 +1,25 @@
+<?php $_element = $this->getElement() ?>
+<tr id="<? echo $_element->getId()?>" <?php echo $_element->serialize($this->getHtmlAttributes()) ?>>
+    <?php foreach($_element->getElements() as $subElement): ?>
+        <?php if ($subElement->getType() != 'hidden'): ?>
+        <td>
+            <?php echo $subElement->toHtml(); ?>
+        </td>
+        <?php endif; ?>
+    <?php endforeach; ?>
+        <td>
+    <?php foreach($_element->getElements() as $subElement): ?>
+        <?php if ($subElement->getType() == 'hidden'): ?>
+            <?php echo $subElement->toHtml(); ?>
+        <?php endif; ?>
+    <?php endforeach; ?>
+            <button type="button" id="delete" name="delete"><?php echo $this->__('Delete'); ?></button>
+        </td>
+        <td class="information">
+        <?php if($_element->getArtId()): ?>
+            <a onclick="MageDoc_Adminhtml_Product_Information_WindowJsObject.getProductData(null,'<?php echo $_element->getArtId()?>','<?php echo $_element->getTypeId()?>');return false;" popup="1">Information</a>
+        <?php else:?>
+            <span><?php echo $this->__('Information') ?></span>
+        <?php endif;?>
+        </td>
+</tr>

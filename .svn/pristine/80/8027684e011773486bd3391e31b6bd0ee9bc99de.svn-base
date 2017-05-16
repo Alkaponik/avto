@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Testimonial_System>
+            <version>0.1.0</version>
+        </Testimonial_System>
+    </modules>
+    <global>
+        <helpers>
+            <testimonial_system>
+                <class>Testimonial_System_Helper</class>
+            </testimonial_system>
+        </helpers>
+        <blocks>
+            <testimonial_system>
+                <class>Testimonial_System_Block</class>
+            </testimonial_system>
+        </blocks>
+        <models>
+            <testimonial_system>
+                <class>Testimonial_System_Model</class>
+                <resourceModel>testimonial_system_resource</resourceModel>
+            </testimonial_system>
+            <testimonial_system_resource>
+                <class>Testimonial_System_Model_Resource</class>
+            </testimonial_system_resource>
+        </models>
+    </global>
+</config>

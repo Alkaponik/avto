@@ -1,0 +1,8 @@
+<?php $_inquiry = $this->getInquiry() ?>
+<tr class="border">
+    <td><?php echo $_inquiry->getCategory(); ?></td>
+    <td><?php echo $_inquiry->getSupplier(); ?></td>
+    <td><?php echo $_inquiry->getName(); ?></td>
+    <td><?php echo $_inquiry->getSku(); ?></td>
+    <td class="a-center last"><?php echo $_inquiry->getQty()*1 ?></td>
+</tr>

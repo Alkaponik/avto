@@ -1,0 +1,39 @@
+   <div class="grid inquiry-grid" id="inquiry-grid">
+        <table cellspacing="0" class="data order-tables">
+            <colgroup>
+                <col/>
+                <col/>
+                <col/>
+                <col width="70"/>
+                <col/>
+                <col/>
+                <col/>
+                <col/>
+                <col/>
+                <col/>
+                <col/>
+                <col/>
+                <col/>
+            </colgroup>
+           <thead>
+                <tr class="headings">
+                    <th class="no-link"><?php echo $this->helper('magedoc')->__('Category') ?></th>
+                    <th class="no-link"><?php echo $this->helper('magedoc')->__('Supplier') ?></th>
+                    <th class="no-link"><?php echo $this->helper('magedoc')->__('Product') ?></th>
+                    <th class="no-link"><?php echo $this->helper('magedoc')->__('Sku') ?></th>
+                    <th class="no-link"><?php echo $this->helper('magedoc')->__('Cost') ?></th>
+                    <th class="no-link"><?php echo $this->helper('magedoc')->__('Price') ?></th>
+                    <th class="no-link"><?php echo $this->helper('magedoc')->__('Qty') ?></th>
+                    <th class="no-link"><?php echo $this->helper('magedoc')->__('Retailer') ?></th>
+                    <th class="no-link"><?php echo $this->helper('magedoc')->__('Subtotal') ?></th>
+                    <th class="no-link"><?php echo $this->helper('magedoc')->__('Discount') ?></th>
+                    <th class="no-link"><?php echo $this->helper('magedoc')->__('Row Total') ?></th>
+                    <th class="no-link"><?php echo $this->helper('magedoc')->__('Action') ?></th>
+                    <th class="no-link"><?php echo $this->helper('magedoc')->__('Information') ?></th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php echo $this->getForm()->getHtml() ?>
+            </tbody>
+        </table>
+</div>

@@ -1,0 +1,75 @@
+<?php
+/**
+ * Magento Enterprise Edition
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Magento Enterprise Edition License
+ * that is bundled with this package in the file LICENSE_EE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://www.magentocommerce.com/license/enterprise-edition
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magentocommerce.com for more information.
+ *
+ * @category	design
+ * @package	 enterprise_default
+ * @copyright   Copyright (c) 2009 Irubin Consulting Inc. DBA Varien (http://www.varien.com)
+ * @license	 http://www.magentocommerce.com/license/enterprise-edition
+ */
+?>
+<?php
+/**
+ * Customer login form template
+ *
+ * @see Mage_Customer_Block_Form_Login
+ */
+?>
+<h1><?php echo ($this->helper('customer')->isRegistrationAllowed()) ? $this->__('Login or Create an Account') : $this->__('Login'); ?></h1>
+
+<?php echo $this->getMessagesBlock()->getGroupedHtml() ?>
+<form action="<?php echo $this->getPostActionUrl() ?>" method="post" id="login-form" class="form">
+	<fieldset>
+		<h2><?php echo $this->__('Registered Customers') ?></h2>
+		<p><?php echo $this->__('If you have an account with us, please log in.') ?></p>
+		<div>
+			<label for="email" class="required"><?php echo $this->__('Email Address') ?><em>*</em></label>
+			<input name="login[username]" value="<?php echo $this->htmlEscape($this->getUsername()) ?>" id="email" type="text" class="ti required-entry validate-email" title="<?php echo $this->__('Email Address') ?>" />
+		</div>
+		
+		<div>
+			<label for="pass" class="required"><?php echo $this->__('Password') ?><em>*</em></label>
+			<input name="login[password]" type="password" class="ti required-entry validate-password" id="pass" title="<?php echo $this->__('Password') ?>" />
+		</div>
+	</fieldset>
+	<fieldset class="formnavi">
+		<button type="submit" class="btn" name="send" id="send2"><span><?php echo $this->__('Login') ?></span></button>
+	</fieldset>
+	<fieldset class="formnavi">
+		<a href="<?php echo $this->getForgotPasswordUrl() ?>" class="link"><?php echo $this->__('Forgot Your Password?') ?></a>
+		<p class="hint"><?php echo $this->__('* Required Fields') ?></p>
+	</fieldset>
+
+<?php if ($this->helper('customer')->isRegistrationAllowed()): ?>
+	<fieldset>
+		<h2><?php echo $this->__('New Customers') ?></h2>
+		<p><?php echo $this->__('By creating an account with our store, you will be able to move through the checkout process faster, store multiple shipping addresses, view and track your orders in your account and more.') ?></p>
+	</fieldset>
+	<fieldset class="formnavi">
+		<button type="button" class="btn" onclick="window.location='<?php echo $this->getCreateAccountUrl() ?>';"><span><?php echo $this->__('Create an Account') ?></span></button>
+	</fieldset>
+<?php endif; ?>
+</form>
+
+
+<script type="text/javascript">
+//<![CDATA[
+	var dataForm = new VarienForm('login-form', true);
+//]]>
+</script>

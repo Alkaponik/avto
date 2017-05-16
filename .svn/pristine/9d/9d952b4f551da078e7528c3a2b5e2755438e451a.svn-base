@@ -1,0 +1,71 @@
+<div class="page-title title-buttons">
+    <h1><?php echo $this->__('Vehicle chooser')?></h1>
+    <button type="button" id="add-vehicle" class="button"><span><span><?php echo $this->__('Add vehicle') ?></span></span></button>
+</div>
+<div class="vehicle-select">
+    <form method="post" action="<?php echo Mage::getUrl('magedoc/vehicle/save') ?>" class="vehicle-form" id="vehicle-form">
+        <?php foreach($this->getChoosers() as $id => $chooser):?>
+            <div class="fieldset">
+                <h2 class="legend"><?php echo Mage::helper('magedoc')->__('Choose vehicle') ?></h2>
+                <?php echo $chooser->toHtml();?>
+                <button type="button" id="delete" class="button"><span><span><?php echo $this->__('Delete this vehicle') ?></span></span></button>
+            </div>
+        <?php endforeach; ?>   
+        <div class="buttons-set" id="buttons">
+            <p class="back-link"><a href="<?php echo $this->getUrl('customer/account/*');  ?>"><small>&laquo; </small><?php echo $this->__('Back') ?></a></p>
+            <button type="submit" class="button"><span><span><?php echo $this->__('Send information') ?></span></span></button>
+        </div>
+    </form>
+</div>
+<div style="display:none;" id="vehicle_chooser_template">
+    <?php echo $this->getChooserBlockTemplate()->toHtml();?>
+</div>
+<script type="text/javascript">
+  var myVehiclesForm = new VarienForm('vehicle-form');
+  var VehicleCreator = Class.create({
+    initialize:function(addButton, deleteButtons, template)
+    {
+        this.button = $(addButton); 
+        this.template = new Template($(template).innerHTML),
+        this.button.observe('click', this.add.bind(this));
+        this.initDeleteButtons(deleteButtons);
+    },
+    
+    initDeleteButtons:function(buttons)
+    {
+        if(typeof buttons == 'string'){
+            this.deleteButtons = $$('#' + buttons);
+        }else{
+            this.deleteButtons = $$(buttons);
+        }
+        
+        for(var i = 0; i < this.deleteButtons.length; i++){
+            var button = this.deleteButtons[i];
+            $(button).observe('click', this.del.bind(this, $(button)));
+        }
+    },
+    
+    add : function()
+    {        
+        var d = new Date();
+        var containerId = 'id_container' + d.getMilliseconds();       
+        var templateData = {
+            _container_id : containerId
+        };
+
+        Element.insert($('buttons'), {before : this.template.evaluate(templateData)});
+        var chooser = new VehicleChooser(containerId,  '<?php echo $this->getChooserBlockTemplate()->getEditUrl()?>',
+            <?php echo $this->getChooserBlockTemplate()->getControlsJson() ?>);
+        this.initDeleteButtons('delete');        
+    },
+    
+    del: function(item)
+    {
+        var fildest = item.parentNode;     
+        $('vehicle-form').removeChild(fildest);
+        
+        return this;
+    }
+});
+var vehicleManager = new VehicleCreator('add-vehicle', 'delete', 'vehicle_chooser_template');
+</script>

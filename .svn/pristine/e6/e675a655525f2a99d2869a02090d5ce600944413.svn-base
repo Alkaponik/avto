@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<widgets>
+    <getcategorieslist type="getcategorieslist/widget_widget">
+        <name>Get marked subcategories only</name>
+        <description type="desc">Adds possibility to display only marked subcategories on the home page.</description>
+        
+        <parameters>
+			<template>
+                <required>1</required>
+                <visible>1</visible>
+                <label>Template</label>
+                <type>select</type>
+                <value>7rabbits/catalog/category/widget/homepage/grid.phtml</value>
+                <values>
+                    <default translate="label">
+                        <value>7rabbits/catalog/category/widget/homepage/grid.phtml</value>
+                        <label>Featured Categories Grid Template</label>
+                    </default>
+                </values>
+            </template>
+        
+        	<catsselected translate="label">
+	    		<required>1</required>
+	    		<visible>1</visible>
+	    		<label>Categories visible</label>
+	    		<type>text</type>
+	    	</catsselected>
+	    	<categories translate="label">
+	    		<required>0</required>
+	    		<visible>1</visible>
+	    		<label></label>
+	    		<type>label</type>
+	    		<helper_block>
+                    <type>getcategorieslist/widget_categories</type>
+                    <data>
+                        <button translate="open">
+                            <open>Select Categories</open>
+                        </button>
+                    </data>
+                </helper_block>
+	    	</categories>
+	    	<productattr translate="label">
+	    		<required>1</required>
+	    		<visible>1</visible>
+	    		<label>Product attribute</label>
+	    		<type>select</type>
+	    		<source_model>getcategorieslist/widget_attributes</source_model>
+	    	</productattr>
+	    	<productimgwidth translate="label">
+	    		<required>1</required>
+	    		<visible>1</visible>
+	    		<label>Product image width</label>
+	    		<type>text</type>
+	    	</productimgwidth>
+	    	<productimgheight translate="label">
+	    		<required>1</required>
+	    		<visible>1</visible>
+	    		<label>Product image height</label>
+	    		<type>text</type>
+	    	</productimgheight>
+	    </parameters>
+    </getcategorieslist>
+</widgets>

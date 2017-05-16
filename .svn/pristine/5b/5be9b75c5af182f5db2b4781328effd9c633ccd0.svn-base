@@ -1,0 +1,5 @@
+<?php $brand = Mage::registry('current_category') ?>
+<?php $imgHtml = Mage::helper('phoenixbrands')->getBrandLogoHtml($brand) ?>
+<?php if ($imgHtml): ?>
+<div class="brand-logo-sidebar"><?php echo $imgHtml ?></div>
+<?php endif ?>

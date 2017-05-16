@@ -1,0 +1,23 @@
+<?php
+/**
+ * Product criteria template
+ *
+ * @see Testimonial_MageDoc_Block_Criteria
+ */
+$i = 0;
+?>
+<?php $collection = $this->getCriteriaCollection() ?>
+<?php if ($count = count($collection)): ?>
+<h2><?php echo Mage::helper('magedoc')->__('Criteria:') ?></h2>
+<div class="product-info-table-wrapper rnd">
+    <table class="data-table product-criteria product-info-table">
+        <tbody>
+            <?php foreach ($collection as $criteria): ?>
+                <tr class="<?php echo $i++ % 2 == 0 ? 'even' : 'odd'; echo $i == 1 ? ' first' : ($i == $count ? ' last' : '')?>">
+                    <td><?php echo $criteria->getCriteria() ?></td> <td><?php echo $criteria->getCriteriaValueText() ?></td>
+                </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+</div>
+<?php endif; ?>

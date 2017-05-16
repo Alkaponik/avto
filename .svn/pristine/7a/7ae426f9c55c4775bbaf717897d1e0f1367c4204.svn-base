@@ -1,0 +1,15 @@
+app/code/local/Testimonial/MageDoc app/code/local/Testimonial/MageDoc
+app/code/local/Testimonial/System app/code/local/Testimonial/System
+app/code/local/MageDoc/DirectoryCatalog app/code/local/MageDoc/DirectoryCatalog
+app/code/local/MageDoc/DirectoryTecdoc app/code/local/MageDoc/DirectoryTecdoc
+app/locale/en_US/template/email/magedoc_validation_failed_notification.html app/locale/en_US/template/email/magedoc_validation_failed_notification.html
+app/locale/ru_RU/template/email/magedoc_validation_failed_notification.html app/locale/ru_RU/template/email/magedoc_validation_failed_notification.html
+app/design/adminhtml/default/default/layout/magedoc.xml app/design/adminhtml/default/default/layout/magedoc.xml
+app/design/adminhtml/default/default/template/magedoc app/design/adminhtml/default/default/template/magedoc
+app/design/adminhtml/default/default/template/testimonial_system app/design/adminhtml/default/default/template/testimonial_system
+app/etc/modules/Testimonial_System.xml app/etc/modules/Testimonial_System.xml
+app/etc/modules/Testimonial_MageDoc.xml app/etc/modules/Testimonial_MageDoc.xml
+app/etc/modules/MageDoc_DirectoryCatalog.xml app/etc/modules/MageDoc_DirectoryCatalog.xml
+app/etc/modules/MageDoc_DirectoryTecdoc.xml app/etc/modules/MageDoc_DirectoryTecdoc.xml
+skin/adminhtml/default/default/magedoc.css skin/adminhtml/default/default/magedoc.css
+js/magedoc js/magedoc

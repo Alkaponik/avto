@@ -1,0 +1,26 @@
+<div class="fieldset">
+    <h2 class="legend">Choose vehicle</h2>
+    <ul class="vehicle-changer form-list" id="<?php echo $this->getContainerId();?>">
+        <li class="fields">
+            <?php foreach($this->getComboboxes() as $comboBox): ?>
+                <div class="field">
+                    <?php echo $comboBox->toHtml(); ?>
+                </div>
+            <?php endforeach;?>
+            <div class="field vin">
+                <label for="vin">VIN Code</label>
+                <div class="input-box">
+                    <input type="text" name="vehicle[<?php echo $this->getContainerId();?>][vin]" title="VIN Code" maxlength="17" class="input-text validate-alphanum required-entry">
+                </div>
+            </div>
+            <div class="field mileage">
+                <label for="mileage">Mileage</label>
+                <div class="input-box">
+                    <input type="text" name="vehicle[<?php echo $this->getContainerId();?>][mileage]" title="Mileage" maxlength="8" class="input-text validate-digits required-entry">
+                </div>
+            </div>
+        </li>
+    </ul>
+    <button type="button" id="delete" class="button"><span><span><?php echo $this->__('Delete this vehicle') ?></span></span></button>
+</div>
+

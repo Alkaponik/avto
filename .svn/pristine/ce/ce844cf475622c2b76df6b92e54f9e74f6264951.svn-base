@@ -1,0 +1,15 @@
+<script type="text/javascript">
+    Event.observe(window, 'load', function(){
+    $$('td.form-buttons button[class*=add]').each(function(createOrderButton){
+        window.createOrderAction = createOrderButton.onclick.toString().match(/setLocation\('[^']+'\)/)[0];
+        createOrderButton.onclick = null;
+        createOrderButton.observe('click', function(event){
+            Event.stop(event);
+            eval(window.createOrderAction.replace(
+                    '/\')',
+                    '/filter/'+encode_base64('Telephone='+$('sales_order_grid_filter_telephone').value)+'/\')'));
+            return false;
+        });
+    });
+    });
+</script>

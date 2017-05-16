@@ -1,0 +1,8 @@
+Import price validate failed:
+
+Retailer Name: {{var message.getRetailerName()}}
+
+File Name: {{var message.getFileName()}}
+
+Error:
+{{var message.getError()}}

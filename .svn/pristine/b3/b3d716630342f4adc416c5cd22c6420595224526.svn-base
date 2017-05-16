@@ -1,0 +1,14 @@
+<?php
+
+?>
+<div class="block block-green skip-content" id="block-search">
+    <div class="block-title"><?php echo $this->__('Search') ?></div>
+    <form id="search_mini_form" action="<?php echo $this->getUrl('', array('_direct' => 'index.php')) ?>" method="get" accept-charset="windows-1251">
+    	<fieldset>
+            <input id="search" type="text" class="ti" name="searchstring" value="<?php echo $this->helper('catalogsearch')->getEscapedQueryText() ?>" />
+			<button type="submit" class="btn" title="<?php echo $this->__('Search') ?>"><span><?php echo $this->__('OK') ?></span></button>
+            <input type="checkbox" name="inside" id="search_inside">
+            <label class="hint" for="search_inside">искать в найденном</label>
+        </fieldset>
+    </form>
+</div>

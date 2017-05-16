@@ -1,0 +1,141 @@
+<?php
+/**
+ * Magento Enterprise Edition
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Magento Enterprise Edition License
+ * that is bundled with this package in the file LICENSE_EE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://www.magentocommerce.com/license/enterprise-edition
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magentocommerce.com for more information.
+ *
+ * @category    design
+ * @package     enterprise_default
+ * @copyright   Copyright (c) 2009 Irubin Consulting Inc. DBA Varien (http://www.varien.com)
+ * @license     http://www.magentocommerce.com/license/enterprise-edition
+ */
+?>
+
+<?php
+$_product    = $this->getProduct();
+$_attributes = Mage::helper('core')->decorateArray($this->getAllowAttributes());
+?>
+<?php if ($_product->isSaleable() && count($_attributes)):?>
+    <script type="text/javascript">//<![CDATA[
+        var productAddToCartForms = [];
+    //]]></script>
+
+    <?php $_simpleProducts = $_product->getTypeInstance()->getChildrenIds($_product->getId()); ?>
+    <?php if (count($_simpleProducts)): ?>
+        <?php
+            $_coreHelper = $this->helper('core');
+            $_taxHelper = $this->helper('tax');
+            $_sortedSimpleProducts = array();
+        ?>
+                <?php foreach ($_simpleProducts[0] as $_simpleProductId): ?>
+                    <?php $_simpleProduct = Mage::getModel('catalog/product')->load($_simpleProductId) ?>
+                    <?php if ($_simpleProduct->getId() && $_simpleProduct->isSaleable()): ?>
+                        <?php if ($_simpleProduct->getData('contents_value')): ?>
+                            <?php $_sortedSimpleProducts[$_simpleProduct->getAttributeText('contents_value').'_'.$_simpleProduct->getAttributeText('contents_entity')] = $_simpleProduct; ?>
+                        <?php else: ?>
+                            <?php $_sortedSimpleProducts[] = $_simpleProduct; ?>
+                        <?php endif; ?>
+                    <?php endif; ?>
+                <?php endforeach; ?>
+                <?php unset($_simpleProduct); ksort($_sortedSimpleProducts, SORT_NUMERIC); ?>
+                <?php foreach ($_sortedSimpleProducts as $_simpleProduct): ?>
+<form action="<?php echo $this->getAddToCartUrl($_simpleProduct) ?>" method="post" id="product_addtocart_form_<?php echo $_simpleProduct->getSku() ?>" <?php if($_simpleProduct->getOptions()): ?> enctype="multipart/form-data"<?php endif; ?>>
+<?php if (count($_attributes)):?>
+    <fieldset>
+        <div class="p-buy">
+            <?php if ($_simpleProduct->getData('contents_value') || $_simpleProduct->getData('contents_entity')): ?>
+            <div class="p-quantity">
+                <strong class="fl">
+                    <?php if ($_simpleProduct->getData('contents_value')): ?><?php echo $this->htmlEscape($_simpleProduct->getAttributeText('contents_value'))?><?php endif;?>
+                    <?php if ($_simpleProduct->getData('contents_entity')): ?> <?php echo $this->htmlEscape($_simpleProduct->getAttributeText('contents_entity'))?><?php endif;?>
+                </strong>
+                <?php if ($this->helper('wishlist')->isAllow() || $this->helper('catalog/product_compare')->getAddUrl($_simpleProduct)) : ?>
+                <span class="fr">
+                    <?php if ($this->helper('wishlist')->isAllow()) : ?><a href="<?php echo $this->helper('wishlist')->getAddUrl($_simpleProduct) ?>" title="<?php echo $this->__('Add to Wishlist') ?>" rel="nofollow" class="link"><?php echo $this->__('Add to Wishlist') ?></a><?php endif; ?>
+                    <?php if($_compareUrl=$this->helper('catalog/product_compare')->getAddUrl($_simpleProduct) ): ?><a href="<?php echo $_compareUrl ?>" title="<?php echo $this->__('Add to Compare') ?>" rel="nofollow" class="link"><?php echo $this->__('Add to Compare') ?></a><?php endif; ?>
+                </span>
+                <?php endif; ?>
+            </div>
+            <?php endif;?>
+
+            <div class="p-price-cart">
+                <div class="p-price fl">
+                    <?php echo $_coreHelper->currency($_taxHelper->getPrice($_simpleProduct, $_simpleProduct->getFinalPrice())) ?>
+                    <?php echo $this->getDiscountHtml($_simpleProduct);?>
+                </div>
+                <div class="add-to-cart fr">
+                    <?php
+                        $btnTitle = $_product->getName() . ' -';
+                        if($_simpleProduct->getData('contents_value')) $btnTitle .= ' ' . $this->htmlEscape($_simpleProduct->getAttributeText('contents_value'));
+                        if($_simpleProduct->getData('contents_entity')) $btnTitle .= ' ' . $this->htmlEscape($_simpleProduct->getAttributeText('contents_entity'));
+                        $btnTitle .= ' ' . $this->__('Add to Cart');
+                    ?>
+                    <button onclick="productAddToCartForms['<?php echo $_simpleProduct->getSku() ?>'].submit()" title="<?php echo $btnTitle; ?>" class="btn fr" type="button"><span><?php echo $this->__('Add to Cart') ?></span></button>
+                    <div class="p-qty rnd fr">
+                        <input type="text" value="1" maxlength="4" id="qty_<?php echo $_simpleProduct->getSku() ?>" name="qty" class="ti"/>
+                        <label for="qty_<?php echo $_simpleProduct->getSku() ?>"><?php echo $this->__('Qty') ?></label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-meta">
+                <?php if($_simpleProduct->getIsSalable() &&  $_simpleProduct->getData('product_availability')): ?>
+                <?php $classname= '';?>
+                <?php
+                    switch($_simpleProduct->getData('product_availability'))
+                    {
+                        case Phoenix_Vfg_Model_Product::PRODUCT_CUSTOM_AVAILABLE:
+                            $classname = 'p-av2';
+                            break;
+
+                        case Phoenix_Vfg_Model_Product::PRODUCT_UNAVAILABLE:
+                            $classname = 'p-av3';
+                            break;
+
+                        default:
+                            $classname = 'p-av1';
+                    }
+                ?>
+                <span class="p-av <?php echo $classname; ?>"><?php echo $_simpleProduct->getAttributeText('product_availability')?></span>
+                <?php endif; ?>
+
+                <?php echo $this->getSavingInformationHtml($_simpleProduct) ?>
+
+                <?php if (Mage::helper('baseprice')->getBasePriceLabel($_simpleProduct)) :?><span class="p-baseprice"><?php echo Mage::helper('baseprice')->getBasePriceLabel($_simpleProduct); ?></span><?php endif;?>
+
+                <span class="pzn"><?php echo $this->__($_simpleProduct->getResource()->getAttribute('sku')->getFrontendLabel());?> <?php echo $this->htmlEscape($_simpleProduct->getSku()); ?></span>
+            </div>
+        </div>
+    </fieldset>
+</form>
+<script type="text/javascript">
+//<![CDATA[
+    productAddToCartForms['<?php echo $_simpleProduct->getSku() ?>'] = new VarienForm('product_addtocart_form_<?php echo $_simpleProduct->getSku() ?>');
+    productAddToCartForms['<?php echo $_simpleProduct->getSku() ?>'].submit = function() {
+            if (this.validator.validate()) {
+                    this.form.submit();
+            }
+    }.bind(productAddToCartForms['<?php echo $_simpleProduct->getSku() ?>']);
+//]]>
+</script>
+<?php endif;?>
+<?php endforeach; ?>
+<div class="p-tax p-hint tr">
+    <?php echo $this->__('Price')?> <?php echo Mage::helper('phoenixtax')->getRateInfo($_simpleProduct);?> <?php echo $this->__('and');?> <a href="<?php echo $this->getUrl('versand')?>" title="<?php echo Mage::helper('sales')->__('Shipping')?>"><?php echo Mage::helper('phoenixtax')->getShippingText($_product)?></a>
+</div>
+<?php endif; ?>
+<?php endif;?>

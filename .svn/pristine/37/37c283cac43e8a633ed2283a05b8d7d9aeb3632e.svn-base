@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+    <tabs>
+        <testimonial translate="label" module="avtoto">
+            <label>Testimonial</label>
+            <sort_order>600</sort_order>
+        </testimonial>
+    </tabs>
+    <sections>
+        <avtoto translate="label" module="avtoto">
+            <class>separator-top</class>
+            <label>AvtoTO</label>
+            <tab>testimonial</tab>
+            <frontend_type>text</frontend_type>
+            <sort_order>990</sort_order>
+            <show_in_default>1</show_in_default>
+            <show_in_website>1</show_in_website>
+            <show_in_store>1</show_in_store>
+            <groups>
+                <general translate="label" module="avtoto">
+                    <label>AvtoTO Configuration</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>10</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <enable_message_popup translate="label comment">
+                            <label>Enable Message Popups</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </enable_message_popup>
+                        <create_call_on_order_assemly translate="label comment">
+                            <label>Created CRM call when order is assembled</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>20</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </create_call_on_order_assemly>
+                    </fields>
+                </general>
+            </groups>
+        </avtoto>
+    </sections>
+</config>

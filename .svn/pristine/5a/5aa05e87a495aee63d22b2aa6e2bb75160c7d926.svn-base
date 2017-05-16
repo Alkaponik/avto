@@ -1,0 +1,224 @@
+<?xml version="1.0"?>
+
+<config>
+    <menu>
+        <magedoc module="magedoc">
+            <title>MageDoc</title>
+            <sort_order>60</sort_order>   
+            <depends><module>Testimonial_MageDoc</module></depends>
+            <children>
+                <manufacturers module="magedoc">
+                    <title>Manage Manufacturers</title>
+                    <sort_order>0</sort_order>
+                    <action>magedoc/adminhtml_manufacturer/</action>
+                </manufacturers>
+                <models module="magedoc">
+                    <title>Manage Models</title>
+                    <sort_order>5</sort_order>
+                    <action>magedoc/adminhtml_model/</action>
+                </models>
+                <suppliers module="magedoc">
+                    <title>Manage Suppliers</title>
+                    <sort_order>10</sort_order>
+                    <action>magedoc/adminhtml_supplier/</action>
+                </suppliers>
+                <categories module="magedoc">
+                    <title>Manage Categories</title>
+                    <sort_order>20</sort_order>
+                    <action>magedoc/adminhtml_category/</action>
+                </categories>
+                <products module="magedoc">
+                    <title>Manage Products</title>
+                    <sort_order>30</sort_order>
+                    <action>magedoc/adminhtml_product/</action>
+                </products>
+                <criteria module="magedoc">
+                    <title>Manage Article Criteria</title>
+                    <sort_order>35</sort_order>
+                    <action>magedoc/adminhtml_criteria/</action>
+                </criteria>
+                <price module="magedoc">
+                    <title>Manage Prices</title>
+                    <sort_order>40</sort_order>
+                    <children>
+                        <prices module="magedoc">
+                            <title>Manage Prices</title>
+                            <sort_order>10</sort_order>
+                            <action>magedoc/adminhtml_price/</action>
+                        </prices>
+                        <retailerbase module="magedoc">
+                            <title>Manage base prices</title>
+                            <sort_order>20</sort_order>
+                            <action>magedoc/adminhtml_price/retailerbase/</action>
+                        </retailerbase>
+                        <importsessions module="magedoc">
+                            <title>Manage import session</title>
+                            <sort_order>30</sort_order>
+                            <action>magedoc/adminhtml_retailer/importsessions/</action>
+                        </importsessions>
+                    </children>
+                </price>
+                <retailers module="magedoc">
+                    <title>Manage Retailers</title>
+                    <sort_order>50</sort_order>
+                    <action>magedoc/adminhtml_retailer/</action>
+                </retailers>
+                <orders module="magedoc">
+                    <title>Orders</title>
+                    <sort_order>60</sort_order>
+                    <action>magedoc/sales_order/</action>
+                </orders>
+                <supplies module="magedoc">
+                    <title>Supply Management</title>
+                    <sort_order>70</sort_order>
+                    <action>magedoc/adminhtml_supply/</action>
+                </supplies>
+                <supplier_map module="magedoc">
+                    <title>Suppliers Map</title>
+                    <sort_order>80</sort_order>
+                    <action>magedoc/adminhtml_supplier_map/</action>
+                </supplier_map>
+                <generic_article_map module="magedoc">
+                    <title>Generic Article Map</title>
+                    <sort_order>90</sort_order>
+                    <action>magedoc/adminhtml_genericArticle/</action>
+                </generic_article_map>
+                <product_map module="magedoc">
+                    <title>Products Map</title>
+                    <sort_order>100</sort_order>
+                    <action>magedoc/adminhtml_product_map/</action>
+                </product_map>
+            </children>
+        </magedoc>
+	</menu>
+    <acl>
+        <resources>
+            <admin>
+                <children>
+                    <magedoc translate="title" module="magedoc">
+                        <title>MageDoc</title>
+                        <sort_order>10</sort_order>
+                        <children>
+                            <manufacturers module="magedoc">
+                                <title>Manufacturers</title>
+                                <sort_order>0</sort_order>
+                            </manufacturers>
+                            <models module="magedoc">
+                                <title>Models</title>
+                                <sort_order>5</sort_order>
+                            </models>
+                            <suppliers module="magedoc">
+                                <title>Suppliers</title>
+                                <sort_order>10</sort_order>
+                            </suppliers>
+                            <categories module="magedoc">
+                                <title>Categories</title>
+                                <sort_order>20</sort_order>
+                            </categories>
+                            <products module="magedoc">
+                                <title>Products</title>
+                                <sort_order>30</sort_order>
+                            </products>
+                            <criteria module="magedoc">
+                                <title>Criteria</title>
+                                <sort_order>35</sort_order>
+                            </criteria>
+                            <price module="magedoc">
+                                <title>Prices</title>
+                                <sort_order>40</sort_order>
+                                <children>
+                                    <prices module="magedoc">
+                                        <title>Manage Prices</title>
+                                        <sort_order>10</sort_order>
+                                    </prices>
+                                    <retailerbase module="magedoc">
+                                        <title>Manage base prices</title>
+                                        <sort_order>20</sort_order>
+                                    </retailerbase>
+                                    <importsessions module="magedoc">
+                                        <title>Manage import session</title>
+                                        <sort_order>30</sort_order>
+                                    </importsessions>
+                                </children>
+                            </price>
+                            <retailers module="magedoc">
+                                <title>Retailers</title>
+                                <sort_order>50</sort_order>
+                            </retailers>
+                            <orders module="magedoc">
+                                <title>Orders</title>
+                                <sort_order>60</sort_order>
+                                <children>
+                                    <actions translate="title">
+                                        <title>Actions</title>
+                                        <children>
+                                            <view_all translate="title">
+                                                <title>View All Orders on Orders Grid</title>
+                                                <sort_order>10</sort_order>
+                                            </view_all>
+                                            <show_all translate="title">
+                                                <title>Show All Orders in Supply Management</title>
+                                                <sort_order>20</sort_order>
+                                            </show_all>
+                                            <print_all translate="title">
+                                                <title>Print All Orders' Assemblies</title>
+                                                <sort_order>30</sort_order>
+                                            </print_all>
+                                        </children>
+                                    </actions>
+                                </children>
+                            </orders>
+                            <supplies module="magedoc">
+                                <title>Supplies</title>
+                                <sort_order>70</sort_order>
+                            </supplies>
+                            <supplier_map module="magedoc">
+                                <title>Suppliers Map</title>
+                                <sort_order>80</sort_order>
+                            </supplier_map>
+                            <generic_article_map module="magedoc">
+                                <title>Generic Article Map</title>
+                                <sort_order>85</sort_order>
+                            </generic_article_map>
+                            <product_map module="magedoc">
+                                <title>Products Map</title>
+                                <sort_order>90</sort_order>
+                            </product_map>
+                        </children>
+                    </magedoc>
+                    <system>
+                        <children>
+                            <config>
+                                <children>
+                                    <magedoc translate="title">
+                                        <title>MageDoc</title>
+                                        <sort_order>60</sort_order>
+                                    </magedoc>
+                                </children>
+                            </config>
+                        </children>
+                    </system>
+                    <report translate="title" module="reports">
+                        <children>
+                            <salesroot translate="title">
+                                <children>
+                                    <sales translate="title">
+                                        <children>
+                                            <view_all translate="title">
+                                                <title>View All</title>
+                                                <sort_order>10</sort_order>
+                                            </view_all>
+                                        </children>
+                                    </sales>
+                                </children>
+                            </salesroot>
+                        </children>
+                    </report>
+                </children>
+            </admin>
+        </resources>
+    </acl>
+</config>
+
+
+

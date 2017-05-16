@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Testimonial_ImportExport>
+            <version>0.1.0</version>
+        </Testimonial_ImportExport>
+    </modules>
+    <global>
+        <models>
+            <testimonial_importexport>
+                <class>Testimonial_ImportExport_Model</class>
+            </testimonial_importexport>
+        </models>
+        <importexport module="testimonial_importexport">
+            <import_entities>
+                <catalog_product translate="label">
+                    <model_token>testimonial_importexport/import_entity_extendedProduct</model_token>
+                    <label>Products</label>
+                </catalog_product>
+            </import_entities>
+            <import_product_types>
+                <!--<simple>magedoc/import_entity_product_type_extendedSimple</simple>-->
+                <grouped>testimonial_importexport/import_entity_product_type_extendedGrouped</grouped>
+            </import_product_types>
+        </importexport>
+    </global>
+    <default>
+        <category_import>
+            <meta_title_template>{{name}}</meta_title_template>
+            <meta_description_template>{{name}}</meta_description_template>
+        </category_import>
+    </default>
+</config>

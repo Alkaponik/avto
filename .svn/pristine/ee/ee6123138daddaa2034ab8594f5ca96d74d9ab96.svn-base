@@ -1,0 +1,2 @@
+<h1><?php echo Mage::helper('magedoc')->__('Spare parts for %s', $this->getModel()->getTitle()) ?></h1>
+<?php echo $this->getChildHtml('type_list'); ?>

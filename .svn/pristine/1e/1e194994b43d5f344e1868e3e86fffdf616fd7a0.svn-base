@@ -1,0 +1,149 @@
+<div id="message-popup-window-mask" style="display:none;"></div>
+<div id="message-popup-window" class="message-popup product-info">
+    <div class="popup-wrapper">
+        <div class="message-popup-head">
+            <a id="close-popup" title="<?php echo $this->getCloseText(); ?>"><span><?php echo $this->getCloseText(); ?></span></a>
+            <h2><?php echo $this->getHeaderText(); ?></h2>
+        </div>
+        <div class="message-popup-content">
+            <dl id="collateral-tabs" class="tab-list" style="height: 334px;">
+                <dt class="tab first active general-tab"  style="z-index: 6;">
+                    <strong><?php echo $this->__('General')?></strong>
+                </dt>
+                <dd class="tab-container general-data" style="">
+                </dd>
+                <dt class="tab similar-tab" style="z-index: 5;">
+                    <strong><?php echo $this->__('Similar products')?></strong>
+                </dt>
+                <dd class="tab-container similar-data"  style="">
+                </dd>
+                <dt class="tab usedincars-tab" style="z-index: 4;">
+                    <strong><?php echo $this->__('Used in cars')?></strong>
+                </dt>
+                <dd class="tab-container usedincars-data" style="">
+                </dd>
+                <dt class="tab image-tab" style="z-index: 3;">
+                    <strong><?php echo $this->__('Images')?></strong>
+                </dt>
+                <dd class="tab-container image-data" style="">
+                </dd>
+
+            </dl>
+        </div>
+    </div>
+</div>
+<?php $retailersArray = Mage::getResourceModel('magedoc/retailer_collection')->getRetailersArray(); ?>
+<?php $retailersJosn = Mage::helper('core')->jsonEncode($retailersArray); ?>
+
+<script type="text/javascript">
+//<![CDATA[
+var ProductInformationWindow = Class.create({
+    
+    initialize: function(popupWindow, popupMask, tabContainer, requestUrl, priceRetailerJson, priceRequestUrl)
+    {
+        this.pricePopup = new RetailerInfo(priceRetailerJson);
+        this.pricePopup.setUrl(priceRequestUrl);
+        this.container = $(popupWindow);
+        this.mask = $(popupMask);
+        this.tabContainer = $(tabContainer);
+        this.tabManager = new Tabs(this.tabContainer);
+        this.messagePopupClosed = false;
+        this.url = requestUrl;
+        Event.observe(window, 'keyup', function(evt) {
+            if(this.messagePopupClosed){
+                return;
+            }
+            var code;
+            if (evt.keyCode) code = evt.keyCode;
+            else if (evt.which) code = evt.which;
+            if (code == Event.KEY_ESC) {
+                this.closeMessagePopup();
+            }
+        }.bind(this));
+
+        this.container.down('#close-popup').observe('click', this.closeMessagePopup.bind(this));
+        this.initTabs();
+    },
+    
+    openMessagePopup: function() 
+    {
+        var height = $('html-body').getHeight();
+        this.mask.setStyle({'height':height+'px'});
+        toggleSelectsUnderBlock(this.mask, false);
+        this.mask.show();
+        this.container.addClassName('show');
+    },
+
+    closeMessagePopup: function() 
+    {
+        toggleSelectsUnderBlock(this.mask, true);
+        this.mask.hide();
+        this.container.removeClassName('show');
+        this.messagePopupClosed = true;
+    },
+
+    initTabs: function()
+    {
+        this.generalTab = this.container.down('.general-tab');
+        this.similarTab = this.container.down('.similar-tab');
+        this.usedInCarsTab = this.container.down('.usedincars-tab');
+        this.imageTab = this.container.down('.image-tab');
+        this.generalData = this.container.down('.general-data');
+        this.similarData = this.container.down('.similar-data');
+        this.usedInCarsData = this.container.down('.usedincars-data');
+        this.imageData = this.container.down('.image-data');
+        
+    },
+
+    getProductData: function(productId, articleId, typeId)
+    {
+        new Ajax.Request(this.url, {
+            method: 'post',
+            parameters:{
+                'product_id'    : productId || '',
+                'art_id'        : articleId || '',
+                'type_id'        : typeId || ''
+            },
+            onSuccess: function(response){
+                var result = response.responseText;
+                result = result.evalJSON();
+                this.generalData.update(result['general']);
+
+                if(!result['similar']){
+                    this.similarTab.hide();
+                }else{
+                    this.similarTab.show();
+                    this.similarData.update(result['similar']);   
+                }
+                if(!result['used_in_cars']){
+                    this.usedInCarsTab.hide();
+                }else{
+                    this.usedInCarsTab.show();
+                    this.usedInCarsData.update(result['used_in_cars']);   
+                }
+                if(!result['images']){
+                    this.imageTab.hide();
+                }else{
+                    this.imageTab.show();
+                    this.imageData.update(result['images']);   
+                }               
+                this.openMessagePopup();
+                this.pricePopup.setArtId(result['art_id']);
+                this.pricePopup.setContainer($('retailers-container'));
+                this.pricePopup.setData(result['retialer_prices']);
+
+                this.pricePopup.showPopup();
+
+            }.bind(this)
+        });    
+    }
+});
+
+var MageDoc_Adminhtml_Product_Information_WindowJsObject = 
+    new ProductInformationWindow('message-popup-window',
+            'message-popup-window-mask', 'collateral-tabs',
+            '<?php echo $this->getRequestUrl()?>',
+            <?php echo $retailersJosn?>,
+            '<?php echo $this->getUrl('*/adminhtml_product_information/updatePrice')?>');
+//]]>
+</script>

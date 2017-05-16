@@ -1,0 +1,137 @@
+<?php
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE_AFL.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magentocommerce.com for more information.
+ *
+ * @category    design
+ * @package     default_default
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ */
+/* @var $this Mage_Adminhtml_Block_Catalog_Product_Edit_Tab_Price_Tier */
+$this->getRequiredFields();
+
+?>
+<?php $_htmlId      = $this->getElement()->getHtmlId() ?>
+<?php $_htmlClass   = $this->getElement()->getClass() ?>
+<?php $_htmlName    = $this->getElement()->getName() ?>
+<?php $colsTitle = $this->getElement()->getColsTitles();?>
+<tr>
+    <td class="label"><?php echo $this->getElement()->getLabel() ?></td>
+    <td colspan="10" class="grid tier retailer_import_adapter_config ">
+    <table cellspacing="0" class="data border" id="tiers_table">
+        <thead>
+            <tr class="headings">
+                <th style="width:40px"><?php echo $colsTitle[0] ?></th>
+                <th><?php echo $colsTitle[1] ?></th>
+                <th class="last"><?php echo $colsTitle[2] ?></th>
+            </tr>
+        </thead>
+        <tbody id="<?php echo $_htmlId ?>_container"></tbody>
+        <tfoot>
+            <tr>
+                <td colspan="4" class="a-right"><?php echo $this->getAddButtonHtml() ?></td>
+            </tr>
+        </tfoot>
+    </table>
+
+<script type="text/javascript">
+//<![CDATA[
+var tierPriceRowTemplate = '<tr>'
+    + '<td><select class="<?php echo $_htmlClass ?> base-table-field required-entry check-required-fields <?php echo $_htmlId ?>_tier_price_row_{{index}}_base_table_field" name="{{htmlName}}[{{index}}][base_table_field]">'
+    <?php foreach ($this->getBaseTableFieldList() as $_groupLabel => $group): ?>
+    + '<optgroup label="<?php echo $_groupLabel?>">'
+        <?php foreach ($group as $_fieldId => $_fieldName) : ?>
+    + '<option value="<?php echo $_fieldId ?>"><?php echo $this->jsQuoteEscape($this->htmlEscape($_fieldName)) ?></option>'
+        <?php endforeach ?>
+    + '</optgroup>'
+    <?php endforeach ?>
+    + '</select></td>'
+    + '<td class="nobr"><input class="<?php echo $_htmlClass ?> priceField required-entry" type="text" name="{{htmlName}}[{{index}}][path]" value="{{priceField}}" id="tier_price_row_{{index}}_path" />'
+    + '</td>'
+    + '<td class="last"><input type="hidden" name="{{htmlName}}[{{index}}][delete]" class="delete" value="" id="tier_price_row_{{index}}_delete" />'
+    + '<button title="<?php echo Mage::helper('magedoc')->__("Delete Field") ?>" type="button" class="scalable delete icon-btn delete-product-option" id="tier_price_row_{{index}}_delete_button" onclick="return tierPriceControl<?php echo $this->getElement()->getId() ?>.deleteItem(event);">'
+    + '<span><span><span><?php echo Mage::helper('magedoc')->__("Delete") ?></span></span></span></button></td>'
+    + '</tr>';
+
+
+if(tierDataInfo === undefined) {
+    var tierDataInfo = new Object();
+}
+tierDataInfo['<?php echo $_htmlId ?>_container'] = '<?php echo $_htmlName ?>';
+
+var tierPriceControl<?php echo $this->getElement()->getId() ?> = {
+    template: new Template(tierPriceRowTemplate, new RegExp('(^|.|\\r|\\n)({{\\s*(\\w+)\\s*}})', "")),
+    itemsCount: 0,
+    addItem : function () {
+        var data = {
+            baseTableField: 1,
+            priceField: '',
+            index: this.itemsCount++
+        };
+
+        var container;
+        if(arguments.length >= 2) {
+            data.baseTableField = arguments[0];
+            data.priceField     = arguments[1];
+            container = $('<?php echo $_htmlId ?>_container');
+        } else {
+            container = $(arguments[0]).up('table').down('tbody');
+        }
+
+        if( tierDataInfo[container.id] !== undefined ) {
+            data.htmlName = tierDataInfo[container.id];
+        } else {
+                data.htmlName = 'retailer_adapter_config[' + container.up('.item_template').id.substring(8) + '][<?php echo $this->getElement()->getId() ?>]';
+        }
+        Element.insert(container , {
+            bottom : this.template.evaluate(data)
+        });
+        var el = $$('select.<?php echo $_htmlId ?>_tier_price_row_' + data.index + '_base_table_field')[0];
+        el.value  = data.baseTableField;
+
+    },
+
+    disableElement: function(el) {
+        el.disabled = true;
+        el.addClassName('disabled');
+    },
+
+    deleteItem: function(event) {
+        var tr = Event.findElement(event, 'tr');
+        if (tr) {
+            Element.select(tr, '.delete').each(function(elem){elem.value='1'});
+            Element.select(tr, ['input', 'select']).each(function(elem){elem.hide()});
+            Element.hide(tr);
+            Element.addClassName(tr, 'no-display template');
+        }
+        return false;
+    }
+};
+
+<?php
+ foreach ($this->getValues() as $_item):
+    if(!isset($_item['path']) || !isset($_item['base_table_field'])) {
+        continue;
+    }
+    ?>
+tierPriceControl<?php echo $this->getElement()->getId() ?>.addItem( '<?php echo addslashes($_item['base_table_field']) ?>', '<?php echo addslashes($_item['path']) ?>' );
+<?php endforeach; ?>
+//]]>
+</script>
+</td></tr>

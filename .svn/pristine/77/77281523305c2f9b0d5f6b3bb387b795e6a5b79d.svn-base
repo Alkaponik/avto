@@ -1,0 +1,90 @@
+<?xml version="1.0"?>
+
+<config>
+    <modules>
+        <Testimonial_SugarCRM>
+            <version>0.3.0</version>
+        </Testimonial_SugarCRM>
+    </modules>
+    <global>
+        <models>
+            <sugarcrm>
+                <class>Testimonial_SugarCRM_Model</class>
+            </sugarcrm>
+        </models>
+        <blocks>
+            <sugarcrm>
+                <class>Testimonial_SugarCRM_Block</class>
+            </sugarcrm>
+            <adminhtml>
+                <rewrite>
+                    <permissions_user_edit_tab_main>Testimonial_SugarCRM_Block_Adminhtml_Permission_User_Edit_Tab_Main</permissions_user_edit_tab_main>
+                </rewrite>
+            </adminhtml>
+        </blocks>
+        <helpers>
+            <sugarcrm>
+                <class>Testimonial_SugarCRM_Helper</class>
+            </sugarcrm>
+        </helpers>
+        <resources>
+            <sugarcrm_setup>
+                <setup>
+                    <module>Testimonial_SugarCRM</module>
+                </setup>
+                <connection>
+                    <use>core_setup</use>
+                </connection>
+            </sugarcrm_setup>
+        </resources>
+        <importexport module="importexport">
+            <import_entities>
+                <customer translate="label">
+                    <model_token>sugarcrm/import_entity_customer</model_token>
+                    <label>SugarCRM Contacts to Customers</label>
+                </customer>
+            </import_entities>
+        </importexport>
+        <events>
+            <customer_save_after>
+                <observers>
+                    <sugarcrm>
+                        <class>Testimonial_SugarCRM_Model_Observer</class>
+                        <type>singleton</type>
+                        <method>customer_save_after</method>
+                    </sugarcrm>
+                </observers>
+            </customer_save_after>
+            <sales_order_save_after>
+                <observers>
+                    <sugarcrm>
+                        <class>Testimonial_SugarCRM_Model_Observer</class>
+                        <type>singleton</type>
+                        <method>sales_order_save_after</method>
+                    </sugarcrm>
+                </observers>
+            </sales_order_save_after>
+        </events>
+    </global>
+    <adminhtml>
+        <translate>
+            <modules>
+                <Testimonial_SugarCRM>
+                    <files>
+                        <default>Testimonial_SugarCRM.csv</default>
+                    </files>
+                </Testimonial_SugarCRM>
+            </modules>
+        </translate>
+    </adminhtml>
+    <default>
+        <sugarcrm>
+            <general>
+                <call_title>{{getOrder()/@increment_id}}: {{:mb_substr(@comment, 0, 40)}}...</call_title>
+                <call_description>Customer {{getOrder()/getCustomerName()}}: {{@comment}}</call_description>
+                <default_call_duration>5</default_call_duration>
+                <default_call_interval>15</default_call_interval>
+            </general>
+        </sugarcrm>
+    </default>
+</config>

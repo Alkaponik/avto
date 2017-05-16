@@ -1,0 +1,15 @@
+<?php $manufacturers = $this->getFeaturedBrands($this->getBrandsSidebarCount()) ?>
+<?php if (count($manufacturers)): ?>
+<div class="block block-brands">
+    <div class="block-title">
+        <strong><span><?php echo $this->__('Featured Brands') ?></span></strong>
+    </div>
+    <div class="block-content">
+        <ol>
+        <?php foreach ($manufacturers as $manufacturer): ?>
+            <li><a href="<?php echo $manufacturer->getUrl() ?>" title="<?php echo $this->htmlEscape($manufacturer->getName()) ?>"><?php echo $this->htmlEscape($manufacturer->getName()) ?></a></li>
+        <?php endforeach ?>
+        </ol>
+    </div>
+</div>
+<?php endif ?>

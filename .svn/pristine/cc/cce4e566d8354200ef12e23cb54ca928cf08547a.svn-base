@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+
+<config>
+    <acl>
+        <resources>
+            <admin>
+                <children>
+                    <system>
+                        <children>
+                            <config>
+                                <children>
+                                    <magedoc_crm translate="title" module="magedoc_crm">
+                                        <title>MageDoc CRM</title>
+                                    </magedoc_crm>
+                                </children>
+                            </config>
+                        </children>
+                    </system>
+                    <customer>
+                        <children>
+                            <merge translate="title">
+                                <title>Merge Customers</title>
+                                <sort_order>110</sort_order>
+                            </merge>
+                        </children>
+                    </customer>
+                </children>
+            </admin>
+        </resources>
+    </acl>
+</config>

@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<layout version="0.1.0">
+    <default>
+        <reference name="head">
+            <!--<action method="addCss"><stylesheet>css/phoenixbrands.css</stylesheet></action>-->
+        </reference>
+        <reference name="left">
+            <block type="phoenixbrands/brand_list" name="phoenixbrands.list.sidebar" template="phoenixbrands/manufacturers_sidebar.phtml" before="-"/>
+        </reference>
+    </default>
+    
+    <phoenixbrands_brands_list>
+        <reference name="content">
+            <block type="phoenixbrands/brand_list" name="phoenixbrands.list" template="phoenixbrands/list.phtml">
+                <block type="phoenixbrands/brand_list" name="phoenixbrands.list.recommended" template="phoenixbrands/recommended.phtml">
+                    <label>Recommended Brands Block</label>
+                </block>
+            </block>
+        </reference>
+    </phoenixbrands_brands_list>
+    
+    <phoenixbrands_brands_brand_category>
+        <reference name="head">
+            <action method="addCss"><stylesheet>css/phoenixbrands.css</stylesheet></action> 
+        </reference>
+        <reference name="left">
+            <block type="core/template" name="phoenixbrands.brand.sidebar" template="phoenixbrands/brand_category_sidebar.phtml" before="-"/>
+        </reference>
+    </phoenixbrands_brands_brand_category>
+</layout>
