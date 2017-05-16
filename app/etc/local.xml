@@ -41,8 +41,8 @@
             <default_setup>
                 <connection>
                     <host><![CDATA[localhost]]></host>
-                    <username><![CDATA[mavtotouser]]></username>
-                    <password><![CDATA[eW2WWStcWZFH9Kb5]]></password>
+                    <username><![CDATA[root]]></username>
+                    <password><![CDATA[test123]]></password>
                     <dbname><![CDATA[magento_avtoto]]></dbname>
                     <active>1</active>
                 </connection>
